@@ -13,6 +13,6 @@ namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class ViewController extends Controller
+class CollectController extends Controller
 {
 }

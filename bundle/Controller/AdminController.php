@@ -21,11 +21,11 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class AdminController.
  *
- * @Route("/form-builder")
+ * @Route("/form-builder/admin")
  *
  * @package Novactive\Bundle\FormBuilderBundle\Controller
  */
-class CollectController extends Controller
+class AdminController extends Controller
 {
     /**
      * @Route("/new")
