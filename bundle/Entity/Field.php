@@ -28,14 +28,14 @@ abstract class Field
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id')
+     * @ORM\Column(type="integer", name="id")
      *
      * @var int
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="id')
+     * @ORM\Column(type="integer", name="type")
      *
      * @var string
      */

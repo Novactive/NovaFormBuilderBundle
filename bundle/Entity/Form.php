@@ -27,7 +27,7 @@ class Form
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id')
+     * @ORM\Column(type="integer", name="id")
      *
      * @var int
      */
