@@ -19,7 +19,17 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "textline" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\TextLine",
+ *     "textarea" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\TextArea",
+ *     "date" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Date",
+ *     "email" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Email",
+ *     "number" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Number",
+ *     "time" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Time"
+ * })
  * @ORM\Table(name="novaformbuilder_field")
+ *
+ * TODO: @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
@@ -28,25 +38,11 @@ abstract class Field
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id')
+     * @ORM\Column(type="integer", name="id")
      *
      * @var int
      */
     protected $id;
-
-    /**
-     * @ORM\Column(type="integer", name="id')
-     *
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
-     *
-     * @var Form
-     */
-    protected $form;
 
     /**
      * @ORM\Column(type="string", name="name")
@@ -56,7 +52,30 @@ abstract class Field
     protected $name;
 
     /**
-     * @ORM\Column(type="json_array", name="options")
+     * @ORM\Column(type="boolean")
+     *
+     * @var boolean
+     */
+    protected $required = true;
+
+    /**
+     * Used to order form fields
+     *
+     * @ORM\Column(type="integer")
+     *
+     * @var integer
+     */
+    protected $weight = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
+     *
+     * @var Form
+     */
+    protected $form;
+
+    /**
+     * @ORM\Column(type="json", name="options")
      *
      * @var array
      */
@@ -68,6 +87,57 @@ abstract class Field
     public function __construct()
     {
         $this->name = '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param int $weight
+     */
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired(bool $required): self
+    {
+        $this->required = $required;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMandatory(): bool
+    {
+        return $this->mandatory;
+    }
+
+    /**
+     * @param bool $mandatory
+     */
+    public function setMandatory(bool $mandatory): self
+    {
+        $this->mandatory = $mandatory;
+        return $this;
     }
 
     /**
@@ -91,15 +161,7 @@ abstract class Field
      */
     public function getType(): string
     {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
+        return strtolower((new \ReflectionClass($this))->getShortName());
     }
 
     /**

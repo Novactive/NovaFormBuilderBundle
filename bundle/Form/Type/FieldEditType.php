@@ -54,13 +54,17 @@ class FieldEditType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'name',
-            TextType::class,
-            [
+        $builder
+            ->add('name', TextType::class, [
                 'label' => 'novaformbuilder_field.name',
-            ]
-        );
+            ])
+            ->add('required', null, [
+                'label' => 'novaformbuilder_field.required',
+            ])
+            ->add('weight', null, [
+                'label' => 'novaformbuilder_field.weight',
+            ])
+        ;
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
@@ -69,8 +73,10 @@ class FieldEditType extends AbstractType
                 $data = $event->getData();
                 $form = $event->getForm();
 
-                // Let fieldType mappers do their jobs to complete the form.
-                $this->fieldTypeMapperDispatcher->mapFieldEditForm($form, $data);
+                if ($data) {
+                    // Let fieldType mappers do their jobs to complete the form.
+                    $this->fieldTypeMapperDispatcher->mapFieldEditForm($form, $data);
+                }
             }
         );
     }

@@ -11,12 +11,14 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
-use Novactive\Bundle\FormBuilderBundle\Entity\Field\TextLine;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\FormEditType;
+use Novactive\Bundle\FormBuilderBundle\Form\Type\FieldEditType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * Class AdminController.
@@ -27,6 +29,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AdminController extends Controller
 {
+    const FIELDS_CLASS_MAP = [
+        "textline" => "TextLine",
+        "textarea" => "TextArea",
+        "date" => "Date",
+        "email" => "Email",
+        "number" => "Number",
+        "time" => "Time"
+    ];
+
     /**
      * @Route("/new")
      *
@@ -37,7 +48,7 @@ class AdminController extends Controller
     public function newAction(Request $request)
     {
         $formData = new Form();
-        $formData->addField(new TextLine());
+
         $form = $this->createForm(FormEditType::class, $formData);
         $form->handleRequest($request);
 
@@ -49,6 +60,50 @@ class AdminController extends Controller
 
         return $this->render('@FormBuilder/form_builder/form/new.html.twig', [
             'form'              => $form->createView(),
+            'available_fields' => self::FIELDS_CLASS_MAP
         ]);
+    }
+
+    /**
+     * @Route("/get-field-form")
+     *
+     * @Method("GET")
+     *
+     * @param Request $request
+     */
+    public function getFieldForm(Request $request)
+    {
+        $fieldType = $request->query->get('field_type');
+        $fieldName = $this->getFieldClassName($fieldType);
+        $className = '\\Novactive\\Bundle\\FormBuilderBundle\\Entity\\Field\\' . $fieldName;
+
+        if (class_exists($className)) {
+            $field = new $className();
+        } else {
+            throw new \Exception('Wrong field type');
+        }
+
+        $formData = new Form();
+        $formData->addField($field);
+        $form = $this->createForm(FormEditType::class, $formData, ['field_class' => $field]);
+
+        $prototype = $this->renderView(
+            '@FormBuilder/form_builder/form/field_prototype.json.twig',
+            [
+                'form' => $form->createView()->children['fields']
+            ]
+        );
+
+        return $this->json([
+            'data' => [
+                'prototype' => $prototype,
+                'field_name' => $fieldName
+            ]
+        ]);
+    }
+
+    private function getFieldClassName($fieldType)
+    {
+        return self::FIELDS_CLASS_MAP[strtolower($fieldType)] ?? null;
     }
 }

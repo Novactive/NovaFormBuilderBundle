@@ -13,6 +13,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Form.
@@ -27,14 +28,31 @@ class Form
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id')
+     * @ORM\Column(type="integer", name="id")
      *
      * @var int
      */
     protected $id;
 
     /**
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int
+     */
+    protected $maxSubmissions;
+
+    /**
      * @ORM\OneToMany(targetEntity="Field", mappedBy="form")
+     * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
      */
@@ -46,6 +64,40 @@ class Form
     public function __construct()
     {
         $this->fields = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxSubmissions()
+    {
+        return $this->maxSubmissions;
+    }
+
+    /**
+     * @param int $maxSubmissions
+     */
+    public function setMaxSubmissions(int $maxSubmissions): self
+    {
+        $this->maxSubmissions = $maxSubmissions;
+        return $this;
     }
 
     /**

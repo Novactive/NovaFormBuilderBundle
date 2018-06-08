@@ -1,13 +1,4 @@
 <?php
-/**
- * NovaFormBuilderBundle.
- *
- * @package   NovaFormBuilderBundle
- *
- * @author    Novactive <f.alexandre@novactive.com>
- * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
- */
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
@@ -15,7 +6,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class TextLine.
+ * Class TextArea
  *
  * @ORM\Entity()
  *
@@ -24,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity\Field
  */
-class TextLine extends Field
+class TextArea extends Field
 {
     /**
      * @return int

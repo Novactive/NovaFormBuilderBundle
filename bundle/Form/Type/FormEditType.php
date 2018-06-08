@@ -15,6 +15,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Symfony\Component\Form\{FormEvent, FormEvents};
 
 class FormEditType extends AbstractType
 {
@@ -33,19 +35,28 @@ class FormEditType extends AbstractType
         $resolver
             ->setDefaults(
                 [
-                    'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Form',
+                    'data_class'         => Form::class,
                     'translation_domain' => 'novaformbuilder_form',
+                    'field_class' => null
                 ]
             );
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
+        $builder
+            ->add('name')
+            ->add('maxSubmissions')
+            ->add(
             'fields',
             CollectionType::class,
             [
                 'entry_type'    => FieldEditType::class,
+                'entry_options' => [
+                    'label' => 'test'
+                ],
+                'prototype_data' => $options['field_class'],
+                'allow_add' => true,
                 'label'         => 'novaformbuilder_form.field',
             ]
         );
