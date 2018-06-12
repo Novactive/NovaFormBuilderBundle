@@ -54,16 +54,16 @@ abstract class Field
     /**
      * @ORM\Column(type="boolean")
      *
-     * @var boolean
+     * @var bool
      */
     protected $required = true;
 
     /**
-     * Used to order form fields
+     * Used to order form fields.
      *
      * @ORM\Column(type="integer")
      *
-     * @var integer
+     * @var int
      */
     protected $weight = 0;
 
@@ -103,6 +103,7 @@ abstract class Field
     public function setWeight(int $weight): self
     {
         $this->weight = $weight;
+
         return $this;
     }
 
@@ -120,6 +121,7 @@ abstract class Field
     public function setRequired(bool $required): self
     {
         $this->required = $required;
+
         return $this;
     }
 
@@ -137,6 +139,7 @@ abstract class Field
     public function setMandatory(bool $mandatory): self
     {
         $this->mandatory = $mandatory;
+
         return $this;
     }
 

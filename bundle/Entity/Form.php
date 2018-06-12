@@ -80,6 +80,7 @@ class Form
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -97,6 +98,7 @@ class Form
     public function setMaxSubmissions(int $maxSubmissions): self
     {
         $this->maxSubmissions = $maxSubmissions;
+
         return $this;
     }
 
