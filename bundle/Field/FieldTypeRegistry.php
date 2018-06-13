@@ -46,4 +46,12 @@ class FieldTypeRegistry
     {
         return $this->fieldTypes;
     }
+
+    /**
+     * @return FieldTypeInterface[]
+     */
+    public function getFieldTypeByIdentifier(string $identifier)
+    {
+        return $this->fieldTypes[$identifier] ?? null;
+    }
 }

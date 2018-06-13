@@ -11,11 +11,11 @@ use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormInterface;
 
-class TextLine extends FieldType
+class TextArea extends FieldType
 {
     public function getEntity(): Field
     {
-        return new Field\TextLine();
+        return new Field\TextArea();
     }
 
     /**
@@ -25,7 +25,7 @@ class TextLine extends FieldType
      */
     public function accept(Field $field): bool
     {
-        return $field instanceof Field\TextLine;
+        return $field instanceof Field\TextArea;
     }
 
     /**
@@ -39,7 +39,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required' => false,
-                    'label'    => 'novaformbuilder_field.textline.min_length',
+                    'label'    => 'novaformbuilder_field.textarea.min_length',
                     'attr'     => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -49,7 +49,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required' => false,
-                    'label'    => 'novaformbuilder_field.textline.max_length',
+                    'label'    => 'novaformbuilder_field.textarea.max_length',
                     'attr'     => ['min' => 0],
                     'empty_data' => 0,
                 ]

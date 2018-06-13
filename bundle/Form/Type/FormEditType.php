@@ -15,6 +15,8 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class FormEditType extends AbstractType
 {
@@ -58,6 +60,7 @@ class FormEditType extends AbstractType
                     'prototype_data' => $options['field_class'],
                     'allow_add'      => true,
                     'label'          => 'novaformbuilder_form.fields',
+                    'by_reference' => false
                 ]
             );
     }

@@ -7,10 +7,10 @@
         <div class="btn-group input-group">
             <select class="form-control js-form-builder__select-field-type">
                 {% for field_types_identifier, field_type_prototype in field_types_prototype %}
-                    <option value="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
+                    <option value="{{ field_types_identifier }}" data-entity-type="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
                 {% endfor %}
             </select>
-            <button class="btn btn-primary js-form-builder__add-new-field" type="button">{{ 'Add new field' }}</button>
+            <button class="btn btn-primary js-form-builder__add-new-field" type="button">{{ 'Add new field'|trans }}</button>
         </div>
     </div>
 {% endblock %}

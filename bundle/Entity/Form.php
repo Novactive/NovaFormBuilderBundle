@@ -51,12 +51,18 @@ class Form
     protected $maxSubmissions;
 
     /**
-     * @ORM\OneToMany(targetEntity="Field", mappedBy="form")
+     * @ORM\OneToMany(targetEntity="Field", mappedBy="form", cascade={"persist", "remove"})
      * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
      */
     public $fields = [];
+
+    /**
+     * @ORM\OneToMany(targetEntity="FormSubmission", mappedBy="form", cascade={"persist", "remove"})
+     * @var FormSubmission[]
+     */
+    private $submissions;
 
     /**
      * Form constructor.
@@ -111,17 +117,9 @@ class Form
     }
 
     /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return Field[]
      */
-    public function getFields(): ArrayCollection
+    public function getFields()
     {
         return $this->fields;
     }
@@ -139,6 +137,7 @@ class Form
      */
     public function addField(Field $field)
     {
+        $field->setForm($this);
         $this->fields->add($field);
     }
 

@@ -10,6 +10,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -50,8 +51,7 @@ class FieldEditType extends AbstractType
             ])
             ->add('weight', null, [
                 'label' => 'novaformbuilder_field.weight',
-            ])
-        ;
+            ]);
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
@@ -71,6 +71,10 @@ class FieldEditType extends AbstractType
                         }
                         if ($fieldType->accept($data)) {
                             $fieldType->mapFieldEditForm($form, $data);
+                            $form->add('_type', HiddenType::class, [
+                                'data'   => $fieldType->getIdentifier(),
+                                'mapped' => false
+                            ]);
                         }
                     }
                 }

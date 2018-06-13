@@ -11,12 +11,16 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 /**
  * Class AdminController.
@@ -40,8 +44,36 @@ class AdminController extends Controller
         $this->formEditFormFactory = $formEditFormFactory;
     }
 
+    const RESULTS_PER_PAGE = 10;
+
     /**
-     * @Route("/new")
+     * @Route("/list/{page}", name="form_builder_form_list", requirements={"page" = "\d+"})
+     *
+     * @param EntityManager $em
+     * @param int $page
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listAction(EntityManager $em, $page = 1)
+    {
+        $queryBuilder = $em->createQueryBuilder()
+            ->select('f')
+            ->from(Form::class, 'f');
+
+        $paginator = new Pagerfanta(
+            new DoctrineORMAdapter($queryBuilder)
+        );
+        $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
+        $paginator->setCurrentPage($page);
+
+        return $this->render('@FormBuilder/form_builder/form/list.html.twig', [
+            'totalCount' => $paginator->getNbResults(),
+            'forms'      => $paginator,
+        ]);
+    }
+
+    /**
+     * @Route("/new", name="form_builder_form_new")
      *
      * @param Request $request
      *
@@ -59,6 +91,8 @@ class AdminController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($formData);
             $em->flush();
+
+            return $this->redirectToRoute('form_builder_form_list');
         }
 
         return $this->render(
@@ -67,5 +101,55 @@ class AdminController extends Controller
                 'form'                => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @Route("/{id}", name="form_builder_form_show")
+     *
+     * @param Form $formView
+     */
+    public function showAction(Form $formView)
+    {
+        $formBuilder = $this->createFormBuilder();
+
+        // TODO: move to separate service
+        foreach($formView->getFields() as $field) {
+
+            $options = [
+                'mapped' => false,
+                'required' => $field->isRequired()
+            ];
+
+            $fieldOptions = $field->getOptions();
+
+            if (!empty($fieldOptions)) {
+                // TODO implement validator
+            }
+
+            $formBuilder->add($field->getName(), $field->getTypeClass(), $options);
+        }
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $data = $form->getData();
+
+            // create new FormSubmission based on data
+
+
+            /*$em = $this->getDoctrine()->getManager();
+            $em->persist($formData);
+            $em->flush();*/
+
+            return $this->redirectToRoute('form_builder_form_list');
+        }
+
+        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
+            'formView' => $form->createView()
+        ]);
     }
 }

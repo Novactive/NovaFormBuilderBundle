@@ -79,7 +79,7 @@ abstract class Field
      *
      * @var array
      */
-    protected $options;
+    protected $options = [];
 
     /**
      * Field constructor.
@@ -121,24 +121,6 @@ abstract class Field
     public function setRequired(bool $required): self
     {
         $this->required = $required;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMandatory(): bool
-    {
-        return $this->mandatory;
-    }
-
-    /**
-     * @param bool $mandatory
-     */
-    public function setMandatory(bool $mandatory): self
-    {
-        $this->mandatory = $mandatory;
 
         return $this;
     }
@@ -232,5 +214,10 @@ abstract class Field
     public function setOption($name, $value): void
     {
         $this->options[$name] = $value;
+    }
+
+    public function __toString()
+    {
+        return $this->getType();
     }
 }
