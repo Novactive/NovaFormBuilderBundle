@@ -106,46 +106,42 @@ class AdminController extends Controller
      */
     public function showAction(Form $formView)
     {
-        $formBuilder = $this->createFormBuilder();
-
-        // TODO: move to separate service
-        foreach($formView->getFields() as $field) {
-
-            $options = [
-                'mapped' => false,
-                'required' => $field->isRequired()
-            ];
-
-            $fieldOptions = $field->getOptions();
-
-            if (!empty($fieldOptions)) {
-                // TODO implement validator
-            }
-
-            $formBuilder->add($field->getName(), $field->getTypeClass(), $options);
-        }
-
-        $form = $formBuilder->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-
-            $data = $form->getData();
-
-            // create new FormSubmission based on data
-
-
-            /*$em = $this->getDoctrine()->getManager();
-            $em->persist($formData);
-            $em->flush();*/
-
-            return $this->redirectToRoute('form_builder_form_list');
-        }
-
-        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
-            'formView' => $form->createView()
-        ]);
+//        $formBuilder = $this->createFormBuilder();
+//
+//        // TODO: move to separate service
+//        foreach ($formView->getFields() as $field) {
+//            $options = [
+//                'mapped'   => false,
+//                'required' => $field->isRequired(),
+//            ];
+//
+//            $fieldOptions = $field->getOptions();
+//
+//            if (!empty($fieldOptions)) {
+//                // TODO implement validator
+//            }
+//
+//            $formBuilder->add($field->getName(), $field->getTypeClass(), $options);
+//        }
+//
+//        $form = $formBuilder->getForm();
+//
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $data = $form->getData();
+//
+//            // create new FormSubmission based on data
+//
+//            /*$em = $this->getDoctrine()->getManager();
+//            $em->persist($formData);
+//            $em->flush();*/
+//
+//            return $this->redirectToRoute('form_builder_form_list');
+//        }
+//
+//        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
+//            'formView' => $form->createView(),
+//        ]);
     }
 }

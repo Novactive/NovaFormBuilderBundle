@@ -27,7 +27,7 @@ class FieldsCollectionType extends CollectionType
         $prototypeOptions = array_replace(
             [
                 'required' => $options['required'],
-                'label' => $options['prototype_name'] . 'label__',
+                'label'    => $options['prototype_name'].'label__',
             ],
             $options['entry_options']
         );
@@ -35,11 +35,12 @@ class FieldsCollectionType extends CollectionType
         /** @var FieldTypeInterface $fieldType */
         foreach ($options['field_types'] as $fieldType) {
             $prototypeOptions['data'] = $fieldType->getEntity();
-            $prototype = $builder->create(
+            $prototype                = $builder->create(
                 $options['prototype_name'],
                 $options['entry_type'],
                 $prototypeOptions
             );
+
             $fieldTypesPrototype[$fieldType->getIdentifier()] = $prototype->getForm();
         }
 

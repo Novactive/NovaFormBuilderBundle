@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Traits\IdentityTrait;
 
 /**
- * Class FormSubmission
+ * Class FormSubmission.
  *
  * @ORM\Entity()
  *

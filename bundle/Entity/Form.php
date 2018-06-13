@@ -60,9 +60,10 @@ class Form
 
     /**
      * @ORM\OneToMany(targetEntity="FormSubmission", mappedBy="form", cascade={"persist", "remove"})
+     *
      * @var FormSubmission[]
      */
-    private $submissions;
+    protected $submissions;
 
     /**
      * Form constructor.

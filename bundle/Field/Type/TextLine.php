@@ -43,9 +43,9 @@ class TextLine extends FieldType
                 'minLength',
                 IntegerType::class,
                 [
-                    'required' => false,
-                    'label'    => 'novaformbuilder_field.textline.min_length',
-                    'attr'     => ['min' => 0],
+                    'required'   => false,
+                    'label'      => 'novaformbuilder_field.textline.min_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             )
@@ -53,9 +53,9 @@ class TextLine extends FieldType
                 'maxLength',
                 IntegerType::class,
                 [
-                    'required' => false,
-                    'label'    => 'novaformbuilder_field.textline.max_length',
-                    'attr'     => ['min' => 0],
+                    'required'   => false,
+                    'label'      => 'novaformbuilder_field.textline.max_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             );
