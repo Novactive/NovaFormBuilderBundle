@@ -1,21 +1,31 @@
 <?php
 /**
  * @copyright Novactive
- * Date: 01/06/18
+ * Date: 12/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Mapper;
+namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
+use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormInterface;
 
-class TextLineFormMapper implements FieldFormMapperInterface
+class TextLine extends FieldType
 {
-    public function getFieldType(): string
+    public function getEntity(): Field
     {
-        return Field\TextLine::class;
+        return new Field\TextLine();
+    }
+
+    /**
+     * @param Field $field
+     *
+     * @return bool
+     */
+    public function accept(Field $field): bool
+    {
+        return $field instanceof Field\TextLine;
     }
 
     /**

@@ -4,14 +4,15 @@ services:
         autoconfigure: true
         public: false
 
+    Novactive\Bundle\FormBuilderBundle\Controller\:
+        public: true
+        resource: '../../Controller/*'
+
     Novactive\Bundle\FormBuilderBundle\Form\Type\:
         resource: '../../Form/Type/*'
 
+    Novactive\Bundle\FormBuilderBundle\Field\Type\:
+        resource: '../../Field/Type/*'
 
-    Novactive\Bundle\FormBuilderBundle\Field\FieldTypeFormMapperDispatcher:
-        arguments: [!tagged novaformbuilder.fieldtype.mapper]
-
-    Novactive\Bundle\FormBuilderBundle\Field\Mapper\TextLineFormMapper:
-        tags: ['novaformbuilder.fieldtype.mapper']
-
-    Novactive\Bundle\FormBuilderBundle\Field\FieldTypeFormMapperDispatcherInterface: '@Novactive\Bundle\FormBuilderBundle\Field\FieldTypeFormMapperDispatcher'
+    Novactive\Bundle\FormBuilderBundle\Field\FieldTypeRegistry:
+        arguments: [!tagged novaformbuilder.fieldtype]

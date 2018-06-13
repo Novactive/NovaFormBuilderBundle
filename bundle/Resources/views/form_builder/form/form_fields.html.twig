@@ -1,0 +1,39 @@
+{% extends '@EzPlatformAdminUi/form_fields.html.twig' %}
+
+{% block novaformbuilder_fields_collection_row %}
+
+    <div class="js-form-fields-collection">
+        {{ form_row(form) }}
+        <div class="btn-group input-group">
+            <select class="form-control js-form-builder__select-field-type">
+                {% for field_types_identifier, field_type_prototype in field_types_prototype %}
+                    <option value="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary js-form-builder__add-new-field" type="button">{{ 'Add new field' }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block novaformbuilder_fields_collection_widget %}
+    {%- set attr = attr|merge({'class': 'js-form-fields-collection-entries' }) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- if form is rootform -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+
+        {% for child in form %}
+            {{- form_widget(child) -}}
+        {% endfor %}
+        {{- form_rest(form) -}}
+    </div>
+{% endblock %}
+
+{% block novaformbuilder_field_edit_widget %}
+    <div class="card">
+        <div class="card-body">
+            {{ form_widget(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -11,12 +11,10 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use Symfony\Component\Form\{FormEvent, FormEvents};
 
 class FormEditType extends AbstractType
 {
@@ -37,7 +35,8 @@ class FormEditType extends AbstractType
                 [
                     'data_class'         => Form::class,
                     'translation_domain' => 'novaformbuilder_form',
-                    'field_class' => null
+                    'field_class'        => null,
+                    'field_types'        => [],
                 ]
             );
     }
@@ -48,17 +47,18 @@ class FormEditType extends AbstractType
             ->add('name')
             ->add('maxSubmissions')
             ->add(
-            'fields',
-            CollectionType::class,
-            [
-                'entry_type'    => FieldEditType::class,
-                'entry_options' => [
-                    'label' => 'test'
-                ],
-                'prototype_data' => $options['field_class'],
-                'allow_add' => true,
-                'label'         => 'novaformbuilder_form.field',
-            ]
-        );
+                'fields',
+                FieldsCollectionType::class,
+                [
+                    'field_types'    => $options['field_types'] ?? [],
+                    'entry_type'     => FieldEditType::class,
+                    'entry_options'  => [
+                        'field_types'    => $options['field_types'] ?? [],
+                    ],
+                    'prototype_data' => $options['field_class'],
+                    'allow_add'      => true,
+                    'label'          => 'novaformbuilder_form.fields',
+                ]
+            );
     }
 }

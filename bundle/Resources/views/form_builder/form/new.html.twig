@@ -1,5 +1,5 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
-{% form_theme form '@EzPlatformAdminUi/form_fields.html.twig' %}
+{% form_theme form '@FormBuilder/form_builder/form/form_fields.html.twig' %}
 
 {% block title %}{{ 'Forms'|trans }}{% endblock %}
 
@@ -22,35 +22,12 @@
         <section class="user-form col-md-6 col-md-offset-3">
             <div>
                 {{ form_start(form) }}
-                {{ form_widget(form._token) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.maxSubmissions) }}
+                {{ form_row(form.fields) }}
 
-                <ul style="list-style: none;" class="form-fields">
-                    {# iterate over each existing tag and render its only field: name #}
-                    {% for field in form.fields %}
-                        <li style="padding: 10px; box-shadow: 0 0 10px #000">
-                            <div>Field</div>
-                            <div>{{ form_row(field) }}</div>
-                        </li>
-                    {% endfor %}
-                </ul>
-
-                <div class="btn-group input-group">
-                    <select class="form-control js-form-builder__select-field-type">
-                        {% for key, name in available_fields %}
-                        <option value="{{ key }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button class="btn btn-primary js-form-bilder__add-new-field" type="button">{{ 'Add new field' }}</button>
-                </div>
-                <br>
-                <div>
-                    <button class="btn btn-primary" type="submit">{{ 'Create'|trans }}</button>
-                    {#<a class="btn btn-link pull-right"#}
-                       {#href="{{ path('site_configuration_list') }}">{{ 'Back to the list'|trans }}</a>#}
-                </div>
-                {{ form_end(form, {'render_rest': false}) }}
+                <button class="btn btn-primary" type="submit">{{ 'Create'|trans }}</button>
+                {{ form_end(form) }}
             </div>
             {#<div><h3>Form preview</h3></div>#}
         </section>
@@ -61,53 +38,23 @@
     {{ parent() }}
     <script>
         (function($) {
-            $(function() {
-                var $addButton = $('.js-form-bilder__add-new-field');
-                var $selectFieldType = $('.js-form-builder__select-field-type');
+          $('.js-form-fields-collection').each(function() {
+            var $container = $(this);
+            var $addButton = $('.js-form-builder__add-new-field', $container);
+            var $selectFieldType = $('.js-form-builder__select-field-type', $container);
 
-                var $collectionHolder = $('.form-fields');
+            var $collectionHolder = $('.js-form-fields-collection-entries', $container);
 
-                // count the current form inputs we have (e.g. 2), use that as the new
-                // index when inserting a new item (e.g. 2)
-                $collectionHolder.data('index', $collectionHolder.find('li').length);
+            var fieldsCount = $collectionHolder.children().length;
 
-                $addButton.click(function (e) {
-                    e.preventDefault();
-
-                    var fieldType = $selectFieldType.val();
-                    var $this = $(this);
-
-                    $.getJSON('/form-builder/admin/get-field-form', {field_type: fieldType}, function(response) {
-
-                        var _prototype = response.data.prototype;
-                        var _name = response.data.field_name;
-
-                        console.log('_pototype', _prototype);
-
-                        addFieldForm($collectionHolder, _name, _prototype);
-                    });
-                });
+            $addButton.click(function (e) {
+              e.preventDefault();
+              var prototype = $(':selected', $selectFieldType).data('prototype');
+              var fieldForm = prototype.replace(/__name__/g, fieldsCount);
+              $collectionHolder.append(fieldForm);
+              fieldsCount++;
             });
-
-            /**
-             *
-             * @param $collectionHolder
-             * @param $newLinkLi
-             * @param prototype
-             */
-            function addFieldForm($collectionHolder, name, prototype) {
-
-                // get the new index
-                var index = $collectionHolder.data('index');
-                var newForm = prototype.replace(/__name__/g, index);
-
-                // increase the index with one for the next item
-                $collectionHolder.data('index', index + 1);
-
-                // Display the form in the page in an li, before the "Add a tag" link li
-                var $newFormLi = $('<li><div>'+name+'</div><div>'+newForm+'</div</li>');
-                $collectionHolder.append($newFormLi);
-            }
+          });
         })(jQuery);
     </script>
 {%- endblock -%}

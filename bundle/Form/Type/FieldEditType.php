@@ -6,7 +6,8 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
 
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeFormMapperDispatcherInterface;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,21 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldEditType extends AbstractType
 {
-    /**
-     * @var FieldTypeFormMapperDispatcherInterface
-     */
-    private $fieldTypeMapperDispatcher;
-
-    /**
-     * FieldEditType constructor.
-     *
-     * @param FieldTypeFormMapperDispatcherInterface $fieldTypeMapperDispatcher
-     */
-    public function __construct(FieldTypeFormMapperDispatcherInterface $fieldTypeMapperDispatcher)
-    {
-        $this->fieldTypeMapperDispatcher = $fieldTypeMapperDispatcher;
-    }
-
     public function getName()
     {
         return $this->getBlockPrefix();
@@ -46,8 +32,9 @@ class FieldEditType extends AbstractType
         $resolver
             ->setDefaults(
                 [
-                    'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Field',
+                    'data_class'         => Field::class,
                     'translation_domain' => 'novaformbuilder_field',
+                    'field_types'        => [],
                 ]
             );
     }
@@ -69,13 +56,23 @@ class FieldEditType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
-                /** @var \EzSystems\RepositoryForms\Data\FieldDefinitionData $data */
+                /** @var Field $data */
                 $data = $event->getData();
                 $form = $event->getForm();
 
                 if ($data) {
-                    // Let fieldType mappers do their jobs to complete the form.
-                    $this->fieldTypeMapperDispatcher->mapFieldEditForm($form, $data);
+                    /** @var FieldFormMapperInterface[] $fieldTypes */
+                    $fieldTypes = $form->getConfig()->getOption('field_types', []);
+                    foreach ($fieldTypes as $fieldType) {
+                        if (!$fieldType instanceof FieldFormMapperInterface) {
+                            throw new \InvalidArgumentException(
+                                'FieldEditType field_types option require a FieldFormMapperInterface value'
+                            );
+                        }
+                        if ($fieldType->accept($data)) {
+                            $fieldType->mapFieldEditForm($form, $data);
+                        }
+                    }
                 }
             }
         );
