@@ -13,9 +13,14 @@ use Symfony\Component\Form\FormInterface;
 
 class Date extends FieldType
 {
-    public function getEntity(): Field
+    /**
+     * @param array $properties
+     *
+     * @return Field
+     */
+    public function getEntity(array $properties = []): Field
     {
-        return new Field\Date();
+        return new Field\Date($properties);
     }
 
     /**

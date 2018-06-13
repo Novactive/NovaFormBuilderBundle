@@ -16,10 +16,3 @@ services:
 
     Novactive\Bundle\FormBuilderBundle\Field\FieldTypeRegistry:
         arguments: [!tagged novaformbuilder.fieldtype]
-
-    Novactive\Bundle\FormBuilderBundle\Controller\:
-        resource: "../../Controller/*"
-        autowire: true
-        autoconfigure: true
-        public: false
-        exclude: "../../Controller/{Controller}"
