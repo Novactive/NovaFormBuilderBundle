@@ -4,7 +4,6 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 /**
  * Class Date.
@@ -33,10 +32,5 @@ class Date extends Field
     public function setDefaultValue(string $defaultValue): void
     {
         $this->setOption('defaultValue', $defaultValue);
-    }
-
-    public function getTypeClass()
-    {
-        return DateType::class;
     }
 }

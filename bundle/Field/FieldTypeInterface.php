@@ -10,7 +10,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 interface FieldTypeInterface
 {
-    public function getEntity(): Field;
+    public function getEntity(array $properties = []): Field;
 
     public function getIdentifier(): string;
 }

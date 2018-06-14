@@ -8,9 +8,10 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
+use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -43,16 +44,56 @@ class FieldEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'novaformbuilder_field.name',
-            ])
-            ->add('required', null, [
-                'label' => 'novaformbuilder_field.required',
-            ])
-            ->add('weight', null, [
-                'label' => 'novaformbuilder_field.weight',
-            ]);
+            ->add(
+                'name',
+                TextType::class,
+                [
+                    'label' => 'novaformbuilder_field.name',
+                ]
+            )
+            ->add(
+                'required',
+                null,
+                [
+                    'label' => 'novaformbuilder_field.required',
+                ]
+            )
+            ->add(
+                'weight',
+                null,
+                [
+                    'label' => 'novaformbuilder_field.weight',
+                ]
+            )
+            ->add(
+                'type',
+                HiddenType::class,
+                [
+                    'label' => 'novaformbuilder_field.type',
+                ]
+            );
 
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                /** @var Field $data */
+                $data = $event->getData();
+                $form = $event->getForm();
+
+                /** @var FieldTypeInterface[] $fieldTypes */
+                $fieldTypes = $form->getConfig()->getOption('field_types', []);
+                foreach ($fieldTypes as $fieldType) {
+                    if (!$fieldType instanceof FieldTypeInterface) {
+                        throw new \InvalidArgumentException(
+                            'FieldEditType field_types option require a FieldTypeInterface value'
+                        );
+                    }
+                    if ($fieldType->getIdentifier() == $data['type']) {
+                        $form->setData($fieldType->getEntity($data));
+                    }
+                }
+            }
+        );
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
@@ -71,10 +112,6 @@ class FieldEditType extends AbstractType
                         }
                         if ($fieldType->accept($data)) {
                             $fieldType->mapFieldEditForm($form, $data);
-                            $form->add('_type', HiddenType::class, [
-                                'data'   => $fieldType->getIdentifier(),
-                                'mapped' => false
-                            ]);
                         }
                     }
                 }

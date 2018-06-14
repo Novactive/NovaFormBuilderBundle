@@ -12,6 +12,7 @@
 namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\Util\StringUtil;
 
 /**
  * Class Field.
@@ -49,7 +50,7 @@ abstract class Field
      *
      * @var string
      */
-    protected $name;
+    protected $name = '';
 
     /**
      * @ORM\Column(type="boolean")
@@ -83,10 +84,14 @@ abstract class Field
 
     /**
      * Field constructor.
+     *
+     * @param array $properties
      */
-    public function __construct()
+    public function __construct(array $properties = [])
     {
-        $this->name = '';
+        foreach ($properties as $property => $value) {
+            $this->$property = $value;
+        }
     }
 
     /**
@@ -146,7 +151,7 @@ abstract class Field
      */
     public function getType(): string
     {
-        return strtolower((new \ReflectionClass($this))->getShortName());
+        return StringUtil::fqcnToBlockPrefix(get_class($this));
     }
 
     /**

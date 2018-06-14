@@ -13,9 +13,14 @@ use Symfony\Component\Form\FormInterface;
 
 class TextArea extends FieldType
 {
-    public function getEntity(): Field
+    /**
+     * @param array $properties
+     *
+     * @return Field
+     */
+    public function getEntity(array $properties = []): Field
     {
-        return new Field\TextArea();
+        return new Field\TextArea($properties);
     }
 
     /**
@@ -38,9 +43,9 @@ class TextArea extends FieldType
                 'minLength',
                 IntegerType::class,
                 [
-                    'required' => false,
-                    'label'    => 'novaformbuilder_field.textarea.min_length',
-                    'attr'     => ['min' => 0],
+                    'required'   => false,
+                    'label'      => 'novaformbuilder_field.textarea.min_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             )
@@ -48,9 +53,9 @@ class TextArea extends FieldType
                 'maxLength',
                 IntegerType::class,
                 [
-                    'required' => false,
-                    'label'    => 'novaformbuilder_field.textarea.max_length',
-                    'attr'     => ['min' => 0],
+                    'required'   => false,
+                    'label'      => 'novaformbuilder_field.textarea.max_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             );

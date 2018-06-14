@@ -13,7 +13,6 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
  * Class TextLine.
@@ -57,10 +56,5 @@ class TextLine extends Field
     public function setMaxLength(int $maxLength): void
     {
         $this->setOption('maxLength', $maxLength);
-    }
-
-    public function getTypeClass()
-    {
-        return TextType::class;
     }
 }
