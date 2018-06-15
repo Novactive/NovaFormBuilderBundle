@@ -165,7 +165,7 @@ abstract class Field
     /**
      * @param Form $form
      */
-    public function setForm(Form $form): void
+    public function setForm(?Form $form): void
     {
         $this->form = $form;
     }

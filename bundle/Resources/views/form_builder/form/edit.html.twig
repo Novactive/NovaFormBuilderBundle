@@ -11,7 +11,7 @@
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: 'Create new form'|trans,
+        title: title,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -26,7 +26,9 @@
                 {{ form_row(form.maxSubmissions) }}
                 {{ form_row(form.fields) }}
 
-                <button class="btn btn-primary" type="submit">{{ 'Create'|trans }}</button>
+                <div class="mt-3">
+                    <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+                </div>
                 {{ form_end(form) }}
             </div>
             {#<div><h3>Form preview</h3></div>#}
@@ -47,6 +49,8 @@
 
             var fieldsCount = $collectionHolder.children().length;
 
+            var $deleteBtns = $('.js-form-fields__delete-entry');
+
             $addButton.click(function (e) {
               e.preventDefault();
               var prototype = $(':selected', $selectFieldType).data('prototype');
@@ -54,6 +58,12 @@
               $collectionHolder.append(fieldForm);
               fieldsCount++;
             });
+
+              $deleteBtns.click(function (e) {
+                  e.preventDefault();
+
+                  $(this).closest('.card').remove();
+              });
           });
         })(jQuery);
     </script>

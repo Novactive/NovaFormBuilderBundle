@@ -74,27 +74,6 @@ class FieldEditType extends AbstractType
             );
 
         $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) {
-                /** @var Field $data */
-                $data = $event->getData();
-                $form = $event->getForm();
-
-                /** @var FieldTypeInterface[] $fieldTypes */
-                $fieldTypes = $form->getConfig()->getOption('field_types', []);
-                foreach ($fieldTypes as $fieldType) {
-                    if (!$fieldType instanceof FieldTypeInterface) {
-                        throw new \InvalidArgumentException(
-                            'FieldEditType field_types option require a FieldTypeInterface value'
-                        );
-                    }
-                    if ($fieldType->getIdentifier() == $data['type']) {
-                        $form->setData($fieldType->getEntity($data));
-                    }
-                }
-            }
-        );
-        $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
                 /** @var Field $data */

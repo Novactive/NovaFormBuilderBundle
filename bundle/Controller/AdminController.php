@@ -19,6 +19,8 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class AdminController.
@@ -79,6 +81,7 @@ class AdminController extends Controller
      */
     public function newAction(Request $request)
     {
+        $translator = $this->get('translator'); //TODO: get by autowire
         $formData = new Form();
         $form     = $this->formEditFormFactory->createForm($formData);
         $form->handleRequest($request);
@@ -92,9 +95,57 @@ class AdminController extends Controller
         }
 
         return $this->render(
-            '@FormBuilder/form_builder/form/new.html.twig',
+            '@FormBuilder/form_builder/form/edit.html.twig',
             [
                 'form'                => $form->createView(),
+                'title' => $translator->trans('Create new form')
+            ]
+        );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="form_builder_form_edit")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editAction(Request $request, Form $formData)
+    {
+        $translator = $this->get('translator'); //TODO: get by autowire
+        $originalFields = new ArrayCollection();
+
+        foreach ($formData->getFields() as $field) {
+            $originalFields->add($field);
+        }
+
+        $form     = $this->formEditFormFactory->createForm($formData);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+
+            foreach ($originalFields as $field) {
+                /** @var Field $field */
+                if (!$formData->getFields()->contains($field)) {
+                    $field->setForm(null);
+                    $em->persist($field);
+                    $em->remove($field);
+                }
+            }
+
+            $em->persist($formData);
+            $em->flush();
+
+            return $this->redirectToRoute('form_builder_form_list');
+        }
+
+        return $this->render(
+            '@FormBuilder/form_builder/form/edit.html.twig',
+            [
+                'form'                => $form->createView(),
+                'title' => $translator->trans('Edit form')
             ]
         );
     }

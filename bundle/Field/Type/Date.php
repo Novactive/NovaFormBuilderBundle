@@ -43,7 +43,7 @@ class Date extends FieldType
                 'defaultValue',
                 ChoiceType::class,
                 [
-                    'required' => false,
+                    'required' => true,
                     'label'    => 'novaformbuilder_field.date.default_value',
                     'choices'  => ['empty', 'current date'],
                 ]

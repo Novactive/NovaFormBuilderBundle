@@ -138,8 +138,10 @@ class Form
      */
     public function addField(Field $field)
     {
-        $field->setForm($this);
-        $this->fields->add($field);
+        if (!$this->fields->contains($field)) {
+            $field->setForm($this);
+            $this->fields->add($field);
+        }
     }
 
     /**

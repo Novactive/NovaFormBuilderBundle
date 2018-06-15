@@ -12,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class FieldsCollectionType extends CollectionType
 {
@@ -45,6 +47,45 @@ class FieldsCollectionType extends CollectionType
         }
 
         $builder->setAttribute('field_types_prototype', $fieldTypesPrototype);
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($options) {
+                /** @var Field $data */
+                $data = $event->getData();
+                $form = $event->getForm();
+
+                /** @var FieldTypeInterface[] $fieldTypes */
+                $fieldTypes = $form->getConfig()->getOption('field_types', []);
+
+                foreach ($data as $name => $value) {
+                    if (!$form->has($name)) {
+
+                        if (!isset($fieldTypes[$value['type']])) {
+                            throw new \InvalidArgumentException(
+                                'Wrong field type value'
+                            );
+                        }
+
+                        $fieldType = $fieldTypes[$value['type']];
+
+                        if (!$fieldType instanceof FieldTypeInterface) {
+                            throw new \InvalidArgumentException(
+                                'FieldEditType field_types option require a FieldTypeInterface value'
+                            );
+                        }
+
+                        // Set options for new rows
+                        $form->add($name, FieldEditType::class, array_replace([
+                            'property_path' => '[' . $name . ']',
+                            'data_class' => get_class($fieldType->getEntity()),
+                            'allow_extra_fields' => true,
+                            'by_reference' => false
+                        ], $options['entry_options']));
+                    }
+                }
+            }, 1000 // be sure that this listener executes earlier than ResizeFormListener PRE_SUBMIT
+        );
     }
 
     /**
