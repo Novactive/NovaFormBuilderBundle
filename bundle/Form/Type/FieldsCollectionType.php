@@ -60,7 +60,6 @@ class FieldsCollectionType extends CollectionType
 
                 foreach ($data as $name => $value) {
                     if (!$form->has($name)) {
-
                         if (!isset($fieldTypes[$value['type']])) {
                             throw new \InvalidArgumentException(
                                 'Wrong field type value'
@@ -84,7 +83,8 @@ class FieldsCollectionType extends CollectionType
                         ], $options['entry_options']));
                     }
                 }
-            }, 1000 // be sure that this listener executes earlier than ResizeFormListener PRE_SUBMIT
+            },
+            1000 // be sure that this listener executes earlier than ResizeFormListener PRE_SUBMIT
         );
     }
 
