@@ -4,6 +4,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
  * Class TextArea.
@@ -47,5 +48,10 @@ class TextArea extends Field
     public function setMaxLength(int $maxLength): void
     {
         $this->setOption('maxLength', $maxLength);
+    }
+
+    public function getFormTypeClass()
+    {
+        return TextareaType::class;
     }
 }

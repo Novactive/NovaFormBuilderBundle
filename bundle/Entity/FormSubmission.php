@@ -4,11 +4,13 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Traits\IdentityTrait;
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 
 /**
  * Class FormSubmission.
  *
  * @ORM\Entity()
+ * @ORM\Table(name="novaformbuilder_form_submision")
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
@@ -38,7 +40,7 @@ class FormSubmission
     /**
      * @return Novactive\Bundle\FormBuilderBundle\Entity\Form
      */
-    public function getForm(): Novactive\Bundle\FormBuilderBundle\Entity\Form
+    public function getForm():Form
     {
         return $this->form;
     }
@@ -46,7 +48,7 @@ class FormSubmission
     /**
      * @param Novactive\Bundle\FormBuilderBundle\Entity\Form $form
      */
-    public function setForm(Novactive\Bundle\FormBuilderBundle\Entity\Form $form): void
+    public function setForm(Form $form): void
     {
         $this->form = $form;
     }
