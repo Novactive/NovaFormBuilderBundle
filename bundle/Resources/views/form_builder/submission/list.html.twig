@@ -24,6 +24,7 @@
             <thead>
             <tr>
                 <th>{{ 'Form Name'|trans }}</th>
+                <th>{{ 'Actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -31,6 +32,9 @@
                 <tr>
                     <td>
                         <a href="{{ path('form_builder_submission_show', {id: submission.id}) }}">{{ submission.form.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('form_builder_form_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}

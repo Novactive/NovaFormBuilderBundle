@@ -20,9 +20,9 @@ class FormConstructor
     public function build(Form $formView)
     {
         $formBuilder = $this->formFactory->createBuilder(FormType::class);
+        $formFields = $formView->getFields(); // already sorted in OrderBy({"weight" = "ASC"})
 
-        // TODO: move to separate service
-        foreach ($formView->getFields() as $field) {
+        foreach ($formFields as $field) {
             $options = [
                 //'mapped'   => false,
                 'required' => $field->isRequired(),
