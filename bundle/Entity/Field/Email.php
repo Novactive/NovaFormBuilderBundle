@@ -10,9 +10,6 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  *
  * @ORM\Entity()
  *
- * @property int minLength
- * @property int maxLength
- *
  * @package Novactive\Bundle\FormBuilderBundle\Entity\Field
  */
 class Email extends Field
