@@ -4,6 +4,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 /**
  * Class Email.
@@ -14,5 +15,8 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Email extends Field
 {
-    // send notification to this email: bool
+    public function getFormTypeClass()
+    {
+        return EmailType::class;
+    }
 }
