@@ -19,6 +19,9 @@
     <section class="container my-4">
         <div class="ez-table-header">
             <div class="ez-table-header__headline">{{ "Forms List"|trans }}</div>
+            <div class="pl-3 mr-auto">
+                <a class="btn btn-light" href="{{ path('form_builder_submission_list') }}">{{ 'Form submissions list'|trans }}</a>
+            </div>
             <div>
                 <a class="btn btn-primary" href="{{ path('form_builder_form_new') }}">
                     <svg class="ez-icon ez-icon-create">
@@ -40,6 +43,7 @@
                 <tr>
                     <td>{{ formItem.name }}</td>
                     <td class="text-right">
+                        <a class="btn btn-link" href="{{ path('form_builder_form_show', {id: formItem.id}) }}">{{ 'Show form'|trans }}</a>
                         <a href="{{ path('form_builder_form_edit', {id: formItem.id}) }}"
                            class="btn btn-icon"
                            title="{{ 'Edit'|trans }}">
