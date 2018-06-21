@@ -3,13 +3,14 @@
     $(function () {
         var $rows = $('.js-form-field-row');
         var weightSelector = '[name$="weight]"]';
+        var $fieldCollection = $('.js-form-fields-collection-entries');
         var $document = $(document);
 
         $document.on('form-builder:field-added', function () {
             setWeights($('.js-form-field-row'), weightSelector);
         });
 
-        $rows.parent().sortable({
+        $fieldCollection.sortable({
             update: function(event, ui) {
                 var $elem = ui.item;
 
