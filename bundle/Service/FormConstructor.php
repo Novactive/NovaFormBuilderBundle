@@ -22,10 +22,11 @@ class FormConstructor
         $formBuilder = $this->formFactory->createBuilder(FormType::class);
         $formFields = $formView->getFields(); // already sorted in OrderBy({"weight" = "ASC"})
 
-        foreach ($formFields as $field) {
+        foreach ($formFields as $key => $field) {
             $options = [
                 //'mapped'   => false,
                 'required' => $field->isRequired(),
+                'label' => $field->getName()
             ];
 
             $fieldOptions = $field->getOptions();
@@ -34,10 +35,14 @@ class FormConstructor
                 // TODO implement validator
             }
 
-            $formBuilder->add($field->getName(), $field->getFormTypeClass(), $options);
+            $formBuilder->add($field->getId(), $field->getFormTypeClass(), $options);
         }
 
         return $formBuilder->getForm();
     }
 
+    private function generateFormTypeName($name, $index)
+    {
+        return "{$name}_{$index}";
+    }
 }

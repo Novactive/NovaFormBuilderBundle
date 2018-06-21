@@ -20,10 +20,10 @@
         <section class="user-form col-md-6 col-md-offset-3">
             <div class="card mt-3 p-3">
                 <table class="table table-bordered">
-                    {% for name, value in formSubmission.data %}
+                    {% for item in formSubmission.data %}
                         <tr>
-                            <td><strong>{{ name }}</strong></td>
-                            <td>{{ value }}</td>
+                            <td><strong>{{ item.name }}</strong></td>
+                            <td>{{ item.value }}</td>
                         </tr>
                     {% endfor %}
                 </table>

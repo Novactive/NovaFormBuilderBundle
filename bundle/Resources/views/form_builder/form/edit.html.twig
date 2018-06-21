@@ -1,11 +1,12 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 {% form_theme form '@FormBuilder/form_builder/form/form_fields.html.twig' %}
 
-{% block title %}{{ 'Forms'|trans }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms'|trans }
+        { value: 'Forms list'|trans, url: path('form_builder_form_list') },
+        { value: title}
     ]} %}
 {%- endblock -%}
 

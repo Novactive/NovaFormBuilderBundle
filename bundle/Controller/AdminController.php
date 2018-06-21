@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -36,17 +37,30 @@ class AdminController extends Controller
     /** @var FormEditFormFactory */
     protected $formEditFormFactory;
 
+    /**
+     * @var FormConstructor
+     */
     protected $formConstructor;
+
+    /**
+     * @var FormSubmissionFactory
+     */
+    protected $formSubmissionFactory;
 
     /**
      * AdminController constructor.
      *
      * @param FormEditFormFactory $formEditFormFactory
      */
-    public function __construct(FormEditFormFactory $formEditFormFactory, FormConstructor $formConstructor)
+    public function __construct(
+        FormEditFormFactory $formEditFormFactory,
+        FormConstructor $formConstructor,
+        FormSubmissionFactory $formSubmissionFactory
+    )
     {
         $this->formEditFormFactory = $formEditFormFactory;
         $this->formConstructor = $formConstructor;
+        $this->formSubmissionFactory = $formSubmissionFactory;
     }
 
     const RESULTS_PER_PAGE = 10;
@@ -155,6 +169,8 @@ class AdminController extends Controller
     }
 
     /**
+     * Test action to render & handle clientside form
+     *
      * @Route("/{id}", name="form_builder_form_show")
      *
      * @param Form $formView
@@ -168,12 +184,9 @@ class AdminController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $formSubmission = new FormSubmission();
-            $formSubmission->setCreatedAt(new \DateTimeImmutable());
-            $formSubmission->setForm($formEntity);
-            $formSubmission->setData($data);
+            $fields = $formEntity->getFields();
+            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
 
-            // create new FormSubmission based on data
             $em = $this->getDoctrine()->getManager();
             $em->persist($formSubmission);
             $em->flush();

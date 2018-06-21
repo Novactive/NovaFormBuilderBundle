@@ -10,7 +10,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Form;
  * Class FormSubmission.
  *
  * @ORM\Entity()
- * @ORM\Table(name="novaformbuilder_form_submision")
+ * @ORM\Table(name="novaformbuilder_form_submission")
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
@@ -33,6 +33,8 @@ class FormSubmission
     private $data;
 
     /**
+     * @ORM\Column(type="datetime")
+     *
      * @var \DateTimeImmutable
      */
     private $createdAt;
@@ -72,7 +74,7 @@ class FormSubmission
     /**
      * @return \DateTimeImmutable
      */
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
@@ -80,7 +82,7 @@ class FormSubmission
     /**
      * @param \DateTimeImmutable $createdAt
      */
-    public function setCreatedAt(\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
