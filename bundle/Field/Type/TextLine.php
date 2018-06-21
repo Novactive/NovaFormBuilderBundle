@@ -67,5 +67,17 @@ class TextLine extends FieldType
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'minLength',
+                IntegerType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'novaformbuilder_field.textline.min_length',
+                    'attr'       => ['min' => 0],
+                    'empty_data' => 0,
+                ]
+            );
+
     }
 }

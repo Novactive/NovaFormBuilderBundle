@@ -4,11 +4,13 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Traits\IdentityTrait;
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 
 /**
  * Class FormSubmission.
  *
  * @ORM\Entity()
+ * @ORM\Table(name="novaformbuilder_form_submission")
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
@@ -31,6 +33,8 @@ class FormSubmission
     private $data;
 
     /**
+     * @ORM\Column(type="datetime")
+     *
      * @var \DateTimeImmutable
      */
     private $createdAt;
@@ -38,7 +42,7 @@ class FormSubmission
     /**
      * @return Novactive\Bundle\FormBuilderBundle\Entity\Form
      */
-    public function getForm(): Novactive\Bundle\FormBuilderBundle\Entity\Form
+    public function getForm():Form
     {
         return $this->form;
     }
@@ -46,7 +50,7 @@ class FormSubmission
     /**
      * @param Novactive\Bundle\FormBuilderBundle\Entity\Form $form
      */
-    public function setForm(Novactive\Bundle\FormBuilderBundle\Entity\Form $form): void
+    public function setForm(Form $form): void
     {
         $this->form = $form;
     }
@@ -70,7 +74,7 @@ class FormSubmission
     /**
      * @return \DateTimeImmutable
      */
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
@@ -78,7 +82,7 @@ class FormSubmission
     /**
      * @param \DateTimeImmutable $createdAt
      */
-    public function setCreatedAt(\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
