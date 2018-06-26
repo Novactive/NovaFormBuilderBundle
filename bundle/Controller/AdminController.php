@@ -13,7 +13,9 @@ namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 
 /**
  * Class AdminController.
@@ -35,13 +38,29 @@ class AdminController extends Controller
     protected $formEditFormFactory;
 
     /**
+     * @var FormConstructor
+     */
+    protected $formConstructor;
+
+    /**
+     * @var FormSubmissionFactory
+     */
+    protected $formSubmissionFactory;
+
+    /**
      * AdminController constructor.
      *
      * @param FormEditFormFactory $formEditFormFactory
      */
-    public function __construct(FormEditFormFactory $formEditFormFactory)
+    public function __construct(
+        FormEditFormFactory $formEditFormFactory,
+        FormConstructor $formConstructor,
+        FormSubmissionFactory $formSubmissionFactory
+    )
     {
         $this->formEditFormFactory = $formEditFormFactory;
+        $this->formConstructor = $formConstructor;
+        $this->formSubmissionFactory = $formSubmissionFactory;
     }
 
     const RESULTS_PER_PAGE = 10;
@@ -150,48 +169,34 @@ class AdminController extends Controller
     }
 
     /**
+     * Test action to render & handle clientside form
+     *
      * @Route("/{id}", name="form_builder_form_show")
      *
      * @param Form $formView
      */
-    public function showAction(Form $formView)
+    public function showAction(Form $formEntity, Request $request)
     {
-//        $formBuilder = $this->createFormBuilder();
-//
-//        // TODO: move to separate service
-//        foreach ($formView->getFields() as $field) {
-//            $options = [
-//                'mapped'   => false,
-//                'required' => $field->isRequired(),
-//            ];
-//
-//            $fieldOptions = $field->getOptions();
-//
-//            if (!empty($fieldOptions)) {
-//                // TODO implement validator
-//            }
-//
-//            $formBuilder->add($field->getName(), $field->getTypeClass(), $options);
-//        }
-//
-//        $form = $formBuilder->getForm();
-//
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $data = $form->getData();
-//
-//            // create new FormSubmission based on data
-//
-//            /*$em = $this->getDoctrine()->getManager();
-//            $em->persist($formData);
-//            $em->flush();*/
-//
-//            return $this->redirectToRoute('form_builder_form_list');
-//        }
-//
-//        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
-//            'formView' => $form->createView(),
-//        ]);
+        $form = $this->formConstructor->build($formEntity);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $fields = $formEntity->getFields();
+            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($formSubmission);
+            $em->flush();
+
+            return $this->redirectToRoute('form_builder_submission_list');
+        }
+
+        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
+            'formEntity' => $formEntity,
+            'formView' => $form->createView(),
+        ]);
     }
 }

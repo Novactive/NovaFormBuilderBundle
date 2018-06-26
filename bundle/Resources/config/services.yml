@@ -5,8 +5,10 @@ services:
         public: false
 
     Novactive\Bundle\FormBuilderBundle\Controller\:
-        public: true
         resource: '../../Controller/*'
+
+    Novactive\Bundle\FormBuilderBundle\Service\:
+        resource: '../../Service/*'
 
     Novactive\Bundle\FormBuilderBundle\Form\Type\:
         resource: '../../Form/Type/*'

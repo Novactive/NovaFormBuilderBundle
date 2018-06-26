@@ -1,11 +1,12 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 {% form_theme form '@FormBuilder/form_builder/form/form_fields.html.twig' %}
 
-{% block title %}{{ 'Forms'|trans }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms'|trans }
+        { value: 'Forms list'|trans, url: path('form_builder_form_list') },
+        { value: title}
     ]} %}
 {%- endblock -%}
 
@@ -36,35 +37,14 @@
     </div>
 {%- endblock -%}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/formbuilder/css/form-builder.css') }}">
+{% endblock %}
+
 {%- block javascripts -%}
     {{ parent() }}
-    <script>
-        (function($) {
-          $('.js-form-fields-collection').each(function() {
-            var $container = $(this);
-            var $addButton = $('.js-form-builder__add-new-field', $container);
-            var $selectFieldType = $('.js-form-builder__select-field-type', $container);
-
-            var $collectionHolder = $('.js-form-fields-collection-entries', $container);
-
-            var fieldsCount = $collectionHolder.children().length;
-
-            var $deleteBtns = $('.js-form-fields__delete-entry');
-
-            $addButton.click(function (e) {
-              e.preventDefault();
-              var prototype = $(':selected', $selectFieldType).data('prototype');
-              var fieldForm = prototype.replace(/__name__/g, fieldsCount);
-              $collectionHolder.append(fieldForm);
-              fieldsCount++;
-            });
-
-              $deleteBtns.click(function (e) {
-                  e.preventDefault();
-
-                  $(this).closest('.card').remove();
-              });
-          });
-        })(jQuery);
-    </script>
+    <script src="{{ asset('bundles/formbuilder/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/formbuilder/js/form-builder.js') }}"></script>
+    <script src="{{ asset('bundles/formbuilder/js/fields-sorting.js') }}"></script>
 {%- endblock -%}
