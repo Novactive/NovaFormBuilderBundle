@@ -4,6 +4,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 /**
  * Class Number.
@@ -47,5 +48,10 @@ class Number extends Field
     public function setMax(int $max): void
     {
         $this->setOption('max', $max);
+    }
+
+    public function getFormTypeClass()
+    {
+        return NumberType::class;
     }
 }
