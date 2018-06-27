@@ -26,7 +26,8 @@ use Symfony\Component\Form\Util\StringUtil;
  *     "date" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Date",
  *     "email" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Email",
  *     "number" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Number",
- *     "time" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Time"
+ *     "time" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Time",
+ *     "choice" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Choice"
  * })
  * @ORM\Table(name="novaformbuilder_field")
  *
