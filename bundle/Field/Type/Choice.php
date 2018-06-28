@@ -6,7 +6,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceCollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
@@ -40,7 +40,7 @@ class Choice extends FieldType
         $fieldForm
             ->add(
                 'choices',
-                CollectionType::class,
+                ChoiceCollectionType::class,
                 [
                     'entry_type' => TextType::class,
                     'allow_add' => true,

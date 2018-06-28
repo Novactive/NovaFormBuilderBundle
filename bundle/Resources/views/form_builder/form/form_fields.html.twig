@@ -33,6 +33,7 @@
 {% block novaformbuilder_field_edit_widget %}
     <div class="mb-3 card js-form-field-row">
         <div class="card-body">
+            {% form_theme form '@FormBuilder/form_builder/form/form_fields_child.html.twig' %}
             {{ form_widget(form) }}
             <div class="mt-3 d-flex justify-content-end">
                 <button type="button" class="btn btn-sm btn-outline-danger js-form-fields__delete-entry">{{ 'Delete'|trans }}</button>
