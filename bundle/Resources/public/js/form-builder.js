@@ -12,6 +12,20 @@
             var fieldsCount = $collectionHolder.children().length;
             var $deleteBtns = $('.js-form-fields__delete-entry');
 
+            $(document).on('click', '.js-form-field-choices__add-choice', function (e) {
+
+                var choicesHolder = $(this).closest('.js-form-fields-choices-collection');
+                var choicesCount = choicesHolder.children('div .form-group').length;
+
+                e.preventDefault();
+                var prototype = choicesHolder
+                    .find('fieldset div')
+                    .data('prototype');
+
+                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount);
+                choicesHolder.append(fieldForm);
+            });
+
             $addButton.click(function (e) {
                 e.preventDefault();
                 var prototype = $(':selected', $selectFieldType).data('prototype');
@@ -27,7 +41,5 @@
                 $(this).closest('.card').remove();
             });
         });
-
-
     });
 })(jQuery);

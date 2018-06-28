@@ -47,7 +47,7 @@ class Choice extends FieldType
                     'allow_delete' => true,
                     'required' => true,
                     'label'    => 'novaformbuilder_field.choice.choices',
-                    'empty_data' => []
+                    'prototype_name' => '__choice_name__'
                 ]
             );
     }
