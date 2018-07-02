@@ -11,11 +11,12 @@ class FormSubmissionFactory
 {
     /**
      * @param array $data
-     * @param Form $formEntity
-     * @param null $userId
+     * @param Form  $formEntity
+     * @param null  $userId
+     *
      * @return FormSubmission
      */
-    public function create(array $data, Form $formEntity, $userId = null) : FormSubmission
+    public function create(array $data, Form $formEntity, $userId = null): FormSubmission
     {
         $data = $this->prepareData($data, $formEntity->getFields());
 
@@ -30,18 +31,18 @@ class FormSubmissionFactory
 
     /**
      * Get aray like [internal_field_name_N => field_value]
-     * and return [[name => 'Human readable name', value => field_value]]
+     * and return [[name => 'Human readable name', value => field_value]].
      *
      * @param $data
      * @param Collection $fields
+     *
      * @return array
      */
-    private function prepareData($data, Collection $fields) : array
+    private function prepareData($data, Collection $fields): array
     {
-        return array_map(function($item, $key) use ($fields) {
-
-            $name = $fields->filter(function($field) use ($key) {
-                /** @var Field $field */
+        return array_map(function ($item, $key) use ($fields) {
+            $name = $fields->filter(function ($field) use ($key) {
+                /* @var Field $field */
                 return $key == $field->getId();
             })->first()->getName();
 
@@ -52,10 +53,9 @@ class FormSubmissionFactory
             }
 
             return [
-                'name' => $name,
-                'value' => $item
+                'name'  => $name,
+                'value' => $item,
             ];
-
         }, $data, array_keys($data));
     }
 }

@@ -2,11 +2,9 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Service;
 
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormFactoryBuilderInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormFactoryInterface;
 
 class FormConstructor
 {
@@ -20,13 +18,13 @@ class FormConstructor
     public function build(Form $formView)
     {
         $formBuilder = $this->formFactory->createBuilder(FormType::class);
-        $formFields = $formView->getFields(); // already sorted in OrderBy({"weight" = "ASC"})
+        $formFields  = $formView->getFields(); // already sorted in OrderBy({"weight" = "ASC"})
 
         foreach ($formFields as $key => $field) {
             $options = [
                 //'mapped'   => false,
                 'required' => $field->isRequired(),
-                'label' => $field->getName()
+                'label'    => $field->getName(),
             ];
 
             $fieldOptions = $field->getOptions();

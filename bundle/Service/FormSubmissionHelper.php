@@ -29,26 +29,28 @@ class FormSubmissionHelper
 
     /**
      * FormSubmissionHelper constructor.
-     * @param EntityManager $em
-     * @param TranslatorInterface $translator
-     * @param RequestStack $requestStack
+     *
+     * @param EntityManager         $em
+     * @param TranslatorInterface   $translator
+     * @param RequestStack          $requestStack
      * @param FormSubmissionFactory $formSubmissionFactory
      */
-    function __construct(
+    public function __construct(
         EntityManager $em,
         TranslatorInterface $translator,
         RequestStack $requestStack,
         FormSubmissionFactory $formSubmissionFactory
     ) {
-        $this->em = $em;
-        $this->translator = $translator;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->em                    = $em;
+        $this->translator            = $translator;
+        $this->request               = $requestStack->getCurrentRequest();
         $this->formSubmissionFactory = $formSubmissionFactory;
     }
 
     /**
      * @param FormInterface $form
-     * @param Form $formEntity
+     * @param Form          $formEntity
+     *
      * @return bool
      */
     public function checkSubmissionAvailability(FormInterface $form, Form $formEntity): bool
@@ -62,9 +64,10 @@ class FormSubmissionHelper
     }
 
     /**
-     * @param array $data
-     * @param Form $formEntity
+     * @param array    $data
+     * @param Form     $formEntity
      * @param int|null $userId
+     *
      * @return FormSubmission
      */
     public function createAndLogSubmission(array $data, Form $formEntity, ?int $userId = null): FormSubmission
@@ -80,12 +83,14 @@ class FormSubmissionHelper
 
     /**
      * @param Form $formEntity
+     *
      * @return int
      */
     private function getFormSubmissionCounter(Form $formEntity): int
     {
         $session = $this->request->getSession();
-        return $session ? $session->get("form_id_{$formEntity->getId()}", 0) : 0;
+
+        return $session ? $session->get($this->generateSessionFormId($formEntity), 0) : 0;
     }
 
     /**
@@ -93,7 +98,19 @@ class FormSubmissionHelper
      */
     private function incFormSubmissionCounter(Form $formEntity): void
     {
-        $this->request->getSession()
-            ->set("form_id_{$formEntity->getId()}", $this->getFormSubmissionCounter($formEntity) +1);
+        $this->request->getSession()->set(
+            $this->generateSessionFormId($formEntity),
+            $this->getFormSubmissionCounter($formEntity) + 1
+        );
+    }
+
+    /**
+     * @param Form $formEntity
+     *
+     * @return string
+     */
+    private function generateSessionFormId(Form $formEntity): string
+    {
+        return 'form_id_' . $formEntity->getId();
     }
 }
