@@ -15,7 +15,7 @@
             $(document).on('click', '.js-form-field-choices__add-choice', function (e) {
 
                 var choicesHolder = $(this).closest('.js-form-fields-choices-collection');
-                var choicesCount = choicesHolder.find('div .form-group').length + 1;
+                var choicesCount = choicesHolder.find('.choice_item').length + 1;
 
                 e.preventDefault();
                 var prototype = choicesHolder
