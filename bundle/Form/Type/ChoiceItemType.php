@@ -15,6 +15,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ChoiceItemType extends AbstractType
 {
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    public function getBlockPrefix()
+    {
+        return 'novaformbuilder_choice_item';
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('value', TextType::class);

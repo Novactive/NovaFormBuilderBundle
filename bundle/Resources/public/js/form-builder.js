@@ -26,6 +26,13 @@
                 choicesHolder.children('fieldset').children('div').append(fieldForm);
             });
 
+            $(document).on('click', '.js-form-field-choices__delete-item', function (e) {
+
+                var choiceHolder = $(this).closest('.js-form-fields-choice-items-collection');
+
+                $(this).closest('.js-form-fields-choice-item').remove();
+            });
+
             $addButton.click(function (e) {
                 e.preventDefault();
                 var prototype = $(':selected', $selectFieldType).data('prototype');
