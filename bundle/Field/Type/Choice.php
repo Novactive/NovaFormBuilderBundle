@@ -45,10 +45,12 @@ class Choice extends FieldType
                 [
                     'entry_type' => ChoiceItemType::class,
                     'entry_options' => [
+                        'empty_data' => [],
                         'attr' => [
                             'class' => 'choice_item'
                         ]
                     ],
+                    'empty_data' => [],
                     'allow_add' => true,
                     'allow_delete' => true,
                     'required' => true,
