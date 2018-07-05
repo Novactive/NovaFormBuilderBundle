@@ -12,18 +12,26 @@
             var fieldsCount = $collectionHolder.children().length;
             var $deleteBtns = $('.js-form-fields__delete-entry');
 
+            // console.log($('.js-form-fields-choices-collection'));
+            $.each($('.js-form-fields-choices-collection'), function () {
+                console.log($(this));
+                var $itemsCount = $(this).find('.js-form-fields-choice-item').length;
+                $(this).data('items-count', $itemsCount);
+            });
+
             $(document).on('click', '.js-form-field-choices__add-choice', function (e) {
 
                 var choicesHolder = $(this).closest('.js-form-fields-choices-collection');
-                var choicesCount = choicesHolder.find('.choice_item').length + 1;
+                var choicesCount = choicesHolder.data('items-count');
 
                 e.preventDefault();
                 var prototype = choicesHolder
                     .find('fieldset div')
                     .data('prototype');
 
-                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount);
+                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount + 1);
                 choicesHolder.children('fieldset').children('div').append(fieldForm);
+                choicesHolder.data('items-count', choicesCount + 1);
             });
 
             $(document).on('click', '.js-form-field-choices__delete-item', function (e) {
