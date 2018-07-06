@@ -8,6 +8,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceCollectionType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceItemType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
@@ -39,6 +40,21 @@ class Choice extends FieldType
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
+	        ->add(
+	        	'choice_type',
+		        ChoiceType::class,
+		        [
+		        	'choices' => [
+		        		'radio'         => 'radio',
+		        		'checkboxes'    => 'checkboxes',
+		        		'dropdown'      => 'dropdown',
+			        ],
+			        'choice_label' => function($choiceValue, $key, $value) {
+	        		    return 'novaformbuilder_field.choice.choice_type.'.$key;
+			        },
+			        'label' => 'novaformbuilder_field.choice.choice_type',
+		        ]
+	        )
             ->add(
                 'choices',
                 ChoiceCollectionType::class,

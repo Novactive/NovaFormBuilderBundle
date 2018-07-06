@@ -19,6 +19,19 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
  */
 class Choice extends Field
 {
+	/**
+	 * @return string
+	 */
+	public function getChoiceType()
+	{
+		return $this->getOption('choice_type');
+	}
+
+	public function setChoiceType(string $type): void
+	{
+		$this->setOption('choice_type', $type);
+	}
+
     /**
      * @return int
      */
