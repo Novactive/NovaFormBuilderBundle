@@ -12,9 +12,7 @@
             var fieldsCount = $collectionHolder.children().length;
             var $deleteBtns = $('.js-form-fields__delete-entry');
 
-            // console.log($('.js-form-fields-choices-collection'));
             $.each($('.js-form-fields-choices-collection'), function () {
-                console.log($(this));
                 var $itemsCount = $(this).find('.js-form-fields-choice-item').length;
                 $(this).data('items-count', $itemsCount);
             });

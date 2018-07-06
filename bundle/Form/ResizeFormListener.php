@@ -1,11 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: domain
- * Date: 27.06.18
- * Time: 14:49
+ * @copyright Novactive
+ * Date: 06/07/18
  */
-
 namespace Novactive\Bundle\FormBuilderBundle\Form;
 
 
