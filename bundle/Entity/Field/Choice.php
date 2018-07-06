@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceCollectionType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 /**
  * Class Date.
@@ -19,18 +17,18 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
  */
 class Choice extends Field
 {
-	/**
-	 * @return string
-	 */
-	public function getChoiceType()
-	{
-		return $this->getOption('choice_type');
-	}
+    /**
+     * @return string
+     */
+    public function getChoiceType()
+    {
+        return $this->getOption('choice_type');
+    }
 
-	public function setChoiceType(string $type): void
-	{
-		$this->setOption('choice_type', $type);
-	}
+    public function setChoiceType(string $type): void
+    {
+        $this->setOption('choice_type', $type);
+    }
 
     /**
      * @return int

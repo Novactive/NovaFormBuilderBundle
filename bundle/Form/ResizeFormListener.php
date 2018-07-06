@@ -3,8 +3,8 @@
  * @copyright Novactive
  * Date: 06/07/18
  */
-namespace Novactive\Bundle\FormBuilderBundle\Form;
 
+namespace Novactive\Bundle\FormBuilderBundle\Form;
 
 use Symfony\Component\Form\FormEvent;
 
@@ -16,7 +16,7 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
         $data = $event->getData();
 
         if (null === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
@@ -28,11 +28,10 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
             $form->remove($name);
         }
 
-        $orderedName = 0;
         foreach ($data as $name => $value) {
-            $form->add($name, $this->type, array_replace(array(
+            $form->add($name, $this->type, array_replace([
                 'property_path' => '['.$name.']',
-            ), $this->options));
+            ], $this->options));
         }
     }
 
@@ -46,13 +45,13 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
-            $data = array();
+            $data = [];
         }
 
         $reorderedData = [];
 
         usort($data, function ($a, $b) {
-            if (!isset ($a['weight']) || !isset ($b['weight'])) {
+            if (!isset($a['weight']) || !isset($b['weight'])) {
                 return 0;
             }
 
@@ -70,7 +69,7 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
         $counter = 1;
         foreach ($data as $key => $value) {
             $reorderedData[$counter] = $value;
-            $counter++;
+            ++$counter;
         }
 
         $data = $reorderedData;
@@ -84,9 +83,9 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
         // Add all rows
         if ($this->allowAdd) {
             foreach ($data as $name => $value) {
-                $form->add($name, $this->type, array_replace(array(
+                $form->add($name, $this->type, array_replace([
                     'property_path' => '['.$name.']',
-                ), $this->options));
+                ], $this->options));
             }
         }
     }
