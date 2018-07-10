@@ -13,12 +13,12 @@ namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
-use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\BuilderFormFactory;
 use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -34,8 +34,8 @@ use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
  */
 class AdminController extends Controller
 {
-    /** @var FormEditFormFactory */
-    protected $formEditFormFactory;
+    /** @var BuilderFormFactory */
+    protected $builderFormFactory;
 
     /**
      * @var FormConstructor
@@ -50,15 +50,15 @@ class AdminController extends Controller
     /**
      * AdminController constructor.
      *
-     * @param FormEditFormFactory $formEditFormFactory
+     * @param BuilderFormFactory $builderFormFactory
      */
     public function __construct(
-        FormEditFormFactory $formEditFormFactory,
+        BuilderFormFactory $builderFormFactory,
         FormConstructor $formConstructor,
         FormSubmissionFactory $formSubmissionFactory
     )
     {
-        $this->formEditFormFactory = $formEditFormFactory;
+        $this->builderFormFactory = $builderFormFactory;
         $this->formConstructor = $formConstructor;
         $this->formSubmissionFactory = $formSubmissionFactory;
     }
@@ -102,7 +102,7 @@ class AdminController extends Controller
     {
         $translator = $this->get('translator'); //TODO: get by autowire
         $formData = new Form();
-        $form     = $this->formEditFormFactory->createForm($formData);
+        $form     = $this->builderFormFactory->createEditForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -138,7 +138,7 @@ class AdminController extends Controller
             $originalFields->add($field);
         }
 
-        $form     = $this->formEditFormFactory->createForm($formData);
+        $form     = $this->builderFormFactory->createEditForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -177,22 +177,25 @@ class AdminController extends Controller
      */
     public function showAction(Form $formEntity, Request $request)
     {
-        $form = $this->formConstructor->build($formEntity);
+        $form = $this->builderFormFactory->createCollectForm($formEntity);
 
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $fields = $formEntity->getFields();
-            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($formSubmission);
-            $em->flush();
-
-            return $this->redirectToRoute('form_builder_submission_list');
-        }
+//        $form = $this->formConstructor->build($formEntity);
+//
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $data = $form->getData();
+//
+//            $fields = $formEntity->getFields();
+//            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
+//
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($formSubmission);
+//            $em->flush();
+//
+//            return $this->redirectToRoute('form_builder_submission_list');
+//        }
 
         return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
             'formEntity' => $formEntity,

@@ -4,7 +4,7 @@
  * Date: 12/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

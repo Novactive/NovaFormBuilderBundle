@@ -10,8 +10,8 @@ services:
     Novactive\Bundle\FormBuilderBundle\Service\:
         resource: '../../Service/*'
 
-    Novactive\Bundle\FormBuilderBundle\Form\Type\:
-        resource: '../../Form/Type/*'
+    Novactive\Bundle\FormBuilderBundle\Form\:
+        resource: '../../Form/*'
 
     Novactive\Bundle\FormBuilderBundle\Field\Type\:
         resource: '../../Field/Type/*'

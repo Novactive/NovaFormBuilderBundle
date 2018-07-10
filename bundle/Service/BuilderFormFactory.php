@@ -4,15 +4,16 @@
  * Date: 12/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form;
+namespace Novactive\Bundle\FormBuilderBundle\Service;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeRegistry;
-use Novactive\Bundle\FormBuilderBundle\Form\Type\FormEditType;
+use Novactive\Bundle\FormBuilderBundle\Form\CollectType\FormCollectType;
+use Novactive\Bundle\FormBuilderBundle\Form\EditType\FormEditType;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 
-class FormEditFormFactory
+class BuilderFormFactory
 {
     /** @var FormFactory */
     protected $formFactory;
@@ -37,10 +38,21 @@ class FormEditFormFactory
      *
      * @return FormInterface
      */
-    public function createForm(Form $formData): FormInterface
+    public function createEditForm(Form $formData): FormInterface
     {
         $form = $this->formFactory->create(
             FormEditType::class,
+            $formData,
+            ['field_types' => $this->fieldTypeRegistry->getFieldTypes()]
+        );
+
+        return $form;
+    }
+
+    public function createCollectForm(Form $formData): FormInterface
+    {
+        $form = $this->formFactory->create(
+            FormCollectType::class,
             $formData,
             ['field_types' => $this->fieldTypeRegistry->getFieldTypes()]
         );
