@@ -2,6 +2,7 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Service;
 
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 
 class FormSubmissionFactory
@@ -28,28 +29,16 @@ class FormSubmissionFactory
      * @param $data
      * @return array
      */
-    private function prepareData($formEntity) : array
+    private function prepareData(Form $formEntity) : array
     {
-//        foreach ($formEntity->getFields()) {
-//
-//        }
-        return array_map(function($item, $key) use ($fields) {
-
-            $name = $fields->filter(function($field) use ($key) {
-                return $key == $field->getId();
-            })->first()->getName();
-
-            // datetime hack
-            // TODO move data transformations to separate service
-            if ($item instanceof \DateTimeInterface) {
-                $item = $item->format('Y/m/d');
-            }
-
-            return [
-                'name' => $name,
-                'value' => $item
+        $data = [];
+        foreach ($formEntity->getFields() as $field) {
+            $data[] = [
+                'name' => $field->getName(),
+                'value' => $field->getValue()
             ];
+        }
 
-        }, $data, array_keys($data));
+        return $data;
     }
 }
