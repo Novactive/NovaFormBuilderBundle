@@ -10,9 +10,9 @@ class FormSubmissionFactory
      * @param $data
      * @return FormSubmission
      */
-    public function create(array $data, $formEntity, $fields) : FormSubmission
+    public function create($formEntity) : FormSubmission
     {
-        $data = $this->prepareData($data, $fields);
+        $data = $this->prepareData($formEntity);
 
         $formSubmission = new FormSubmission();
         $formSubmission->setCreatedAt(new \DateTime());
@@ -23,14 +23,16 @@ class FormSubmissionFactory
     }
 
     /**
-     * Get aray like [internal_field_name_N => field_value]
-     * and return [[name => 'Human readable name', value => field_value]]
+     * return [[name => 'Human readable name', value => field_value]]
      *
      * @param $data
      * @return array
      */
-    private function prepareData($data, $fields) : array
+    private function prepareData($formEntity) : array
     {
+//        foreach ($formEntity->getFields()) {
+//
+//        }
         return array_map(function($item, $key) use ($fields) {
 
             $name = $fields->filter(function($field) use ($key) {

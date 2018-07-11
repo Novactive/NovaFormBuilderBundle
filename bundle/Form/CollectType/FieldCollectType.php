@@ -8,6 +8,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
+use Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -39,8 +40,7 @@ class FieldCollectType extends AbstractType
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {

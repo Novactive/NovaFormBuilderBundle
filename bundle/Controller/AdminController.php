@@ -180,22 +180,20 @@ class AdminController extends Controller
         $form = $this->builderFormFactory->createCollectForm($formEntity);
 
 
-//        $form = $this->formConstructor->build($formEntity);
-//
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $data = $form->getData();
-//
-//            $fields = $formEntity->getFields();
-//            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
-//
-//            $em = $this->getDoctrine()->getManager();
-//            $em->persist($formSubmission);
-//            $em->flush();
-//
-//            return $this->redirectToRoute('form_builder_submission_list');
-//        }
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $fields = $formEntity->getFields();
+            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($formSubmission);
+            $em->flush();
+
+            return $this->redirectToRoute('form_builder_submission_list');
+        }
 
         return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
             'formEntity' => $formEntity,

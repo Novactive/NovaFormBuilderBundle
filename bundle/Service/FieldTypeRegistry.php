@@ -4,7 +4,9 @@
  * Date: 12/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Field;
+namespace Novactive\Bundle\FormBuilderBundle\Service;
+
+use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 
 class FieldTypeRegistry
 {

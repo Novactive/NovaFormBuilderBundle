@@ -48,6 +48,9 @@ class FormCollectType extends AbstractType
             [
                 'entry_type'    => FieldCollectType::class,
                 'label'         => 'novaformbuilder_form.field',
+                'entry_options'  => [
+                    'field_types'    => $options['field_types'] ?? [],
+                ]
             ]
         );
     }

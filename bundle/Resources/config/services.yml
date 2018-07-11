@@ -16,5 +16,5 @@ services:
     Novactive\Bundle\FormBuilderBundle\Field\Type\:
         resource: '../../Field/Type/*'
 
-    Novactive\Bundle\FormBuilderBundle\Field\FieldTypeRegistry:
+    Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry:
         arguments: [!tagged novaformbuilder.fieldtype]

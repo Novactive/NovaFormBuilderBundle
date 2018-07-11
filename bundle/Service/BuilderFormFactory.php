@@ -7,7 +7,7 @@
 namespace Novactive\Bundle\FormBuilderBundle\Service;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeRegistry;
+use Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry;
 use Novactive\Bundle\FormBuilderBundle\Form\CollectType\FormCollectType;
 use Novactive\Bundle\FormBuilderBundle\Form\EditType\FormEditType;
 use Symfony\Component\Form\FormFactory;
