@@ -4,6 +4,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormInterface;
 
 class Email extends FieldType
@@ -43,7 +44,15 @@ class Email extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'value',
+                EmailType::class,
+                [
+                    'required' => $field->isRequired(),
+                    'label'    => $field->getName(),
+                ]
+            );
     }
 
 }

@@ -10,6 +10,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\Range;
 
 class Number extends FieldType
 {
@@ -60,10 +61,25 @@ class Number extends FieldType
     }
 
     /**
-     * @inheritDoc
+     * @param FormInterface $fieldForm
+     * @param Field\Number $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'value',
+                IntegerType::class,
+                [
+                    'required' => $field->isRequired(),
+                    'label'    => $field->getName(),
+                    'constraints' => [
+                        new Range([
+                            'min' => $field->getMin(),
+                            'max' => $field->getMax()
+                        ])
+                    ]
+                ]
+            );
     }
 }

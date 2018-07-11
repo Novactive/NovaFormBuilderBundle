@@ -9,6 +9,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 
 class TextArea extends FieldType
@@ -61,11 +62,28 @@ class TextArea extends FieldType
             );
     }
 
+
     /**
-     * @inheritDoc
+     * @param FormInterface $fieldForm
+     * @param Field\TextArea $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'value',
+                TextareaType::class,
+                [
+                    'required'   => $field->isRequired(),
+                    'label'      => 'novaformbuilder_field.textline.value',
+                    'empty_data' => 0,
+                    'constraints' => [
+                        new Length([
+                            'min' => $field->getMinLength() ?: null,
+                            'max' => $field->getMaxLength() ?: null,
+                        ])
+                    ]
+                ]
+            );
     }
 }

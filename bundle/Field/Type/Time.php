@@ -4,6 +4,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormInterface;
 
 class Time extends FieldType
@@ -45,6 +46,20 @@ class Time extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'value',
+                TimeType::class,
+                [
+                    'required' => $field->isRequired(),
+                    'label'    => $field->getName(),
+                    'constraints' => [
+                        new Range([
+                            'min' => $field->getMin(),
+                            'max' => $field->getMax()
+                        ])
+                    ]
+                ]
+            );
     }
 }
