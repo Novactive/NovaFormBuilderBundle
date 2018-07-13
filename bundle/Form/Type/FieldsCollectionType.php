@@ -79,7 +79,8 @@ class FieldsCollectionType extends CollectionType
                             'property_path' => '[' . $name . ']',
                             'data_class' => get_class($fieldType->getEntity()),
                             'allow_extra_fields' => true,
-                            'by_reference' => false
+                            'by_reference' => false,
+                            'data' => $fieldType->getEntity()
                         ], $options['entry_options']));
                     }
                 }
