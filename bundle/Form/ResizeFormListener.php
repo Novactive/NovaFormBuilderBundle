@@ -23,6 +23,7 @@ class ResizeFormListener extends \Symfony\Component\Form\Extension\Core\EventLis
             $data = [];
         }
 
+        $event->setData($data);
         // First remove all rows
         foreach ($form as $name => $child) {
             $form->remove($name);

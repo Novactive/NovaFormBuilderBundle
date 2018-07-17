@@ -63,6 +63,7 @@ class Choice extends FieldType
                             'class' => 'choice_item',
                         ],
                     ],
+                    'delete_empty'   => true,
                     'empty_data'     => [],
                     'allow_add'      => true,
                     'allow_delete'   => true,
