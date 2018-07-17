@@ -83,6 +83,7 @@ class Form
 
     /**
      * @param string $name
+     * @return Form
      */
     public function setName(string $name): self
     {
@@ -101,6 +102,7 @@ class Form
 
     /**
      * @param int $maxSubmissions
+     * @return Form
      */
     public function setMaxSubmissions(int $maxSubmissions): self
     {
@@ -118,7 +120,7 @@ class Form
     }
 
     /**
-     * @return Field[]
+     * @return Field[]|ArrayCollection
      */
     public function getFields()
     {
