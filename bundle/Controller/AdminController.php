@@ -11,10 +11,11 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionHelper;
 use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -22,6 +23,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class AdminController.
@@ -41,23 +43,25 @@ class AdminController extends Controller
     protected $formConstructor;
 
     /**
-     * @var FormSubmissionFactory
+     * @var FormSubmissionHelper
      */
-    protected $formSubmissionFactory;
+    protected $formSubmissionHelper;
 
     /**
      * AdminController constructor.
-     *
      * @param FormEditFormFactory $formEditFormFactory
+     * @param FormConstructor $formConstructor
+     * @param FormSubmissionHelper $formSubmissionHelper
      */
     public function __construct(
         FormEditFormFactory $formEditFormFactory,
         FormConstructor $formConstructor,
-        FormSubmissionFactory $formSubmissionFactory
-    ) {
-        $this->formEditFormFactory   = $formEditFormFactory;
-        $this->formConstructor       = $formConstructor;
-        $this->formSubmissionFactory = $formSubmissionFactory;
+        FormSubmissionHelper $formSubmissionHelper
+    )
+    {
+        $this->formEditFormFactory = $formEditFormFactory;
+        $this->formConstructor = $formConstructor;
+        $this->formSubmissionHelper = $formSubmissionHelper;
     }
 
     const RESULTS_PER_PAGE = 10;
@@ -170,7 +174,9 @@ class AdminController extends Controller
      *
      * @Route("/{id}", name="form_builder_form_show")
      *
-     * @param Form $formView
+     * @param Form $formEntity
+     * @param Request $request
+     * @return mixed
      */
     public function showAction(Form $formEntity, Request $request)
     {
@@ -178,16 +184,16 @@ class AdminController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $fields         = $formEntity->getFields();
-            $formSubmission = $this->formSubmissionFactory->create($data, $formEntity, $fields);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($formSubmission);
-            $em->flush();
-
+        if ($form->isSubmitted() && $form->isValid() &&
+            $this->formSubmissionHelper->checkSubmissionAvailability($form, $formEntity)
+        ) {
+            /** @var User $user */
+            $user = $this->getUser();
+            $this->formSubmissionHelper->createAndLogSubmission(
+                $form->getData(),
+                $formEntity,
+                $user ? $user->getAPIUser()->getUserId() : null
+            );
             return $this->redirectToRoute('form_builder_submission_list');
         }
 

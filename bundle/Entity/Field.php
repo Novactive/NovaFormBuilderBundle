@@ -20,15 +20,6 @@ use Symfony\Component\Form\Util\StringUtil;
  * @ORM\Entity()
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({
- *     "textline" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\TextLine",
- *     "textarea" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\TextArea",
- *     "date" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Date",
- *     "email" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Email",
- *     "number" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Number",
- *     "time" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Time",
- *     "choice" = "\Novactive\Bundle\FormBuilderBundle\Entity\Field\Choice"
- * })
  * @ORM\Table(name="novaformbuilder_field")
  *
  * TODO: @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb

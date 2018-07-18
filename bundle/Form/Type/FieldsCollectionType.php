@@ -80,6 +80,7 @@ class FieldsCollectionType extends CollectionType
                             'data_class'         => get_class($fieldType->getEntity()),
                             'allow_extra_fields' => true,
                             'by_reference'       => false,
+                            'data'               => $fieldType->getEntity()
                         ], $options['entry_options']));
                     }
                 }

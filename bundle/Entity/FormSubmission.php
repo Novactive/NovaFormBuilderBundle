@@ -20,7 +20,7 @@ class FormSubmission
     /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="submissions")
      *
-     * @var Novactive\Bundle\FormBuilderBundle\Entity\Form
+     * @var Form
      */
     private $form;
 
@@ -34,12 +34,19 @@ class FormSubmission
     /**
      * @ORM\Column(type="datetime")
      *
-     * @var \DateTimeImmutable
+     * @var \DateTime
      */
     private $createdAt;
 
     /**
-     * @return Novactive\Bundle\FormBuilderBundle\Entity\Form
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int|null
+     */
+    private $userId;
+
+    /**
+     * @return Form
      */
     public function getForm(): Form
     {
@@ -47,7 +54,7 @@ class FormSubmission
     }
 
     /**
-     * @param Novactive\Bundle\FormBuilderBundle\Entity\Form $form
+     * @param Form $form
      */
     public function setForm(Form $form): void
     {
@@ -71,7 +78,7 @@ class FormSubmission
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
     {
@@ -79,10 +86,26 @@ class FormSubmission
     }
 
     /**
-     * @param \DateTimeImmutable $createdAt
+     * @param \DateTime $createdAt
      */
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param int|null $userId
+     */
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 }
