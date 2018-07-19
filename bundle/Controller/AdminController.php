@@ -120,7 +120,7 @@ class AdminController extends Controller
             '@FormBuilder/form_builder/form/edit.html.twig',
             [
                 'form'                => $form->createView(),
-                'title' => $translator->trans('Create new form')
+                'title'               => $translator->trans('Create new form'),
             ]
         );
     }
@@ -134,7 +134,7 @@ class AdminController extends Controller
      */
     public function editAction(Request $request, Form $formData)
     {
-        $translator = $this->get('translator'); //TODO: get by autowire
+        $translator     = $this->get('translator'); //TODO: get by autowire
         $originalFields = new ArrayCollection();
 
         foreach ($formData->getFields() as $field) {
@@ -166,13 +166,13 @@ class AdminController extends Controller
             '@FormBuilder/form_builder/form/edit.html.twig',
             [
                 'form'                => $form->createView(),
-                'title' => $translator->trans('Edit form')
+                'title'               => $translator->trans('Edit form'),
             ]
         );
     }
 
     /**
-     * Test action to render & handle clientside form
+     * Test action to render & handle clientside form.
      *
      * @Route("/{id}", name="form_builder_form_show")
      *
@@ -202,7 +202,7 @@ class AdminController extends Controller
 
         return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
             'formEntity' => $formEntity,
-            'formView' => $form->createView(),
+            'formView'   => $form->createView(),
         ]);
     }
 }

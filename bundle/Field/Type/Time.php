@@ -31,8 +31,7 @@ class Time extends FieldType
 
     /**
      * @param FormInterface $fieldForm
-     *
-     * @param Field $field
+     * @param Field         $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -41,8 +40,7 @@ class Time extends FieldType
 
     /**
      * @param FormInterface $fieldForm
-     *
-     * @param Field $field
+     * @param Field         $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {

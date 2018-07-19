@@ -4,13 +4,13 @@ namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class FormSubmissonsController
+ * Class FormSubmissonsController.
  *
  * @Route("/form-builder/sumbissions")
  *
@@ -41,7 +41,7 @@ class FormSubmissonController extends Controller
         $paginator->setCurrentPage($page);
 
         return $this->render('@FormBuilder/form_builder/submission/list.html.twig', [
-            'totalCount' => $paginator->getNbResults(),
+            'totalCount'  => $paginator->getNbResults(),
             'submissions' => $paginator,
         ]);
     }
@@ -54,7 +54,7 @@ class FormSubmissonController extends Controller
     public function showAction(FormSubmission $formSubmission)
     {
         return $this->render('@FormBuilder/form_builder/submission/show.html.twig', [
-            'formSubmission' => $formSubmission
+            'formSubmission' => $formSubmission,
         ]);
     }
 }

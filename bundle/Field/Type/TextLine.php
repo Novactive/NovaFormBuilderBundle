@@ -89,6 +89,5 @@ class TextLine extends FieldType
                     ]
                 ]
             );
-
     }
 }

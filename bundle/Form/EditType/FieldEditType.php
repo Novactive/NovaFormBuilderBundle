@@ -8,7 +8,6 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

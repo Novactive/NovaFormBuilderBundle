@@ -9,11 +9,11 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class FieldsCollectionType extends CollectionType
 {
@@ -76,11 +76,11 @@ class FieldsCollectionType extends CollectionType
 
                         // Set options for new rows
                         $form->add($name, FieldEditType::class, array_replace([
-                            'property_path' => '[' . $name . ']',
-                            'data_class' => get_class($fieldType->getEntity()),
+                            'property_path'      => '['.$name.']',
+                            'data_class'         => get_class($fieldType->getEntity()),
                             'allow_extra_fields' => true,
-                            'by_reference' => false,
-                            'data' => $fieldType->getEntity()
+                            'by_reference'       => false,
+                            'data'               => $fieldType->getEntity()
                         ], $options['entry_options']));
                     }
                 }
