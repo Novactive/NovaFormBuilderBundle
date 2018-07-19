@@ -48,6 +48,7 @@
         </div>
         <div id="form-field-body-{{ form.vars.id }}" class="collapse show" aria-labelledby="form-field-header-{{ form.vars.id }}" data-parent="#form-fields-accordion">
             <div class="card-body">
+                {% form_theme form '@FormBuilder/form_builder/form/form_fields_child.html.twig' %}
                 {{ form_widget(form) }}
                 <div class="mt-3 d-flex justify-content-end">
                     <button type="button" class="btn btn-sm btn-outline-danger js-form-fields__delete-entry">{{ 'Delete'|trans }}</button>

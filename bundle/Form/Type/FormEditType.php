@@ -57,9 +57,9 @@ class FormEditType extends AbstractType
                     ],
                     'prototype_data' => $options['field_class'],
                     'allow_add'      => true,
-                    'allow_delete' => true,
+                    'allow_delete'   => true,
                     'label'          => 'novaformbuilder_form.fields',
-                    'by_reference' => false, // we need this to force framework set form_id in fields
+                    'by_reference'   => false, // we need this to force framework set form_id in fields
                 ]
             );
     }

@@ -78,6 +78,5 @@ class TextLine extends FieldType
                     'empty_data' => 0,
                 ]
             );
-
     }
 }

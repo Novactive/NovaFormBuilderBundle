@@ -16,13 +16,14 @@ use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
 use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionHelper;
+use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
-use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 
 /**
  * Class AdminController.
@@ -101,8 +102,8 @@ class AdminController extends Controller
     public function newAction(Request $request)
     {
         $translator = $this->get('translator'); //TODO: get by autowire
-        $formData = new Form();
-        $form     = $this->formEditFormFactory->createForm($formData);
+        $formData   = new Form();
+        $form       = $this->formEditFormFactory->createForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,7 +118,7 @@ class AdminController extends Controller
             '@FormBuilder/form_builder/form/edit.html.twig',
             [
                 'form'                => $form->createView(),
-                'title' => $translator->trans('Create new form')
+                'title'               => $translator->trans('Create new form'),
             ]
         );
     }
@@ -131,7 +132,7 @@ class AdminController extends Controller
      */
     public function editAction(Request $request, Form $formData)
     {
-        $translator = $this->get('translator'); //TODO: get by autowire
+        $translator     = $this->get('translator'); //TODO: get by autowire
         $originalFields = new ArrayCollection();
 
         foreach ($formData->getFields() as $field) {
@@ -163,13 +164,13 @@ class AdminController extends Controller
             '@FormBuilder/form_builder/form/edit.html.twig',
             [
                 'form'                => $form->createView(),
-                'title' => $translator->trans('Edit form')
+                'title'               => $translator->trans('Edit form'),
             ]
         );
     }
 
     /**
-     * Test action to render & handle clientside form
+     * Test action to render & handle clientside form.
      *
      * @Route("/{id}", name="form_builder_form_show")
      *
@@ -180,6 +181,7 @@ class AdminController extends Controller
     public function showAction(Form $formEntity, Request $request)
     {
         $form = $this->formConstructor->build($formEntity);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() &&
@@ -197,7 +199,7 @@ class AdminController extends Controller
 
         return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
             'formEntity' => $formEntity,
-            'formView' => $form->createView(),
+            'formView'   => $form->createView(),
         ]);
     }
 }
