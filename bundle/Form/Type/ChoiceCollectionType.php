@@ -8,7 +8,7 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
 
-use Novactive\Bundle\FormBuilderBundle\Form\ResizeFormListener;
+use Novactive\Bundle\FormBuilderBundle\Listener\ResizeFormListener;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 

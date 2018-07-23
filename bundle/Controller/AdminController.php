@@ -14,8 +14,8 @@ namespace Novactive\Bundle\FormBuilderBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
-use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
-use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\BuilderFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionHelper;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -51,7 +51,6 @@ class AdminController extends Controller
      * AdminController constructor.
      *
      * @param BuilderFormFactory $builderFormFactory
-     * @param FormEditFormFactory $formEditFormFactory
      * @param FormConstructor $formConstructor
      * @param FormSubmissionHelper $formSubmissionHelper
      */

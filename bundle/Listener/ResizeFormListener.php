@@ -4,7 +4,7 @@
  * Date: 06/07/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form;
+namespace Novactive\Bundle\FormBuilderBundle\Listener;
 
 use Symfony\Component\Form\FormEvent;
 
