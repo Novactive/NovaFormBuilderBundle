@@ -4,10 +4,11 @@
  * Date: 01/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
+use Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -39,16 +40,7 @@ class FieldCollectType extends AbstractType
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add(
-            'name',
-            TextType::class,
-            [
-                'label' => 'novaformbuilder_field.name',
-            ]
-        );
-
+    public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
@@ -59,7 +51,9 @@ class FieldCollectType extends AbstractType
                 if ($data) {
                     /** @var FieldFormMapperInterface[] $fieldTypes */
                     $fieldTypes = $form->getConfig()->getOption('field_types', []);
+
                     foreach ($fieldTypes as $fieldType) {
+
                         if (!$fieldType instanceof FieldFormMapperInterface) {
                             throw new \InvalidArgumentException(
                                 'FieldEditType field_types option require a FieldFormMapperInterface value'

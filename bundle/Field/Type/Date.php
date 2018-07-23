@@ -9,6 +9,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
 
 class Date extends FieldType
@@ -55,6 +56,14 @@ class Date extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm
+            ->add(
+                'value',
+                DateType::class,
+                [
+                    'required' => $field->isRequired(),
+                    'label'    => $field->getName(),
+                ]
+            );
     }
 }

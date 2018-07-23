@@ -12,18 +12,18 @@
 namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Novactive\Bundle\FormBuilderBundle\Form\FormEditFormFactory;
-use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionHelper;
-use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 
 /**
  * Class AdminController.
@@ -34,8 +34,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class AdminController extends Controller
 {
-    /** @var FormEditFormFactory */
-    protected $formEditFormFactory;
+    /** @var BuilderFormFactory */
+    protected $builderFormFactory;
 
     /**
      * @var FormConstructor
@@ -49,17 +49,19 @@ class AdminController extends Controller
 
     /**
      * AdminController constructor.
+     *
+     * @param BuilderFormFactory $builderFormFactory
      * @param FormEditFormFactory $formEditFormFactory
      * @param FormConstructor $formConstructor
      * @param FormSubmissionHelper $formSubmissionHelper
      */
     public function __construct(
-        FormEditFormFactory $formEditFormFactory,
+        BuilderFormFactory $builderFormFactory,
         FormConstructor $formConstructor,
         FormSubmissionHelper $formSubmissionHelper
     )
     {
-        $this->formEditFormFactory = $formEditFormFactory;
+        $this->builderFormFactory = $builderFormFactory;
         $this->formConstructor = $formConstructor;
         $this->formSubmissionHelper = $formSubmissionHelper;
     }
@@ -102,8 +104,8 @@ class AdminController extends Controller
     public function newAction(Request $request)
     {
         $translator = $this->get('translator'); //TODO: get by autowire
-        $formData   = new Form();
-        $form       = $this->formEditFormFactory->createForm($formData);
+        $formData = new Form();
+        $form     = $this->builderFormFactory->createEditForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -139,7 +141,7 @@ class AdminController extends Controller
             $originalFields->add($field);
         }
 
-        $form     = $this->formEditFormFactory->createForm($formData);
+        $form     = $this->builderFormFactory->createEditForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -180,7 +182,8 @@ class AdminController extends Controller
      */
     public function showAction(Form $formEntity, Request $request)
     {
-        $form = $this->formConstructor->build($formEntity);
+        $form = $this->builderFormFactory->createCollectForm($formEntity);
+
 
         $form->handleRequest($request);
 

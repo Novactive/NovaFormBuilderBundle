@@ -9,7 +9,7 @@
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -35,6 +35,7 @@ class FormCollectType extends AbstractType
                 [
                     'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Form',
                     'translation_domain' => 'novaformbuilder_form',
+                    'field_types'        => [],
                 ]
             );
     }
@@ -47,6 +48,9 @@ class FormCollectType extends AbstractType
             [
                 'entry_type'    => FieldCollectType::class,
                 'label'         => 'novaformbuilder_form.field',
+                'entry_options'  => [
+                    'field_types'    => $options['field_types'] ?? [],
+                ]
             ]
         );
     }

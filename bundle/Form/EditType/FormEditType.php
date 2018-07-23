@@ -9,7 +9,7 @@
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;

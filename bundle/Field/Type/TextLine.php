@@ -9,7 +9,9 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 class TextLine extends FieldType
 {
@@ -63,19 +65,28 @@ class TextLine extends FieldType
 
     /**
      * @inheritDoc
+     * @param Field\TextLine $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
         $fieldForm
             ->add(
-                'minLength',
-                IntegerType::class,
+                'value',
+                TextType::class,
                 [
-                    'required'   => false,
-                    'label'      => 'novaformbuilder_field.textline.min_length',
-                    'attr'       => ['min' => 0],
+                    'required'   => $field->isRequired(),
+                    'label'      => 'novaformbuilder_field.textline.value',
+                    'attr'       => [
+                        'min' => $field->getMinLength(),
+                        'max' => $field->getMaxLength()
+                    ],
                     'empty_data' => 0,
+                    'constraints' => [
+                        new Length([
+                            'min' => $field->getMinLength() ?: null,
+                            'max' => $field->getMaxLength() ?: null,
+                        ])
+                    ]
                 ]
             );
     }

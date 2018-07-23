@@ -75,6 +75,11 @@ abstract class Field
     protected $options = [];
 
     /**
+     * @var string
+     */
+    protected $value;
+
+    /**
      * Field constructor.
      *
      * @param array $properties
@@ -84,6 +89,16 @@ abstract class Field
         foreach ($properties as $property => $value) {
             $this->$property = $value;
         }
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
     }
 
     /**
