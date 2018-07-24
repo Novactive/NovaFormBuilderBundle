@@ -75,10 +75,22 @@ class Choice extends FieldType
     }
 
     /**
-     * @inheritDoc
+     * @param FormInterface $fieldForm
+     * @param Field\Choice $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $formattedChoices = [];
+        foreach ($field->getChoices() as $choice) {
+            $formattedChoices[$choice['value']] = $choice['value'];
+        }
+
+        $fieldForm->add('value', ChoiceType::class,
+            [
+                'required' => $field->isRequired(),
+                'label'    => $field->getName(),
+                'choices' => $formattedChoices
+            ]
+        );
     }
 }

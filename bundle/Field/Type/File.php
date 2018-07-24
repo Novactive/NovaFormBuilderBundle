@@ -5,7 +5,9 @@ namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use \Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormInterface;
 
 class File extends FieldType
@@ -65,11 +67,21 @@ class File extends FieldType
 
     /**
      * @param FormInterface $fieldForm
-     * @param Field $field
+     * @param Field\File $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldCollectForm() method.
+        $fieldForm->add('value', FileType::class,
+            [
+                'required' => $field->isRequired(),
+                'label'    => $field->getName(),
+                'constraints' => [
+                    new Constraints\File([
+                        'maxSize' => $field->getMaxFileSizeMb() . 'M',
+                        'mimeTypes' => $field->getFileType()
+                    ])
+                ]
+            ]);
     }
 
 }
