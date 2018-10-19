@@ -12,6 +12,7 @@
 namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\Util\StringUtil;
 
 /**
  * Class Field.
@@ -20,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\Table(name="novaformbuilder_field")
+ *
+ * TODO: @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
@@ -35,11 +38,27 @@ abstract class Field
     protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="type")
+     * @ORM\Column(type="string", name="name")
      *
      * @var string
      */
-    protected $type;
+    protected $name = '';
+
+    /**
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    protected $required = true;
+
+    /**
+     * Used to order form fields.
+     *
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    protected $weight = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
@@ -49,25 +68,73 @@ abstract class Field
     protected $form;
 
     /**
-     * @ORM\Column(type="string", name="name")
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @ORM\Column(type="json_array", name="options")
+     * @ORM\Column(type="json", name="options")
      *
      * @var array
      */
-    protected $options;
+    protected $options = [];
+
+    /**
+     * @var string
+     */
+    protected $value;
 
     /**
      * Field constructor.
+     *
+     * @param array $properties
      */
-    public function __construct()
+    public function __construct(array $properties = [])
     {
-        $this->name = '';
+        foreach ($properties as $property => $value) {
+            $this->$property = $value;
+        }
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param int $weight
+     */
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired(bool $required): self
+    {
+        $this->required = $required;
+
+        return $this;
     }
 
     /**
@@ -91,15 +158,7 @@ abstract class Field
      */
     public function getType(): string
     {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
+        return StringUtil::fqcnToBlockPrefix(get_class($this));
     }
 
     /**
@@ -113,7 +172,7 @@ abstract class Field
     /**
      * @param Form $form
      */
-    public function setForm(Form $form): void
+    public function setForm(?Form $form): void
     {
         $this->form = $form;
     }
@@ -167,5 +226,10 @@ abstract class Field
     public function setOption($name, $value): void
     {
         $this->options[$name] = $value;
+    }
+
+    public function __toString()
+    {
+        return $this->getType();
     }
 }

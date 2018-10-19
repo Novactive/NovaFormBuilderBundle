@@ -1,0 +1,59 @@
+{% extends '@EzPlatformAdminUi/form_fields.html.twig' %}
+
+{% block novaformbuilder_fields_collection_row %}
+
+    <div class="js-form-fields-collection">
+        <div id="form-fields-accordion">
+            {{ form_row(form) }}
+        </div>
+        <div class="btn-group input-group">
+            <select class="form-control js-form-builder__select-field-type">
+                {% for field_types_identifier, field_type_prototype in field_types_prototype %}
+                    <option value="{{ field_types_identifier }}" data-entity-type="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary js-form-builder__add-new-field" type="button">{{ 'Add new field'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block novaformbuilder_fields_collection_widget %}
+    {%- set attr = attr|merge({'class': 'js-form-fields-collection-entries' }) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- if form is rootform -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+
+        {% for child in form %}
+            {{- form_widget(child) -}}
+        {% endfor %}
+        {{- form_rest(form) -}}
+    </div>
+{% endblock %}
+
+{% block novaformbuilder_field_edit_widget %}
+    <div class="mb-3 card js-form-field-row">
+        <div class="card-header d-flex flex-row" id="form-field-header-{{ form.vars.id }}">
+            <i class="material-icons drag-field-icon">drag_indicator</i>
+            <h5 class="mb-0">
+                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#form-field-body-{{ form.vars.id }}" aria-expanded="true" aria-controls="form-field-body-{{ form.vars.id }}">
+                    {% if form.vars.data.name is empty %}
+                        {{ 'Field'|trans }} №{{ form.vars.name }}
+                    {% else %}
+                        {{ form.vars.data.name }}
+                    {% endif %}
+                </button>
+            </h5>
+        </div>
+        <div id="form-field-body-{{ form.vars.id }}" class="collapse show" aria-labelledby="form-field-header-{{ form.vars.id }}" data-parent="#form-fields-accordion">
+            <div class="card-body">
+                {% form_theme form '@FormBuilder/form_builder/form/form_fields_child.html.twig' %}
+                {{ form_widget(form) }}
+                <div class="mt-3 d-flex justify-content-end">
+                    <button type="button" class="btn btn-sm btn-outline-danger js-form-fields__delete-entry">{{ 'Delete'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

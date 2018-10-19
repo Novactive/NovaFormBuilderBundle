@@ -1,22 +1,13 @@
 <?php
-/**
- * NovaFormBuilderBundle.
- *
- * @package   NovaFormBuilderBundle
- *
- * @author    Novactive <f.alexandre@novactive.com>
- * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
- */
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
- * Class TextLine.
+ * Class TextArea.
  *
  * @ORM\Entity()
  *
@@ -25,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  *
  * @package Novactive\Bundle\FormBuilderBundle\Entity\Field
  */
-class TextLine extends Field
+class TextArea extends Field
 {
     /**
      * @return int
@@ -61,6 +52,6 @@ class TextLine extends Field
 
     public function getFormTypeClass()
     {
-        return TextType::class;
+        return TextareaType::class;
     }
 }

@@ -37,3 +37,9 @@ clean: ## Removes the vendors, and caches
 	rm -f .php_cs.cache
 	rm -rf vendor
 	rm -f composer.lock
+
+.PHONY: tests
+tests: ## Execute tests
+	$(PHP_BIN) ./vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php bundle
+	$(PHP_BIN) ./vendor/bin/phpmd bundle text .cs/md_ruleset.xml
+	$(PHP_BIN) ./vendor/bin/phpcpd bundle

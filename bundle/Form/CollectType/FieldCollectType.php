@@ -4,10 +4,11 @@
  * Date: 01/06/18
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeFormMapperDispatcherInterface;
+use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
+use Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,21 +18,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldCollectType extends AbstractType
 {
-    /**
-     * @var FieldTypeFormMapperDispatcherInterface
-     */
-    private $fieldTypeMapperDispatcher;
-
-    /**
-     * FieldEditType constructor.
-     *
-     * @param FieldTypeFormMapperDispatcherInterface $fieldTypeMapperDispatcher
-     */
-    public function __construct(FieldTypeFormMapperDispatcherInterface $fieldTypeMapperDispatcher)
-    {
-        $this->fieldTypeMapperDispatcher = $fieldTypeMapperDispatcher;
-    }
-
     public function getName()
     {
         return $this->getBlockPrefix();
@@ -49,20 +35,12 @@ class FieldCollectType extends AbstractType
                 [
                     'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Field',
                     'translation_domain' => 'novaformbuilder_field',
+                    'field_types'        => [],
                 ]
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add(
-            'name',
-            TextType::class,
-            [
-                'label' => 'novaformbuilder_field.name',
-            ]
-        );
-
+    public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
@@ -70,8 +48,22 @@ class FieldCollectType extends AbstractType
                 $data = $event->getData();
                 $form = $event->getForm();
 
-                // Let fieldType mappers do their jobs to complete the form.
-                $this->fieldTypeMapperDispatcher->mapFieldCollectForm($form, $data);
+                if ($data) {
+                    /** @var FieldFormMapperInterface[] $fieldTypes */
+                    $fieldTypes = $form->getConfig()->getOption('field_types', []);
+
+                    foreach ($fieldTypes as $fieldType) {
+
+                        if (!$fieldType instanceof FieldFormMapperInterface) {
+                            throw new \InvalidArgumentException(
+                                'FieldEditType field_types option require a FieldFormMapperInterface value'
+                            );
+                        }
+                        if ($fieldType->accept($data)) {
+                            $fieldType->mapFieldCollectForm($form, $data);
+                        }
+                    }
+                }
             }
         );
     }

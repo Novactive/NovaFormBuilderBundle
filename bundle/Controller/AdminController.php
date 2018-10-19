@@ -11,12 +11,19 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Controller;
 
-use Novactive\Bundle\FormBuilderBundle\Entity\Field\TextLine;
+use Doctrine\ORM\EntityManager;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use Novactive\Bundle\FormBuilderBundle\Form\Type\FormEditType;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
+use Novactive\Bundle\FormBuilderBundle\Service\BuilderFormFactory;
+use Novactive\Bundle\FormBuilderBundle\Service\FormSubmissionHelper;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Novactive\Bundle\FormBuilderBundle\Service\FormConstructor;
 
 /**
  * Class AdminController.
@@ -27,8 +34,67 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AdminController extends Controller
 {
+    /** @var BuilderFormFactory */
+    protected $builderFormFactory;
+
     /**
-     * @Route("/new")
+     * @var FormConstructor
+     */
+    protected $formConstructor;
+
+    /**
+     * @var FormSubmissionHelper
+     */
+    protected $formSubmissionHelper;
+
+    /**
+     * AdminController constructor.
+     *
+     * @param BuilderFormFactory $builderFormFactory
+     * @param FormConstructor $formConstructor
+     * @param FormSubmissionHelper $formSubmissionHelper
+     */
+    public function __construct(
+        BuilderFormFactory $builderFormFactory,
+        FormConstructor $formConstructor,
+        FormSubmissionHelper $formSubmissionHelper
+    )
+    {
+        $this->builderFormFactory = $builderFormFactory;
+        $this->formConstructor = $formConstructor;
+        $this->formSubmissionHelper = $formSubmissionHelper;
+    }
+
+    const RESULTS_PER_PAGE = 10;
+
+    /**
+     * @Route("/list/{page}", name="form_builder_form_list", requirements={"page" = "\d+"})
+     *
+     * @param EntityManager $em
+     * @param int           $page
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listAction(EntityManager $em, $page = 1)
+    {
+        $queryBuilder = $em->createQueryBuilder()
+            ->select('f')
+            ->from(Form::class, 'f');
+
+        $paginator = new Pagerfanta(
+            new DoctrineORMAdapter($queryBuilder)
+        );
+        $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
+        $paginator->setCurrentPage($page);
+
+        return $this->render('@FormBuilder/form_builder/form/list.html.twig', [
+            'totalCount' => $paginator->getNbResults(),
+            'forms'      => $paginator,
+        ]);
+    }
+
+    /**
+     * @Route("/new", name="form_builder_form_new")
      *
      * @param Request $request
      *
@@ -36,19 +102,106 @@ class AdminController extends Controller
      */
     public function newAction(Request $request)
     {
+        $translator = $this->get('translator'); //TODO: get by autowire
         $formData = new Form();
-        $formData->addField(new TextLine());
-        $form = $this->createForm(FormEditType::class, $formData);
+        $form     = $this->builderFormFactory->createEditForm($formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($formData);
             $em->flush();
+
+            return $this->redirectToRoute('form_builder_form_list');
         }
 
-        return $this->render('@FormBuilder/form_builder/form/new.html.twig', [
-            'form'              => $form->createView(),
+        return $this->render(
+            '@FormBuilder/form_builder/form/edit.html.twig',
+            [
+                'form'                => $form->createView(),
+                'title'               => $translator->trans('Create new form'),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="form_builder_form_edit")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editAction(Request $request, Form $formData)
+    {
+        $translator     = $this->get('translator'); //TODO: get by autowire
+        $originalFields = new ArrayCollection();
+
+        foreach ($formData->getFields() as $field) {
+            $originalFields->add($field);
+        }
+
+        $form     = $this->builderFormFactory->createEditForm($formData);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            foreach ($originalFields as $field) {
+                /** @var Field $field */
+                if (!$formData->getFields()->contains($field)) {
+                    $field->setForm(null);
+                    $em->persist($field);
+                    $em->remove($field);
+                }
+            }
+
+            $em->persist($formData);
+            $em->flush();
+
+            return $this->redirectToRoute('form_builder_form_list');
+        }
+
+        return $this->render(
+            '@FormBuilder/form_builder/form/edit.html.twig',
+            [
+                'form'                => $form->createView(),
+                'title'               => $translator->trans('Edit form'),
+            ]
+        );
+    }
+
+    /**
+     * Test action to render & handle clientside form.
+     *
+     * @Route("/{id}", name="form_builder_form_show")
+     *
+     * @param Form $formEntity
+     * @param Request $request
+     * @return mixed
+     */
+    public function showAction(Form $formEntity, Request $request)
+    {
+        $form = $this->builderFormFactory->createCollectForm($formEntity);
+
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() &&
+            $this->formSubmissionHelper->checkSubmissionAvailability($form, $formEntity)
+        ) {
+            /** @var User $user */
+            $user = $this->getUser();
+            $this->formSubmissionHelper->createAndLogSubmission(
+                $form->getData(),
+                $formEntity,
+                $user ? $user->getAPIUser()->getUserId() : null
+            );
+            return $this->redirectToRoute('form_builder_submission_list');
+        }
+
+        return $this->render('@FormBuilder/form_builder/form/show.html.twig', [
+            'formEntity' => $formEntity,
+            'formView'   => $form->createView(),
         ]);
     }
 }

@@ -13,6 +13,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Form.
@@ -34,11 +35,35 @@ class Form
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Field", mappedBy="form")
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int
+     */
+    protected $maxSubmissions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Field", mappedBy="form", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
      */
     public $fields = [];
+
+    /**
+     * @ORM\OneToMany(targetEntity="FormSubmission", mappedBy="form", cascade={"persist", "remove"})
+     *
+     * @var FormSubmission[]
+     */
+    protected $submissions;
 
     /**
      * Form constructor.
@@ -46,6 +71,44 @@ class Form
     public function __construct()
     {
         $this->fields = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Form
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxSubmissions()
+    {
+        return $this->maxSubmissions;
+    }
+
+    /**
+     * @param int $maxSubmissions
+     * @return Form
+     */
+    public function setMaxSubmissions(int $maxSubmissions): self
+    {
+        $this->maxSubmissions = $maxSubmissions;
+
+        return $this;
     }
 
     /**
@@ -57,17 +120,9 @@ class Form
     }
 
     /**
-     * @param int $id
+     * @return Field[]|ArrayCollection
      */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function getFields(): ArrayCollection
+    public function getFields()
     {
         return $this->fields;
     }
@@ -85,7 +140,10 @@ class Form
      */
     public function addField(Field $field)
     {
-        $this->fields->add($field);
+        if (!$this->fields->contains($field)) {
+            $field->setForm($this);
+            $this->fields->add($field);
+        }
     }
 
     /**

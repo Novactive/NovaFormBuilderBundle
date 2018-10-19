@@ -9,14 +9,14 @@
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
  */
 
-namespace Novactive\Bundle\FormBuilderBundle\Form\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FormEditType extends AbstractType
+class FormCollectType extends AbstractType
 {
     public function getName()
     {
@@ -25,7 +25,7 @@ class FormEditType extends AbstractType
 
     public function getBlockPrefix()
     {
-        return 'novaformbuilder_form_edit';
+        return 'novaformbuilder_form_collect';
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -35,6 +35,7 @@ class FormEditType extends AbstractType
                 [
                     'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Form',
                     'translation_domain' => 'novaformbuilder_form',
+                    'field_types'        => [],
                 ]
             );
     }
@@ -45,8 +46,11 @@ class FormEditType extends AbstractType
             'fields',
             CollectionType::class,
             [
-                'entry_type'    => FieldEditType::class,
+                'entry_type'    => FieldCollectType::class,
                 'label'         => 'novaformbuilder_form.field',
+                'entry_options'  => [
+                    'field_types'    => $options['field_types'] ?? [],
+                ]
             ]
         );
     }

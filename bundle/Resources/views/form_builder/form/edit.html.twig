@@ -1,0 +1,50 @@
+{% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
+{% form_theme form '@FormBuilder/form_builder/form/form_fields.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{%- block breadcrumbs -%}
+    {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
+        { value: 'Forms list'|trans, url: path('form_builder_form_list') },
+        { value: title}
+    ]} %}
+{%- endblock -%}
+
+{%- block page_title -%}
+    {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
+        title: title,
+        iconName: 'article'
+    } %}
+{%- endblock -%}
+
+{%- block content -%}
+
+    <div class="container">
+        <section class="user-form col-md-12 col-md-offset-6">
+            <div>
+                {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.maxSubmissions) }}
+                {{ form_row(form.fields) }}
+
+                <div class="mt-3">
+                    <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+            {#<div><h3>Form preview</h3></div>#}
+        </section>
+    </div>
+{%- endblock -%}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/formbuilder/css/form-builder.css') }}">
+{% endblock %}
+
+{%- block javascripts -%}
+    {{ parent() }}
+    <script src="{{ asset('bundles/formbuilder/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/formbuilder/js/form-builder.js') }}"></script>
+    <script src="{{ asset('bundles/formbuilder/js/fields-sorting.js') }}"></script>
+{%- endblock -%}
