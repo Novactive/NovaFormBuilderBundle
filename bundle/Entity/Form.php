@@ -1,13 +1,16 @@
 <?php
 /**
- * NovaFormBuilderBundle.
+ * NovaFormBuilder Bundle.
  *
- * @package   NovaFormBuilderBundle
+ * @package   Novactive\Bundle\FormBuilderBundle
  *
+ * @author    Novactive <s.morel@novactive.com>
  * @author    Novactive <f.alexandre@novactive.com>
  * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
@@ -16,75 +19,68 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Form.
- *
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\Table(name="novaformbuilder_form")
- *
- * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
 class Form
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(name="id", type="bigint")
      *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="name", type="string")
      *
-     * @Assert\NotNull()
+     * @Assert\NotNull
      *
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="max_submissions", type="bigint", nullable=true)
      *
      * @var int
      */
-    protected $maxSubmissions;
+    private $maxSubmissions;
 
     /**
-     * @ORM\OneToMany(targetEntity="Field", mappedBy="form", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
+     *                                                                                cascade={"persist", "remove"})
      * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
      */
-    public $fields = [];
+    private $fields = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="FormSubmission", mappedBy="form", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission", mappedBy="form",
+     *                                                                                         cascade={"persist",
+     *                                                                            "remove"})
      *
      * @var FormSubmission[]
      */
-    protected $submissions;
+    private $submissions;
 
     /**
      * Form constructor.
      */
     public function __construct()
     {
-        $this->fields = new ArrayCollection();
+        $this->fields      = new ArrayCollection();
+        $this->submissions = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 
-    /**
-     * @param string $name
-     * @return Form
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -92,16 +88,12 @@ class Form
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxSubmissions()
+    public function getMaxSubmissions(): int
     {
-        return $this->maxSubmissions;
+        return $this->maxSubmissions ?? 50000000;
     }
 
     /**
-     * @param int $maxSubmissions
      * @return Form
      */
     public function setMaxSubmissions(int $maxSubmissions): self
@@ -111,12 +103,9 @@ class Form
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**
@@ -135,22 +124,20 @@ class Form
         $this->fields = $fields;
     }
 
-    /**
-     * @param Field $field
-     */
-    public function addField(Field $field)
+    public function addField(Field $field): self
     {
         if (!$this->fields->contains($field)) {
             $field->setForm($this);
             $this->fields->add($field);
         }
+
+        return $this;
     }
 
-    /**
-     * @param Field $field
-     */
-    public function removeField(Field $field)
+    public function removeField(Field $field): self
     {
         $this->fields->removeElement($field);
+
+        return $this;
     }
 }

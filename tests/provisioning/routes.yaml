@@ -1,0 +1,2 @@
+_novaezformbuilder_routes:
+    resource: '@NovaeZFormBuilderBundle/Resources/config/routing.yml'

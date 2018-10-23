@@ -1,8 +1,15 @@
 <?php
 /**
- * @copyright Novactive
- * Date: 12/06/18
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
@@ -14,28 +21,18 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class Number extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\Number($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
         return $field instanceof Field\Number;
     }
 
     /**
-     * @inheritDoc
+     * @param Field\Number $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -45,7 +42,7 @@ class Number extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.number.min',
+                    'label'      => 'novaformbuilder.field.number.min',
                     'empty_data' => 0,
                 ]
             )
@@ -54,14 +51,13 @@ class Number extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.number.max',
+                    'label'      => 'novaformbuilder.field.number.max',
                     'empty_data' => 0,
                 ]
             );
     }
 
     /**
-     * @param FormInterface $fieldForm
      * @param Field\Number $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
@@ -71,14 +67,16 @@ class Number extends FieldType
                 'value',
                 IntegerType::class,
                 [
-                    'required' => $field->isRequired(),
-                    'label'    => $field->getName(),
+                    'required'    => $field->isRequired(),
+                    'label'       => $field->getName(),
                     'constraints' => [
-                        new Range([
-                            'min' => $field->getMin(),
-                            'max' => $field->getMax()
-                        ])
-                    ]
+                        new Range(
+                            [
+                                'min' => $field->getMin(),
+                                'max' => $field->getMax(),
+                            ]
+                        ),
+                    ],
                 ]
             );
     }

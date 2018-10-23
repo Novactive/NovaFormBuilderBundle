@@ -1,4 +1,15 @@
 <?php
+/**
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
+ */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
@@ -6,41 +17,29 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\Range;
 
 class Time extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\Time($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
-        return $field instanceof Field\TextLine;
+        return $field instanceof Field\Time;
     }
 
     /**
-     * @param FormInterface $fieldForm
-     * @param Field         $field
+     * @param Field\Time $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldEditForm() method.
     }
 
     /**
-     * @param FormInterface $fieldForm
-     * @param Field         $field
+     * @param Field\Time $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
@@ -49,14 +48,16 @@ class Time extends FieldType
                 'value',
                 TimeType::class,
                 [
-                    'required' => $field->isRequired(),
-                    'label'    => $field->getName(),
+                    'required'    => $field->isRequired(),
+                    'label'       => $field->getName(),
                     'constraints' => [
-                        new Range([
-                            'min' => $field->getMin(),
-                            'max' => $field->getMax()
-                        ])
-                    ]
+                        new Range(
+                            [
+                                'min' => $field->getMin(),
+                                'max' => $field->getMax(),
+                            ]
+                        ),
+                    ],
                 ]
             );
     }

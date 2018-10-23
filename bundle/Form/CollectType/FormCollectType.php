@@ -1,16 +1,19 @@
 <?php
 /**
- * NovaFormBuilderBundle.
+ * NovaFormBuilder Bundle.
  *
- * @package   NovaFormBuilderBundle
+ * @package   Novactive\Bundle\FormBuilderBundle
  *
- * @author    Novactive <f.alexandre@novactive.com>
+ * @author    Novactive <s.morel@novactive.com>
  * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,39 +21,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormCollectType extends AbstractType
 {
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'novaformbuilder_form_collect';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(
                 [
-                    'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Form',
-                    'translation_domain' => 'novaformbuilder_form',
+                    'data_class'         => Form::class,
+                    'translation_domain' => 'novaformbuilder',
                     'field_types'        => [],
                 ]
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
             'fields',
             CollectionType::class,
             [
                 'entry_type'    => FieldCollectType::class,
-                'label'         => 'novaformbuilder_form.field',
-                'entry_options'  => [
-                    'field_types'    => $options['field_types'] ?? [],
-                ]
+                'label'         => 'novaformbuilder.fields',
+                'entry_options' => [
+                    'field_types' => $options['field_types'] ?? [],
+                ],
             ]
         );
     }

@@ -1,16 +1,22 @@
 <?php
 /**
- * @copyright Novactive
- * Date: 01/06/18
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\CollectType;
 
+use InvalidArgumentException;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldFormMapperInterface;
-use Novactive\Bundle\FormBuilderBundle\Service\FieldTypeRegistry;
+use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeMapperInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -18,49 +24,42 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldCollectType extends AbstractType
 {
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'novaformbuilder_field_collect';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(
                 [
-                    'data_class'         => 'Novactive\Bundle\FormBuilderBundle\Entity\Field',
-                    'translation_domain' => 'novaformbuilder_field',
+                    'data_class'         => Field::class,
+                    'translation_domain' => 'novaformbuilder',
                     'field_types'        => [],
                 ]
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
-                /** @var Field $data */
-                $data = $event->getData();
-                $form = $event->getForm();
+                /** @var Field $field */
+                $field = $event->getData();
+                $form  = $event->getForm();
 
-                if ($data) {
-                    /** @var FieldFormMapperInterface[] $fieldTypes */
+                if ($field) {
                     $fieldTypes = $form->getConfig()->getOption('field_types', []);
-
                     foreach ($fieldTypes as $fieldType) {
-
-                        if (!$fieldType instanceof FieldFormMapperInterface) {
-                            throw new \InvalidArgumentException(
-                                'FieldEditType field_types option require a FieldFormMapperInterface value'
+                        if (!$fieldType instanceof FieldTypeMapperInterface) {
+                            throw new InvalidArgumentException(
+                                'TODO BETTER EXCEPTION NAME 1'
                             );
                         }
-                        if ($fieldType->accept($data)) {
-                            $fieldType->mapFieldCollectForm($form, $data);
+                        if ($fieldType->supports($field)) {
+                            $fieldType->mapFieldCollectForm($form, $field);
                         }
                     }
                 }

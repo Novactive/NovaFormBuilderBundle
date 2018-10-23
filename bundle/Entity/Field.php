@@ -1,13 +1,16 @@
 <?php
 /**
- * NovaFormBuilderBundle.
+ * NovaFormBuilder Bundle.
  *
- * @package   NovaFormBuilderBundle
+ * @package   Novactive\Bundle\FormBuilderBundle
  *
+ * @author    Novactive <s.morel@novactive.com>
  * @author    Novactive <f.alexandre@novactive.com>
  * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
@@ -15,103 +18,76 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\Util\StringUtil;
 
 /**
- * Class Field.
- *
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\Table(name="novaformbuilder_field")
- *
- * TODO: @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb
- *
- * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
 abstract class Field
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(name="id", type="bigint")
      *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
-     * @ORM\Column(type="string", name="name")
+     * @ORM\Column(name="name", type="string")
      *
      * @var string
      */
-    protected $name = '';
+    private $name;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="required", type="boolean")
      *
      * @var bool
      */
-    protected $required = true;
+    private $required;
 
     /**
      * Used to order form fields.
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="weight", type="integer")
      *
      * @var int
      */
-    protected $weight = 0;
+    private $weight;
 
     /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
      *
      * @var Form
      */
-    protected $form;
+    private $form;
 
     /**
-     * @ORM\Column(type="json", name="options")
+     * @ORM\Column(name="options", type="json")
      *
      * @var array
      */
-    protected $options = [];
-
-    /**
-     * @var string
-     */
-    protected $value;
+    private $options = [];
 
     /**
      * Field constructor.
-     *
-     * @param array $properties
      */
     public function __construct(array $properties = [])
     {
+        $this->required = true;
+        $this->weight   = 0;
         foreach ($properties as $property => $value) {
             $this->$property = $value;
         }
     }
 
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return int
-     */
     public function getWeight(): int
     {
         return $this->weight;
     }
 
-    /**
-     * @param int $weight
-     */
     public function setWeight(int $weight): self
     {
         $this->weight = $weight;
@@ -119,17 +95,11 @@ abstract class Field
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequired(): bool
     {
         return $this->required;
     }
 
-    /**
-     * @param bool $required
-     */
     public function setRequired(bool $required): self
     {
         $this->required = $required;
@@ -137,98 +107,70 @@ abstract class Field
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
-        return StringUtil::fqcnToBlockPrefix(get_class($this));
+        return StringUtil::fqcnToBlockPrefix(\get_class($this));
     }
 
-    /**
-     * @return Form
-     */
     public function getForm(): Form
     {
         return $this->form;
     }
 
-    /**
-     * @param Form $form
-     */
-    public function setForm(?Form $form): void
+    public function setForm(Form $form): self
     {
         $this->form = $form;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options): void
+    public function setOptions(array $options): self
     {
         $this->options = $options;
+
+        return $this;
     }
 
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function getOption($name)
+    public function getOption(string $name)
     {
-        return $this->options[$name] ?? false;
+        return $this->options[$name] ?? null;
     }
 
-    /**
-     * @param $name
-     * @param $value
-     */
-    public function setOption($name, $value): void
+    public function setOption(string $name, $value): self
     {
         $this->options[$name] = $value;
+
+        return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getType();
     }

@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Novactive\Bundle\FormBuilderBundle\Field\Type\:
+        resource: '../../Field/Type'
+
+    Novactive\Bundle\FormBuilderBundle\Core\FieldTypeRegistry:
+        arguments: [!tagged novaformbuilder.fieldtype]

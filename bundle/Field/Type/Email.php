@@ -1,47 +1,42 @@
 <?php
+/**
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
+ */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormInterface;
 
 class Email extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\Email($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
         return $field instanceof Field\Email;
     }
 
     /**
-     * @param FormInterface $fieldForm
-     * @param Field         $field
+     * @param Field\Email $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
-        // TODO: Implement mapFieldEditForm() method.
     }
 
-    /**
-     * @param FormInterface $fieldForm
-     * @param Field         $field
-     */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm

@@ -1,8 +1,15 @@
 <?php
 /**
- * @copyright Novactive
- * Date: 12/06/18
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
@@ -14,28 +21,18 @@ use Symfony\Component\Form\FormInterface;
 
 class Date extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\Date($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
         return $field instanceof Field\Date;
     }
 
     /**
-     * @inheritDoc
+     * @param Field\Date $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -45,14 +42,14 @@ class Date extends FieldType
                 ChoiceType::class,
                 [
                     'required' => true,
-                    'label'    => 'novaformbuilder_field.date.default_value',
+                    'label'    => 'novaformbuilder.field.date.default_value',
                     'choices'  => ['empty', 'current date'],
                 ]
             );
     }
 
     /**
-     * @inheritDoc
+     * @param Field\Date $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {

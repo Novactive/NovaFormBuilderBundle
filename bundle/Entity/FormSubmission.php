@@ -1,111 +1,118 @@
 <?php
+/**
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @author    Novactive <f.alexandre@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
+ */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Novactive\Bundle\FormBuilderBundle\Traits\IdentityTrait;
 
 /**
- * Class FormSubmission.
- *
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\Table(name="novaformbuilder_form_submission")
- *
- * @package Novactive\Bundle\FormBuilderBundle\Entity
  */
 class FormSubmission
 {
-    use IdentityTrait;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(name="id", type="bigint")
+     *
+     * @var int
+     */
+    private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Form", inversedBy="submissions")
+     * @ORM\ManyToOne(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Form", inversedBy="submissions")
      *
      * @var Form
      */
     private $form;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(name="data", type="json", nullable=false)
      *
      * @var array
      */
     private $data;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="user_id", type="bigint", nullable=true)
      *
      * @var int|null
      */
     private $userId;
 
-    /**
-     * @return Form
-     */
+    public function getId(): int
+    {
+        return (int) $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getForm(): Form
     {
         return $this->form;
     }
 
-    /**
-     * @param Form $form
-     */
-    public function setForm(Form $form): void
+    public function setForm(Form $form): self
     {
         $this->form = $form;
+
+        return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param array $data
-     */
-    public function setData(array $data): void
+    public function setData(array $data): self
     {
         $this->data = $data;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return int|null
-     */
     public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /**
-     * @param int|null $userId
-     */
-    public function setUserId(?int $userId): void
+    public function setUserId(?int $userId): self
     {
         $this->userId = $userId;
+
+        return $this;
     }
 }

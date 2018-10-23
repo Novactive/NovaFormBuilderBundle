@@ -1,57 +1,48 @@
 <?php
+/**
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @author    Novactive <f.alexandre@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
+ */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
- * Class TextArea.
- *
- * @ORM\Entity()
- *
- * @property int minLength
- * @property int maxLength
- *
- * @package Novactive\Bundle\FormBuilderBundle\Entity\Field
+ * @ORM\Entity
  */
 class TextArea extends Field
 {
-    /**
-     * @return int
-     */
     public function getMinLength(): int
     {
-        return $this->getOption('minLength');
+        return $this->getOption('minLength') ?? 50;
     }
 
-    /**
-     * @param int $minLength
-     */
-    public function setMinLength(int $minLength): void
+    public function setMinLength(int $minLength): self
     {
         $this->setOption('minLength', $minLength);
+
+        return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxLength(): int
     {
-        return $this->getOption('maxLength');
+        return $this->getOption('maxLength') ?? 500;
     }
 
-    /**
-     * @param int $maxLength
-     */
-    public function setMaxLength(int $maxLength): void
+    public function setMaxLength(int $maxLength): self
     {
         $this->setOption('maxLength', $maxLength);
-    }
 
-    public function getFormTypeClass()
-    {
-        return TextareaType::class;
+        return $this;
     }
 }

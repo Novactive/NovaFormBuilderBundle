@@ -1,13 +1,16 @@
 <?php
 /**
- * NovaFormBuilderBundle.
+ * NovaFormBuilder package.
  *
  * @package   Novactive\Bundle\FormBuilderBundle
  *
+ * @author    Novactive <s.morel@novactive.com>
  * @author    Novactive <f.alexandre@novactive.com>
  * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\DependencyInjection;
 
@@ -21,9 +24,9 @@ class FormBuilderExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader->load('services.yaml');
     }
 }

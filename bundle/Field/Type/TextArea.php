@@ -1,8 +1,15 @@
 <?php
 /**
- * @copyright Novactive
- * Date: 12/06/18
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
@@ -11,31 +18,22 @@ use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 class TextArea extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\TextArea($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
         return $field instanceof Field\TextArea;
     }
 
     /**
-     * @inheritDoc
+     * @param Field\TextArea $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -45,7 +43,7 @@ class TextArea extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.textarea.min_length',
+                    'label'      => 'novaformbuilder.field.textarea.min_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -55,16 +53,14 @@ class TextArea extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.textarea.max_length',
+                    'label'      => 'novaformbuilder.field.textarea.max_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             );
     }
 
-
     /**
-     * @param FormInterface $fieldForm
      * @param Field\TextArea $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
@@ -74,15 +70,17 @@ class TextArea extends FieldType
                 'value',
                 TextareaType::class,
                 [
-                    'required'   => $field->isRequired(),
-                    'label'      => 'novaformbuilder_field.textline.value',
-                    'empty_data' => 0,
+                    'required'    => $field->isRequired(),
+                    'label'       => 'novaformbuilder.field.textline.value',
+                    'empty_data'  => 0,
                     'constraints' => [
-                        new Length([
-                            'min' => $field->getMinLength() ?: null,
-                            'max' => $field->getMaxLength() ?: null,
-                        ])
-                    ]
+                        new Length(
+                            [
+                                'min' => $field->getMinLength(),
+                                'max' => $field->getMaxLength(),
+                            ]
+                        ),
+                    ],
                 ]
             );
     }

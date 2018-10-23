@@ -1,0 +1,4 @@
+_novaezformbuilder_bundle:
+    resource: "@NovaeZFormBuilderBundle/Controller"
+    type:     annotation
+    prefix:   /novaezformbuilder

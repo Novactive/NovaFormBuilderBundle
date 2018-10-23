@@ -1,13 +1,15 @@
 <?php
 /**
- * NovaFormBuilderBundle.
+ * NovaFormBuilder Bundle.
  *
- * @package   NovaFormBuilderBundle
+ * @package   Novactive\Bundle\FormBuilderBundle
  *
- * @author    Novactive <f.alexandre@novactive.com>
+ * @author    Novactive <s.morel@novactive.com>
  * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
@@ -18,30 +20,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormEditType extends AbstractType
 {
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'novaformbuilder_form_edit';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(
                 [
                     'data_class'         => Form::class,
-                    'translation_domain' => 'novaformbuilder_form',
+                    'translation_domain' => 'novaformbuilder',
                     'field_class'        => null,
                     'field_types'        => [],
                 ]
             );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name')
@@ -53,12 +50,12 @@ class FormEditType extends AbstractType
                     'field_types'    => $options['field_types'] ?? [],
                     'entry_type'     => FieldEditType::class,
                     'entry_options'  => [
-                        'field_types'    => $options['field_types'] ?? [],
+                        'field_types' => $options['field_types'] ?? [],
                     ],
                     'prototype_data' => $options['field_class'],
                     'allow_add'      => true,
                     'allow_delete'   => true,
-                    'label'          => 'novaformbuilder_form.fields',
+                    'label'          => 'novaformbuilder.fields',
                     'by_reference'   => false, // we need this to force framework set form_id in fields
                 ]
             );

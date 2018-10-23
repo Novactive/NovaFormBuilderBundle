@@ -1,8 +1,15 @@
 <?php
 /**
- * @copyright Novactive
- * Date: 12/06/18
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
 
@@ -15,28 +22,18 @@ use Symfony\Component\Validator\Constraints\Length;
 
 class TextLine extends FieldType
 {
-    /**
-     * @param array $properties
-     *
-     * @return Field
-     */
     public function getEntity(array $properties = []): Field
     {
         return new Field\TextLine($properties);
     }
 
-    /**
-     * @param Field $field
-     *
-     * @return bool
-     */
-    public function accept(Field $field): bool
+    public function supports(Field $field): bool
     {
         return $field instanceof Field\TextLine;
     }
 
     /**
-     * @inheritDoc
+     * @param Field\TextLine $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -46,7 +43,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.textline.min_length',
+                    'label'      => 'novaformbuilder.field.textline.min_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -56,7 +53,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder_field.textline.max_length',
+                    'label'      => 'novaformbuilder.field.textline.max_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -64,7 +61,6 @@ class TextLine extends FieldType
     }
 
     /**
-     * @inheritDoc
      * @param Field\TextLine $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
@@ -74,19 +70,21 @@ class TextLine extends FieldType
                 'value',
                 TextType::class,
                 [
-                    'required'   => $field->isRequired(),
-                    'label'      => 'novaformbuilder_field.textline.value',
-                    'attr'       => [
+                    'required'    => $field->isRequired(),
+                    'label'       => 'novaformbuilder.field.textline.value',
+                    'attr'        => [
                         'min' => $field->getMinLength(),
-                        'max' => $field->getMaxLength()
+                        'max' => $field->getMaxLength(),
                     ],
-                    'empty_data' => 0,
+                    'empty_data'  => 0,
                     'constraints' => [
-                        new Length([
-                            'min' => $field->getMinLength() ?: null,
-                            'max' => $field->getMaxLength() ?: null,
-                        ])
-                    ]
+                        new Length(
+                            [
+                                'min' => $field->getMinLength() ?: null,
+                                'max' => $field->getMaxLength() ?: null,
+                            ]
+                        ),
+                    ],
                 ]
             );
     }

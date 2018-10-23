@@ -1,42 +1,36 @@
 <?php
+/**
+ * NovaFormBuilder Bundle.
+ *
+ * @package   Novactive\Bundle\FormBuilderBundle
+ *
+ * @author    Novactive <s.morel@novactive.com>
+ * @author    Novactive <f.alexandre@novactive.com>
+ * @copyright 2018 Novactive
+ * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
+ */
+
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 /**
- * Class Date.
- *
- * @ORM\Entity()
- *
- * @property string defaultValue
- *
- * @package Novactive\Bundle\FormBuilderBundle\Entity\Field
+ * @ORM\Entity
  */
 class Date extends Field
 {
-    // min max date
-
-    /**
-     * @return int
-     */
     public function getDefaultValue(): string
     {
-        return $this->getOption('defaultValue');
+        return $this->getOption('defaultValue') ?? '';
     }
 
-    /**
-     * @param int $minLength
-     */
-    public function setDefaultValue(string $defaultValue): void
+    public function setDefaultValue(string $defaultValue): self
     {
         $this->setOption('defaultValue', $defaultValue);
-    }
 
-    public function getFormTypeClass()
-    {
-        return DateType::class;
+        return $this;
     }
 }

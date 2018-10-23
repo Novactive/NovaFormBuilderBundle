@@ -1,37 +1,50 @@
 {
-  "name": "novactive/formbuilderbundle",
-  "type": "symfony-bundle",
-  "description": "A bundle to create dynamic symfony form",
-  "keywords": [
-    "novactive",
-    "symfony",
-    "form"
-  ],
-
-  "license": [
-    "MIT"
-  ],
-  "authors": [
-    {
-      "name": "Novactive",
-      "homepage": "http://www.novactive.com",
-      "email": "dir.tech@novactive.com"
+    "name": "novactive/formbuilder",
+    "description": "A bundle to create dynamic symfony form",
+    "keywords": [
+        "novactive",
+        "symfony",
+        "form",
+        "ezpublish",
+        "novactive",
+        "ezplatform"
+    ],
+    "license": [
+        "MIT"
+    ],
+    "homepage": "https://github.com/Novactive/NovaFormBuilder",
+    "type": "ezplatform-bundle",
+    "authors": [
+        {
+            "name": "Novactive",
+            "homepage": "https://www.novactive.us",
+            "email": "ezmailing@novactive.com"
+        },
+        {
+            "name": "Sebastien Morel",
+            "homepage": "https://github.com/Plopix",
+            "email": "morel.seb@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "phpmd/phpmd": "^2.6",
+        "friendsofphp/php-cs-fixer": "^2.13",
+        "squizlabs/php_codesniffer": "^3.3",
+        "sebastian/phpcpd": "^3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Novactive\\Bundle\\FormBuilderBundle\\": "bundle",
+            "Novactive\\Bundle\\eZFormBuilderBundle\\": "ezbundle"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Novactive\\FormBuilder\\Tests\\": "tests"
+        }
     }
-  ],
-  "require": {
-    "php": "^7.1",
-    "symfony/symfony": "^3.4",
-    "doctrine/orm": "^2.5"
-  },
-  "require-dev": {
-    "phpmd/phpmd": "^2.6",
-    "sebastian/phpcpd": "^4.0",
-    "friendsofphp/php-cs-fixer": "^2.10",
-    "squizlabs/php_codesniffer": "^3.2"
-  },
-  "autoload": {
-    "psr-4": {
-      "Novactive\\Bundle\\FormBuilderBundle\\": "bundle"
-    }
-  }
 }
