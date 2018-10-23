@@ -1,8 +1,13 @@
-# Nova Form Builder
+# Novactive Form Builder
+
+| Branch   | Travis build status |
+|:--------:|:-------------------:|
+| master   | [![Build Status](https://travis-ci.org/Novactive/NovaFormBuilderBundle.svg?branch=master)](https://travis-ci.org/Novactive/NovaFormBuilderBundle)
+
 
 A bundle to create dynamic symfony form.
 
-This bundle aims to provide a `lib` to help generating dynamic form in a symfony app.
+This bundle aims to provide a _lib_ to help generating dynamic form in a symfony app.
 
 It provides 2 bundles:
 
@@ -13,3 +18,24 @@ It provides 2 bundles:
 
 
 ## Install
+
+```bash
+make installez
+make serve
+```
+
+
+Contributing
+----------------
+
+[Contributing](CONTRIBUTING.md)
+
+
+Change and License
+------------------
+
+[License](LICENSE)
+
+
+----
+Made with <3 by novactive.

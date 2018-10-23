@@ -59,3 +59,10 @@ codeclean: ## Coding Standard checks
 	$(PHP_BIN) ./vendor/bin/phpcpd bundle
 	$(PHP_BIN) ./vendor/bin/phpcpd ezbundle
 	$(PHP_BIN) ./vendor/bin/phpcpd tests
+
+.PHONY: tests
+tests: ## Tests
+	$(PHP_BIN) ./vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php bundle
+	$(PHP_BIN) ./vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php ezbundle
+	$(PHP_BIN) ./vendor/bin/phpcpd bundle
+	$(PHP_BIN) ./vendor/bin/phpcpd ezbundle
