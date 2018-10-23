@@ -24,7 +24,7 @@ class File extends Field
 {
     public function getFileType(): string
     {
-        return $this->getOption('fileType') ?? '';
+        return (string) $this->getOption('fileType');
     }
 
     public function setFileType(string $fileType): self
@@ -36,7 +36,7 @@ class File extends Field
 
     public function getMaxFileSizeMb(): float
     {
-        return $this->getOption('maxFileSizeMb') ?? 0;
+        return (int) $this->getOption('maxFileSizeMb');
     }
 
     public function setMaxFileSizeMb(float $maxFileSizeMb): self

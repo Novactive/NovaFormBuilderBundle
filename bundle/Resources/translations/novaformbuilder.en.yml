@@ -1,0 +1,32 @@
+form.name: Name
+form.max_submissions: Max Submissions
+form.fields: Fields
+field.name: Name
+field.required:	Required
+field.weight: Priority
+field.textline.min_length: Minimun Length
+field.textline.max_length: Maximum Length
+field.choice.choice_type: Choice Type
+field.choice.choice_type.radio:	Radio
+field.choice.choice_type.checkboxes: Checkboxes
+field.choice.choice_type.dropdown: Dropdown
+field.choice.choices: Choices
+field.choice.choices.value:	Value
+field.choice.choices.weight: Priority
+fieldtype.choice: Choice
+field.date.default_value: Default Value
+fieldtype.date: Date
+fieldtype.email: Email
+field.file.max_file_size_mb: Maximum File Size
+field.file.file_type: File Type
+file.file_type.image: Image
+file.file_type.file: File
+fieldtype.file: File
+field.number.min: Minimun
+field.number.max: Maximum
+fieldtype.number: Number
+field.textarea.min_length: Minimun Length
+field.textarea.max_length: Maximum Length
+fieldtype.time: Time
+fieldtype.text_area: Text Area
+fieldtype.text_line: Text Line

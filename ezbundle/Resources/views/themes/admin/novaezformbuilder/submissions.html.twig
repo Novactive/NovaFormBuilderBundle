@@ -20,7 +20,7 @@
         <div class="ez-table-header">
             <div class="ez-table-header__headline">{{ "Forms Submissions List"|trans }}</div>
             <div class="pl-3 mr-auto">
-                <a class="btn btn-light" href="{{ path('form_builder_form_list') }}">{{ 'Form builder list'|trans }}</a>
+                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'Form builder list'|trans }}</a>
             </div>
         </div>
         <table class="table">
@@ -34,10 +34,10 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{{ path('form_builder_submission_show', {id: submission.id}) }}">{{ submission.form.name }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.form.name }}</a>
                     </td>
                     <td>
-                        <a href="{{ path('form_builder_form_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_editListener/ResizeForm.php', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}

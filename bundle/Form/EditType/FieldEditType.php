@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
+use InvalidArgumentException;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeMapperInterface;
 use Symfony\Component\Form\AbstractType;
@@ -47,34 +48,10 @@ class FieldEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(
-                'name',
-                TextType::class,
-                [
-                    'label' => 'novaformbuilder.field.name',
-                ]
-            )
-            ->add(
-                'required',
-                CheckboxType::class,
-                [
-                    'label' => 'novaformbuilder.field.required',
-                ]
-            )
-            ->add(
-                'weight',
-                NumberType::class,
-                [
-                    'label' => 'novaformbuilder.field.weight',
-                ]
-            )
-            ->add(
-                'type',
-                HiddenType::class,
-                [
-                    'label' => 'novaformbuilder.field.type',
-                ]
-            );
+            ->add('name', TextType::class, ['label' => 'field.name'])
+            ->add('required', CheckboxType::class, ['label' => 'field.required'])
+            ->add('weight', NumberType::class, ['label' => 'field.weight'])
+            ->add('type', HiddenType::class);
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
@@ -84,14 +61,15 @@ class FieldEditType extends AbstractType
                 $form  = $event->getForm();
 
                 if ($field) {
-                    $fieldTypes = $form->getConfig()->getOption('field_types', []);
+                    $fieldTypes = $form->getConfig()->getOption('field_types');
                     foreach ($fieldTypes as $fieldType) {
                         if (!$fieldType instanceof FieldTypeMapperInterface) {
-                            throw new \InvalidArgumentException(
-                                'TODO BETTER EXCEPTION NAME 2'
+                            throw new InvalidArgumentException(
+                                'A FieldType not implementing FieldTypeMapperInterface has been passed: '.
+                                \get_class($fieldType)
                             );
                         }
-                        if ($fieldType->supports($field)) {
+                        if ($fieldType->supportsEntity($field)) {
                             $fieldType->mapFieldEditForm($form, $field);
                         }
                     }

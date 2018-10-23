@@ -24,7 +24,7 @@ class TextArea extends Field
 {
     public function getMinLength(): int
     {
-        return $this->getOption('minLength') ?? 50;
+        return (int) $this->getOption('minLength');
     }
 
     public function setMinLength(int $minLength): self
@@ -36,7 +36,7 @@ class TextArea extends Field
 
     public function getMaxLength(): int
     {
-        return $this->getOption('maxLength') ?? 500;
+        return (int) $this->getOption('maxLength');
     }
 
     public function setMaxLength(int $maxLength): self

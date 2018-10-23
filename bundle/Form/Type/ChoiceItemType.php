@@ -26,22 +26,8 @@ class ChoiceItemType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add(
-            'value',
-            TextType::class,
-            [
-                'attr' => [
-                    'placeholder' => 'novaformbuilder_field.choice.choices.value',
-                ],
-            ]
-        )->add(
-            'weight',
-            TextType::class,
-            [
-                'attr' => [
-                    'placeholder' => 'novaformbuilder_field.choice.choices.weight',
-                ],
-            ]
-        );
+        $builder
+            ->add('value', TextType::class, ['attr' => ['placeholder' => 'field.choice.choices.value']])
+            ->add('weight', TextType::class, ['attr' => ['placeholder' => 'field.choice.choices.weight']]);
     }
 }

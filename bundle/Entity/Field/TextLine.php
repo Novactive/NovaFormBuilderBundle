@@ -22,7 +22,7 @@ class TextLine extends Field
 {
     public function getMinLength(): int
     {
-        return $this->getOption('minLength') ?? 10;
+        return (int) $this->getOption('minLength');
     }
 
     public function setMinLength(int $minLength): self
@@ -34,7 +34,7 @@ class TextLine extends Field
 
     public function getMaxLength(): int
     {
-        return $this->getOption('maxLength') ?? 255;
+        return (int) $this->getOption('maxLength');
     }
 
     public function setMaxLength(int $maxLength): self

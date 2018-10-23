@@ -25,7 +25,7 @@ class Email extends FieldType
         return new Field\Email($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\Email;
     }

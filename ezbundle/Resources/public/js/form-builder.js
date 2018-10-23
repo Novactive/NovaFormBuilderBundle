@@ -1,10 +1,10 @@
-(function($) {
+(function ($) {
     'use strict';
 
     var $document = $(document);
 
-    $(function() {
-        $('.js-form-fields-collection').each(function() {
+    $(function () {
+        $('.js-form-fields-collection').each(function () {
             var $container = $(this);
             var $addButton = $('.js-form-builder__add-new-field', $container);
             var $selectFieldType = $('.js-form-builder__select-field-type', $container);
@@ -33,9 +33,6 @@
             });
 
             $(document).on('click', '.js-form-field-choices__delete-item', function (e) {
-
-                var choiceHolder = $(this).closest('.js-form-fields-choice-items-collection');
-
                 $(this).closest('.js-form-fields-choice-item').remove();
             });
 

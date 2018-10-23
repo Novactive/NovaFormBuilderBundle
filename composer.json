@@ -18,12 +18,7 @@
         {
             "name": "Novactive",
             "homepage": "https://www.novactive.us",
-            "email": "ezmailing@novactive.com"
-        },
-        {
-            "name": "Sebastien Morel",
-            "homepage": "https://github.com/Plopix",
-            "email": "morel.seb@gmail.com"
+            "email": "dir.tech@novactive.com"
         }
     ],
     "require": {

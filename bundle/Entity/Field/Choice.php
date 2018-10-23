@@ -24,7 +24,7 @@ class Choice extends Field
 {
     public function getChoiceType(): string
     {
-        return $this->getOption('choice_type') ?? '';
+        return (string) $this->getOption('choice_type');
     }
 
     public function setChoiceType(string $type): self

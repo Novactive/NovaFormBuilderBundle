@@ -1,18 +1,18 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 {% form_theme form '@NovaeZFormBuilder/nova_form_builder/form_fields.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ title|trans({}, 'novaezformbuilder') }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
         { value: 'Forms list'|trans, url: path('novaezformbuilder_dashboard_index') },
-        { value: title}
+        { value: title|trans({}, 'novaezformbuilder')}
     ]} %}
 {%- endblock -%}
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: title,
+        title: title|trans({}, 'novaezformbuilder'),
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -32,7 +32,6 @@
                 </div>
                 {{ form_end(form) }}
             </div>
-            {#<div><h3>Form preview</h3></div>#}
         </section>
     </div>
 {%- endblock -%}

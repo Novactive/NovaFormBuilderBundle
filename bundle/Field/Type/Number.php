@@ -26,7 +26,7 @@ class Number extends FieldType
         return new Field\Number($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\Number;
     }
@@ -42,7 +42,7 @@ class Number extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.number.min',
+                    'label'      => 'field.number.min',
                     'empty_data' => 0,
                 ]
             )
@@ -51,7 +51,7 @@ class Number extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.number.max',
+                    'label'      => 'field.number.max',
                     'empty_data' => 0,
                 ]
             );

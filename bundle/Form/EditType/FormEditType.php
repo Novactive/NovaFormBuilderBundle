@@ -15,6 +15,8 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,7 +34,6 @@ class FormEditType extends AbstractType
                 [
                     'data_class'         => Form::class,
                     'translation_domain' => 'novaformbuilder',
-                    'field_class'        => null,
                     'field_types'        => [],
                 ]
             );
@@ -41,22 +42,21 @@ class FormEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('maxSubmissions')
+            ->add('name', TextType::class, ['label' => 'form.name'])
+            ->add('maxSubmissions', NumberType::class, ['label' => 'form.max_submissions'])
             ->add(
                 'fields',
                 FieldsCollectionType::class,
                 [
-                    'field_types'    => $options['field_types'] ?? [],
-                    'entry_type'     => FieldEditType::class,
-                    'entry_options'  => [
-                        'field_types' => $options['field_types'] ?? [],
+                    'field_types'   => $options['field_types'],
+                    'entry_type'    => FieldEditType::class,
+                    'entry_options' => [
+                        'field_types' => $options['field_types'],
                     ],
-                    'prototype_data' => $options['field_class'],
-                    'allow_add'      => true,
-                    'allow_delete'   => true,
-                    'label'          => 'novaformbuilder.fields',
-                    'by_reference'   => false, // we need this to force framework set form_id in fields
+                    'allow_add'     => true,
+                    'allow_delete'  => true,
+                    'label'         => 'form.fields',
+                    'by_reference'  => false, // we need this to force framework set form_id in fields
                 ]
             );
     }

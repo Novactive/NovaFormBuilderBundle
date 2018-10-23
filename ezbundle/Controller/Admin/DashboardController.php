@@ -16,8 +16,10 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
+use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -31,38 +33,67 @@ class DashboardController
     const RESULTS_PER_PAGE = 10;
 
     /**
+     * Test action to render & handle clientside form.
+     *
+     * @Route("/view/{id}", name="novaezformbuilder_dashboard_view")
+     * @Template("@ezdesign/novaezformbuilder/show.html.twig")
+     */
+    public function view(
+        Form $formEntity,
+        RouterInterface $router,
+        Request $request,
+        FormFactory $factory,
+        Submitter $submitter
+    ) {
+        $form = $factory->createCollectForm($formEntity);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
+            $submitter->createAndLogSubmission($formEntity);
+
+            return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
      * @Route("/edit/{id}", name="novaezformbuilder_dashboard_edit")
      * @Route("/create", name="novaezformbuilder_dashboard_create")
      * @Template("@ezdesign/novaezformbuilder/edit.html.twig")
      */
     public function edit(
-        ?Form $formData,
+        ?Form $formEntity,
         RouterInterface $router,
         Request $request,
         FormFactory $factory,
         EntityManagerInterface $entityManager
     ) {
         $originalFields = new ArrayCollection();
-        if (null === $formData) {
-            $formData = new Form();
+        if (null === $formEntity) {
+            $formEntity = new Form();
         } else {
-            foreach ($formData->getFields() as $field) {
+            foreach ($formEntity->getFields() as $field) {
                 $originalFields->add($field);
             }
         }
-        $form = $factory->createEditForm($formData);
+
+        $form = $factory->createEditForm($formEntity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($originalFields as $field) {
                 /** @var Field $field */
-                if (!$formData->getFields()->contains($field)) {
+                if (!$formEntity->getFields()->contains($field)) {
                     $field->setForm(null);
                     $entityManager->persist($field);
                     $entityManager->remove($field);
                 }
             }
-            $entityManager->persist($formData);
+            $entityManager->persist($formEntity);
             $entityManager->flush();
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
@@ -71,6 +102,35 @@ class DashboardController
         return [
             'title' => 'novaezformbuilder.title.edit_form',
             'form'  => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/submissions/{page}", name="novaezformbuilder_dashboard_submissions", requirements={"page" = "\d+"})
+     * @Template("@ezdesign/novaezformbuilder/submissions.html.twig")
+     */
+    public function submissions(EntityManagerInterface $entityManager, int $page = 1): array
+    {
+        $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
+
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder));
+        $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
+        $paginator->setCurrentPage($page);
+
+        return [
+            'totalCount'  => $paginator->getNbResults(),
+            'submissions' => $paginator,
+        ];
+    }
+
+    /**
+     * @Route("/submission/{id}", name="novaezformbuilder_dashboard_submission")
+     * @Template("@ezdesign/novaezformbuilder/submission.html.twig")
+     */
+    public function submission(FormSubmission $formSubmission): array
+    {
+        return [
+            'submission' => $formSubmission,
         ];
     }
 

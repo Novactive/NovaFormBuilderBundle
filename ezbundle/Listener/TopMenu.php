@@ -23,11 +23,26 @@ class TopMenu
     public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
         $menu = $event->getMenu();
-        $menu->addChild(
+        $item = $menu->addChild(
             'novaezformbuilder',
             [
-                'route' => 'novaezformbuilder_dashboard_index',
                 'label' => 'Nova eZ Form Builder',
+            ]
+        );
+
+        $item->addChild(
+            'novaezformbuilder_forms_list',
+            [
+                'label' => 'Forms',
+                'route' => 'novaezformbuilder_dashboard_index',
+            ]
+        );
+
+        $item->addChild(
+            'novaezformbuilder_forms_submissions',
+            [
+                'label' => 'Submissions',
+                'route' => 'novaezformbuilder_dashboard_submissions',
             ]
         );
     }

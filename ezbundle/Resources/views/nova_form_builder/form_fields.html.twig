@@ -39,7 +39,7 @@
             <h5 class="mb-0">
                 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#form-field-body-{{ form.vars.id }}" aria-expanded="true" aria-controls="form-field-body-{{ form.vars.id }}">
                     {% if form.vars.data.name is empty %}
-                        {{ 'Field'|trans }} №{{ form.vars.name }}
+                        {{ 'Field'|trans }} #{{ form.vars.name }}
                     {% else %}
                         {{ form.vars.data.name }}
                     {% endif %}

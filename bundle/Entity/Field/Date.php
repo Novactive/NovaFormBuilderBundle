@@ -24,7 +24,7 @@ class Date extends Field
 {
     public function getDefaultValue(): string
     {
-        return $this->getOption('defaultValue') ?? '';
+        return (string) $this->getOption('defaultValue');
     }
 
     public function setDefaultValue(string $defaultValue): self

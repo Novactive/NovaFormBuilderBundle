@@ -26,7 +26,7 @@ class Date extends FieldType
         return new Field\Date($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\Date;
     }
@@ -42,7 +42,7 @@ class Date extends FieldType
                 ChoiceType::class,
                 [
                     'required' => true,
-                    'label'    => 'novaformbuilder.field.date.default_value',
+                    'label'    => 'field.date.default_value',
                     'choices'  => ['empty', 'current date'],
                 ]
             );

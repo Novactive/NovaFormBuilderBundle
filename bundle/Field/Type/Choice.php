@@ -27,7 +27,7 @@ class Choice extends FieldType
         return new Field\Choice($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\Choice;
     }
@@ -48,9 +48,9 @@ class Choice extends FieldType
                         'dropdown'   => 'dropdown',
                     ],
                     'choice_label' => function ($choiceValue, $key, $value) {
-                        return 'novaformbuilder.field.choice.choice_type.'.$key;
+                        return 'field.choice.choice_type.'.$key;
                     },
-                    'label'        => 'novaformbuilder.field.choice.choice_type',
+                    'label'        => 'field.choice.choice_type',
                 ]
             )
             ->add(
@@ -69,7 +69,7 @@ class Choice extends FieldType
                     'allow_add'      => true,
                     'allow_delete'   => true,
                     'required'       => true,
-                    'label'          => 'novaformbuilder.field.choice.choices',
+                    'label'          => 'field.choice.choices',
                     'prototype_name' => '__choice_name__',
                 ]
             );

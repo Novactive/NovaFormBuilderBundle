@@ -90,7 +90,7 @@ class Form
 
     public function getMaxSubmissions(): int
     {
-        return $this->maxSubmissions ?? 50000000;
+        return (int) $this->maxSubmissions;
     }
 
     /**

@@ -27,7 +27,7 @@ class TextLine extends FieldType
         return new Field\TextLine($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\TextLine;
     }
@@ -43,7 +43,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.textline.min_length',
+                    'label'      => 'field.textline.min_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -53,7 +53,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.textline.max_length',
+                    'label'      => 'field.textline.max_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -71,7 +71,7 @@ class TextLine extends FieldType
                 TextType::class,
                 [
                     'required'    => $field->isRequired(),
-                    'label'       => 'novaformbuilder.field.textline.value',
+                    'label'       => 'field.textline.value',
                     'attr'        => [
                         'min' => $field->getMinLength(),
                         'max' => $field->getMaxLength(),

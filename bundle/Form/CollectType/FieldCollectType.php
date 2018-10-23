@@ -55,10 +55,11 @@ class FieldCollectType extends AbstractType
                     foreach ($fieldTypes as $fieldType) {
                         if (!$fieldType instanceof FieldTypeMapperInterface) {
                             throw new InvalidArgumentException(
-                                'TODO BETTER EXCEPTION NAME 1'
+                                'A FieldType not implementing FieldTypeMapperInterface has been passed: '.
+                                \get_class($fieldType)
                             );
                         }
-                        if ($fieldType->supports($field)) {
+                        if ($fieldType->supportsEntity($field)) {
                             $fieldType->mapFieldCollectForm($form, $field);
                         }
                     }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
+use InvalidArgumentException;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\AbstractType;
@@ -39,15 +40,13 @@ class FieldsCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fieldTypesPrototype = [];
-
-        $prototypeOptions = array_replace(
+        $prototypeOptions    = array_replace(
             [
                 'required' => $options['required'],
                 'label'    => $options['prototype_name'].'label__',
             ],
             $options['entry_options']
         );
-
         /** @var FieldTypeInterface $fieldType */
         foreach ($options['field_types'] as $fieldType) {
             $prototypeOptions['data'] = $fieldType->getEntity();
@@ -70,21 +69,13 @@ class FieldsCollectionType extends AbstractType
                 $form  = $event->getForm();
 
                 /** @var FieldTypeInterface[] $fieldTypes */
-                $fieldTypes = $form->getConfig()->getOption('field_types', []);
+                $fieldTypes = $form->getConfig()->getOption('field_types');
 
-                dump($form);
                 foreach ($field as $name => $value) {
                     if (!$form->has($name)) {
-                        if (!isset($fieldTypes[$value['type']])) {
-                            throw new \InvalidArgumentException(
-                                'Wrong field type value'
-                            );
-                        }
-
-                        $fieldType = $fieldTypes[$value['type']];
-
+                        $fieldType = $fieldTypes[$value['type']] ?? null;
                         if (!$fieldType instanceof FieldTypeInterface) {
-                            throw new \InvalidArgumentException(
+                            throw new InvalidArgumentException(
                                 'FieldEditType field_types option require a FieldTypeInterface value'
                             );
                         }

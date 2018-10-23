@@ -21,7 +21,7 @@ interface FieldTypeMapperInterface
     /**
      * Tell if the field need to be mapped by this mapper.
      */
-    public function supports(Field $field): bool;
+    public function supportsEntity(Field $field): bool;
 
     /**
      * Add custom fields to the FieldEditType form.

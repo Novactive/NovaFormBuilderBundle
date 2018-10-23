@@ -31,7 +31,7 @@ class File extends FieldType
         return new Field\File($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\File;
     }
@@ -47,7 +47,7 @@ class File extends FieldType
                 NumberType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.file.max_file_size_mb',
+                    'label'      => 'field.file.max_file_size_mb',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -57,10 +57,10 @@ class File extends FieldType
                 ChoiceType::class,
                 [
                     'required' => true,
-                    'label'    => 'novaformbuilder.field.file.file_type',
+                    'label'    => 'field.file.file_type',
                     'choices'  => [
-                        'novaformbuilder_field.file.file_type.image' => self::TYPE_IMAGE,
-                        'novaformbuilder_field.file.file_type.file'  => self::TYPE_FILE,
+                        'file.file_type.image' => self::TYPE_IMAGE,
+                        'file.file_type.file'  => self::TYPE_FILE,
                     ],
                 ]
             );

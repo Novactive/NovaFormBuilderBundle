@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
     $(function () {
-        var $rows = $('.js-form-field-row');
         var weightSelector = '[name$="weight]"]';
         var $fieldCollection = $('.js-form-fields-collection-entries');
         var $document = $(document);
@@ -11,9 +10,7 @@
         });
 
         $fieldCollection.sortable({
-            update: function(event, ui) {
-                var $elem = ui.item;
-
+            update: function (event, ui) {
                 setWeights($('.js-form-field-row'), weightSelector);
             },
             placeholder: 'formbuilder__sort-placeholder',
@@ -22,7 +19,7 @@
     });
 
     function setWeights($elems, weightSelector) {
-        $elems.each(function(index) {
+        $elems.each(function (index) {
             $(this).find(weightSelector).val(index);
         });
     }

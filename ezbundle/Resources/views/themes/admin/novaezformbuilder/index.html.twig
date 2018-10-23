@@ -43,7 +43,7 @@
                 <tr>
                     <td>{{ formItem.name }}</td>
                     <td class="text-right">
-                        {#<a class="btn btn-link" href="{{ path('form_builder_form_show', {id: formItem.id}) }}">{{ 'Show form'|trans }}</a>#}
+                        <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_view', {id: formItem.id}) }}">{{ 'Show form'|trans }}</a>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: formItem.id}) }}"
                            class="btn btn-icon"
                            title="{{ 'Edit'|trans }}">

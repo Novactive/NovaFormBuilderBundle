@@ -10,7 +10,7 @@
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: formSubmission.form.name,
+        title: submission.form.name,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -20,7 +20,7 @@
         <section class="user-form col-md-6 col-md-offset-3">
             <div class="card mt-3 p-3">
                 <table class="table table-bordered">
-                    {% for item in formSubmission.data %}
+                    {% for item in submission.data %}
                         <tr>
                             <td><strong>{{ item.name }}</strong></td>
                             <td>{{ item.value }}</td>
@@ -30,7 +30,7 @@
             </div>
             <div>
                 <a class="btn btn-link"
-                   href="{{ path('form_builder_submission_list') }}">{{ 'Back to the list'|trans }}</a>
+                   href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'Back to the list'|trans }}</a>
             </div>
         </section>
     </div>

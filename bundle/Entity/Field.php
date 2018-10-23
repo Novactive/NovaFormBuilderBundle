@@ -72,6 +72,11 @@ abstract class Field
     private $options = [];
 
     /**
+     * @var string
+     */
+    private $value;
+
+    /**
      * Field constructor.
      */
     public function __construct(array $properties = [])
@@ -81,6 +86,18 @@ abstract class Field
         foreach ($properties as $property => $value) {
             $this->$property = $value;
         }
+    }
+
+    public function getValue(): string
+    {
+        return $this->value ?? '';
+    }
+
+    public function setValue(string $value): self
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     public function getWeight(): int
@@ -127,7 +144,7 @@ abstract class Field
         return $this->form;
     }
 
-    public function setForm(Form $form): self
+    public function setForm(?Form $form): self
     {
         $this->form = $form;
 

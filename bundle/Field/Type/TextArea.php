@@ -27,7 +27,7 @@ class TextArea extends FieldType
         return new Field\TextArea($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\TextArea;
     }
@@ -43,7 +43,7 @@ class TextArea extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.textarea.min_length',
+                    'label'      => 'field.textarea.min_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -53,7 +53,7 @@ class TextArea extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'novaformbuilder.field.textarea.max_length',
+                    'label'      => 'field.textarea.max_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -71,7 +71,7 @@ class TextArea extends FieldType
                 TextareaType::class,
                 [
                     'required'    => $field->isRequired(),
-                    'label'       => 'novaformbuilder.field.textline.value',
+                    'label'       => 'field.textline.value',
                     'empty_data'  => 0,
                     'constraints' => [
                         new Length(

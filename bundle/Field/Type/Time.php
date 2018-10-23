@@ -26,7 +26,7 @@ class Time extends FieldType
         return new Field\Time($properties);
     }
 
-    public function supports(Field $field): bool
+    public function supportsEntity(Field $field): bool
     {
         return $field instanceof Field\Time;
     }

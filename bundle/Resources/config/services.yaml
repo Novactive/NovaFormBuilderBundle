@@ -4,6 +4,9 @@ services:
         autoconfigure: true
         public: false
 
+    Novactive\Bundle\FormBuilderBundle\Core\:
+        resource: '../../Core'
+
     Novactive\Bundle\FormBuilderBundle\Field\Type\:
         resource: '../../Field/Type'
 
