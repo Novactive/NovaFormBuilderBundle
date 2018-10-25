@@ -80,6 +80,25 @@ class Choice extends FieldType
             $formattedChoices[$choice['value']] = $choice['value'];
         }
 
+        switch ($field->getChoiceType()) {
+            case 'dropdown':
+                $expanded = false;
+                $multiple = false;
+                break;
+            case 'radio':
+                $expanded = true;
+                $multiple = false;
+                break;
+            case 'checkboxes':
+                $expanded = true;
+                $multiple = true;
+                break;
+            default:
+                $expanded = false;
+                $multiple = false;
+                break;
+        }
+
         $fieldForm->add(
             'value',
             ChoiceType::class,
@@ -87,6 +106,8 @@ class Choice extends FieldType
                 'required' => $field->isRequired(),
                 'label'    => $field->getName(),
                 'choices'  => $formattedChoices,
+                'expanded' => $expanded,
+                'multiple' => $multiple
             ]
         );
     }

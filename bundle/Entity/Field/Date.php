@@ -60,6 +60,13 @@ class Date extends Field
 
     public function getValue()
     {
-        return \DateTime::createFromFormat('Y-m-d', '0000-00-00');
+        if (null !== $this->value) {
+            return $this->value;
+        }
+        if ($this->getDefaultValue()) {
+            return new \DateTime();
+        }
+
+        return \DateTime::createFromFormat('Y-m-d', '0000-01-01');
     }
 }

@@ -45,4 +45,9 @@ class Choice extends Field
 
         return $this;
     }
+
+    public function getValue()
+    {
+        return $this->value ?? null;
+    }
 }
