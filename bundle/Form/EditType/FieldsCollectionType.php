@@ -72,31 +72,32 @@ class FieldsCollectionType extends AbstractType
                 $fieldTypes = $form->getConfig()->getOption('field_types');
 
                 foreach ($field as $name => $value) {
-                    if (!$form->has($name)) {
-                        $fieldType = $fieldTypes[$value['type']] ?? null;
-                        if (!$fieldType instanceof FieldTypeInterface) {
-                            throw new InvalidArgumentException(
-                                'A FieldType not implementing FieldTypeInterface has been passed: '.
-                                \get_class($fieldType)
-                            );
-                        }
-
-                        // Set options for new rows
-                        $form->add(
-                            $name,
-                            FieldEditType::class,
-                            array_replace(
-                                [
-                                    'property_path'      => '['.$name.']',
-                                    'data_class'         => $fieldType->getEntityClass(),
-                                    'allow_extra_fields' => true,
-                                    'by_reference'       => false,
-                                    'data'               => $fieldType->newEntity(),
-                                ],
-                                $options['entry_options']
-                            )
+                    if ($form->has($name)) {
+                        continue;
+                    }
+                    $fieldType = $fieldTypes[$value['type']] ?? null;
+                    if (!$fieldType instanceof FieldTypeInterface) {
+                        throw new InvalidArgumentException(
+                            'A FieldType not implementing FieldTypeInterface has been passed: '.
+                            \get_class($fieldType)
                         );
                     }
+
+                    // Set options for new rows
+                    $form->add(
+                        $name,
+                        FieldEditType::class,
+                        array_replace(
+                            [
+                                'property_path'      => '['.$name.']',
+                                'data_class'         => $fieldType->getEntityClass(),
+                                'allow_extra_fields' => true,
+                                'by_reference'       => false,
+                                'data'               => $fieldType->newEntity(),
+                            ],
+                            $options['entry_options']
+                        )
+                    );
                 }
             },
             1000
