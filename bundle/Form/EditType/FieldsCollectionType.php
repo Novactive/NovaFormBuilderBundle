@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use InvalidArgumentException;
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldTypeInterface;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,7 +49,7 @@ class FieldsCollectionType extends AbstractType
         );
         /** @var FieldTypeInterface $fieldType */
         foreach ($options['field_types'] as $fieldType) {
-            $prototypeOptions['data'] = $fieldType->getEntity();
+            $prototypeOptions['data'] = $fieldType->newEntity();
             $prototype                = $builder->create(
                 $options['prototype_name'],
                 $options['entry_type'],
@@ -76,7 +76,8 @@ class FieldsCollectionType extends AbstractType
                         $fieldType = $fieldTypes[$value['type']] ?? null;
                         if (!$fieldType instanceof FieldTypeInterface) {
                             throw new InvalidArgumentException(
-                                'FieldEditType field_types option require a FieldTypeInterface value'
+                                'A FieldType not implementing FieldTypeInterface has been passed: '.
+                                \get_class($fieldType)
                             );
                         }
 
@@ -87,10 +88,10 @@ class FieldsCollectionType extends AbstractType
                             array_replace(
                                 [
                                     'property_path'      => '['.$name.']',
-                                    'data_class'         => \get_class($fieldType->getEntity()),
+                                    'data_class'         => $fieldType->getEntityClass(),
                                     'allow_extra_fields' => true,
                                     'by_reference'       => false,
-                                    'data'               => $fieldType->getEntity(),
+                                    'data'               => $fieldType->newEntity(),
                                 ],
                                 $options['entry_options']
                             )

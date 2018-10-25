@@ -23,4 +23,9 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 class Number extends Field
 {
     use Field\Compose\MinMax;
+
+    public function getValue()
+    {
+        return (int) $this->value;
+    }
 }

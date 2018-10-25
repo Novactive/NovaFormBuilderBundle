@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\FormInterface;

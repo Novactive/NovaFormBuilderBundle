@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceItemType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\WeightedCollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,14 +22,9 @@ use Symfony\Component\Form\FormInterface;
 
 class Choice extends FieldType
 {
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\Choice($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\Choice;
+        return Field\Choice::class;
     }
 
     /**

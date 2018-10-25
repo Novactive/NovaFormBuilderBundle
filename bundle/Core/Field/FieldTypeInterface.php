@@ -11,13 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field;
 
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 interface FieldTypeInterface
 {
-    public function getEntity(array $properties = []): Field;
+    public function getEntityClass(): string;
 
     public function getIdentifier(): string;
+
+    public function supportsEntity(Field $field): bool;
+
+    public function newEntity(array $properties = []): Field;
 }

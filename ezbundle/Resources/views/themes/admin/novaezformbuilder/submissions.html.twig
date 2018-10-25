@@ -37,7 +37,7 @@
                         <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.form.name }}</a>
                     </td>
                     <td>
-                        <a href="{{ path('novaezformbuilder_dashboard_editListener/ResizeForm.php', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}

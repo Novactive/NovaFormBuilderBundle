@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -26,14 +26,9 @@ class File extends FieldType
     const TYPE_IMAGE = 'image';
     const TYPE_FILE  = 'file';
 
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\File($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\File;
+        return Field\File::class;
     }
 
     /**

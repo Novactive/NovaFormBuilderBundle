@@ -11,24 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
 
 class Date extends FieldType
 {
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\Date($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\Date;
+        return Field\Date::class;
     }
 
     /**

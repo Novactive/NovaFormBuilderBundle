@@ -11,69 +11,72 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Length;
 
-class Number extends FieldType
+class TextLine extends FieldType
 {
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\Number($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\Number;
+        return Field\TextLine::class;
     }
 
     /**
-     * @param Field\Number $field
+     * @param Field\TextLine $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
             ->add(
-                'min',
+                'minLength',
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'field.number.min',
+                    'label'      => 'field.textline.min_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             )
             ->add(
-                'max',
+                'maxLength',
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'field.number.max',
+                    'label'      => 'field.textline.max_length',
+                    'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
             );
     }
 
     /**
-     * @param Field\Number $field
+     * @param Field\TextLine $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
             ->add(
                 'value',
-                IntegerType::class,
+                TextType::class,
                 [
                     'required'    => $field->isRequired(),
-                    'label'       => $field->getName(),
+                    'label'       => 'field.textline.value',
+                    'attr'        => [
+                        'min' => $field->getMinLength(),
+                        'max' => $field->getMaxLength(),
+                    ],
+                    'empty_data'  => 0,
                     'constraints' => [
-                        new Range(
+                        new Length(
                             [
-                                'min' => $field->getMin(),
-                                'max' => $field->getMax(),
+                                'min' => $field->getMinLength() ?: null,
+                                'max' => $field->getMaxLength() ?: null,
                             ]
                         ),
                     ],

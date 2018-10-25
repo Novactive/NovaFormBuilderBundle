@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle;
 
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

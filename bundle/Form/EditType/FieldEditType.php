@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
 use InvalidArgumentException;
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldTypeMapperInterface;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeMapperInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

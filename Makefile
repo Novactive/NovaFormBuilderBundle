@@ -37,6 +37,7 @@ installez: ## Install eZ as the local project
 .PHONY: serveez
 serveez: stopez ## Clear the cache and start the web server
 	@cd $(EZ_DIR) && rm -rf var/cache/*
+	@docker start ezdbnovaformbuilder
 	@cd $(EZ_DIR) && bin/console cache:clear
 	@cd $(EZ_DIR) && bin/console server:start
 
@@ -46,6 +47,7 @@ stopez: ## Stop the web server if it is running
 	then \
 		 cd $(EZ_DIR) && php bin/console server:stop;  \
 	fi;
+	@docker stop ezdbnovaformbuilder
 
 .PHONY: codeclean
 codeclean: ## Coding Standard checks

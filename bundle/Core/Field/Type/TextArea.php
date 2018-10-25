@@ -11,29 +11,24 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Length;
 
-class TextLine extends FieldType
+class TextArea extends FieldType
 {
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\TextLine($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\TextLine;
+        return Field\TextArea::class;
     }
 
     /**
-     * @param Field\TextLine $field
+     * @param Field\TextArea $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
@@ -43,7 +38,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'field.textline.min_length',
+                    'label'      => 'field.textarea.min_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -53,7 +48,7 @@ class TextLine extends FieldType
                 IntegerType::class,
                 [
                     'required'   => false,
-                    'label'      => 'field.textline.max_length',
+                    'label'      => 'field.textarea.max_length',
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
@@ -61,27 +56,23 @@ class TextLine extends FieldType
     }
 
     /**
-     * @param Field\TextLine $field
+     * @param Field\TextArea $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
             ->add(
                 'value',
-                TextType::class,
+                TextareaType::class,
                 [
                     'required'    => $field->isRequired(),
                     'label'       => 'field.textline.value',
-                    'attr'        => [
-                        'min' => $field->getMinLength(),
-                        'max' => $field->getMaxLength(),
-                    ],
                     'empty_data'  => 0,
                     'constraints' => [
                         new Length(
                             [
-                                'min' => $field->getMinLength() ?: null,
-                                'max' => $field->getMaxLength() ?: null,
+                                'min' => $field->getMinLength(),
+                                'max' => $field->getMaxLength(),
                             ]
                         ),
                     ],

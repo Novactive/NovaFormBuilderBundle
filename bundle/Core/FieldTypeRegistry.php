@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
-use Novactive\Bundle\FormBuilderBundle\Field\FieldTypeInterface;
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldTypeInterface;
 
 class FieldTypeRegistry
 {

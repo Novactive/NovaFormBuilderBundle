@@ -11,42 +11,56 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Field\Type;
+namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Field\FieldType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Range;
 
-class Time extends FieldType
+class Number extends FieldType
 {
-    public function getEntity(array $properties = []): Field
+    public function getEntityClass(): string
     {
-        return new Field\Time($properties);
-    }
-
-    public function supportsEntity(Field $field): bool
-    {
-        return $field instanceof Field\Time;
+        return Field\Number::class;
     }
 
     /**
-     * @param Field\Time $field
+     * @param Field\Number $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
+        $fieldForm
+            ->add(
+                'min',
+                IntegerType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'field.number.min',
+                    'empty_data' => 0,
+                ]
+            )
+            ->add(
+                'max',
+                IntegerType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'field.number.max',
+                    'empty_data' => 0,
+                ]
+            );
     }
 
     /**
-     * @param Field\Time $field
+     * @param Field\Number $field
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
             ->add(
                 'value',
-                TimeType::class,
+                IntegerType::class,
                 [
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),

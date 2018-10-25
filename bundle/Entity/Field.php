@@ -72,9 +72,9 @@ abstract class Field
     private $options = [];
 
     /**
-     * @var string
+     * @var mixed
      */
-    private $value;
+    protected $value;
 
     /**
      * Field constructor.
@@ -88,12 +88,12 @@ abstract class Field
         }
     }
 
-    public function getValue(): string
+    public function getValue()
     {
         return $this->value ?? '';
     }
 
-    public function setValue(string $value): self
+    public function setValue($value): self
     {
         $this->value = $value;
 
