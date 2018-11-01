@@ -47,7 +47,7 @@ class Number extends FieldType
                 [
                     'required'   => false,
                     'label'      => 'field.number.max',
-                    'empty_data' => 0,
+                    'empty_data' => 100,
                 ]
             );
     }

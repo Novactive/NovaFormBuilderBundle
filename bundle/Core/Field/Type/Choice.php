@@ -107,7 +107,7 @@ class Choice extends FieldType
                 'label'    => $field->getName(),
                 'choices'  => $formattedChoices,
                 'expanded' => $expanded,
-                'multiple' => $multiple
+                'multiple' => $multiple,
             ]
         );
     }

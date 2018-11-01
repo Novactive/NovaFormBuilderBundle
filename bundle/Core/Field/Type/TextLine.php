@@ -66,12 +66,11 @@ class TextLine extends FieldType
                 TextType::class,
                 [
                     'required'    => $field->isRequired(),
-                    'label'       => 'field.textline.value',
+                    'label'       => $field->getName(),
                     'attr'        => [
                         'min' => $field->getMinLength(),
                         'max' => $field->getMaxLength(),
                     ],
-                    'empty_data'  => 0,
                     'constraints' => [
                         new Length(
                             [

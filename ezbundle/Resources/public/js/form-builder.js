@@ -28,6 +28,7 @@
                     .data('prototype');
 
                 var fieldForm = prototype.replace(/__choice_name__/g, choicesCount + 1);
+                $('.mb-3.card .js-form-field-row').find('.js-form-field-choices__delete-item');
                 choicesHolder.children('fieldset').children('div').append(fieldForm);
                 choicesHolder.data('items-count', choicesCount + 1);
             });
@@ -43,6 +44,9 @@
                 $collectionHolder.append(fieldForm);
                 $document.trigger('form-builder:field-added');
                 fieldsCount++;
+                $('.js-form-fields__delete-entry:eq('+(fieldsCount - 1)+')').click(function() {
+                    $(this).closest('.card').remove();
+                });
             });
 
             $deleteBtns.click(function (e) {

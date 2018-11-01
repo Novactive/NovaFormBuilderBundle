@@ -23,8 +23,8 @@ use Symfony\Component\Validator\Constraints;
 
 class File extends FieldType
 {
-    const TYPE_IMAGE = 'image';
-    const TYPE_FILE  = 'file';
+    const TYPE_IMAGE       = 'image';
+    const TYPE_APPLICATION = 'file';
 
     public function getEntityClass(): string
     {
@@ -55,7 +55,7 @@ class File extends FieldType
                     'label'    => 'field.file.file_type',
                     'choices'  => [
                         'file.file_type.image' => self::TYPE_IMAGE,
-                        'file.file_type.file'  => self::TYPE_FILE,
+                        'file.file_type.file'  => self::TYPE_APPLICATION,
                     ],
                 ]
             );
@@ -66,6 +66,10 @@ class File extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $constraintClass = Constraints\File::class;
+        if (self::TYPE_IMAGE === $field->getFileType()) {
+            $constraintClass = Constraints\Image::class;
+        }
         $fieldForm->add(
             'value',
             FileType::class,
@@ -73,10 +77,9 @@ class File extends FieldType
                 'required'    => $field->isRequired(),
                 'label'       => $field->getName(),
                 'constraints' => [
-                    new Constraints\File(
+                    new $constraintClass(
                         [
-                            'maxSize'   => $field->getMaxFileSizeMb().'M',
-                            'mimeTypes' => $field->getFileType(),
+                            'maxSize' => $field->getMaxFileSizeMb().'M',
                         ]
                     ),
                 ],

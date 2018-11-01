@@ -45,4 +45,15 @@ class File extends Field
 
         return $this;
     }
+
+    public function getValue()
+    {
+        if (null === $this->value) {
+            return null;
+        }
+
+        //todo: Do the File upload using Ez IO service or Symfony on the Fly
+
+        return $this->value->getClientOriginalName();
+    }
 }

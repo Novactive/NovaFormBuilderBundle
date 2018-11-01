@@ -20,5 +20,12 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Time extends Field
 {
-    use Field\Compose\MinMax;
+    public function getValue()
+    {
+        if (null !== $this->value) {
+            return $this->value->format('H:i');
+        }
+
+        return new \DateTime();
+    }
 }

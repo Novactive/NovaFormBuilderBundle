@@ -23,7 +23,17 @@
                     {% for item in submission.data %}
                         <tr>
                             <td><strong>{{ item.name }}</strong></td>
-                            <td>{{ item.value }}</td>
+                            <td>
+                                {% if item.value is iterable %}
+                                    {% if item.value.date is defined %}
+                                        {{ item.value.date|date("F d, Y") }}
+                                    {% else %}
+                                        {{ item.value|join(', ') }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ item.value }}
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </table>

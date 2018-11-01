@@ -27,6 +27,7 @@
             <thead>
             <tr>
                 <th>{{ 'Form Name'|trans }}</th>
+                <th>{{ 'Date' }}</th>
                 <th>{{ 'Actions'|trans }}</th>
             </tr>
             </thead>
@@ -36,6 +37,7 @@
                     <td>
                         <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.form.name }}</a>
                     </td>
+                    <td>{{ submission.createdAt|date("F d, Y H:i:s") }}</td>
                     <td>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
                     </td>

@@ -47,7 +47,7 @@ class Date extends FieldType
                 [
                     'required' => true,
                     'label'    => 'field.date.min',
-                    'years'    => range(1900, (int) date('Y'))
+                    'years'    => range(1900, (int) date('Y')),
                 ]
             )
             ->add(
@@ -56,7 +56,7 @@ class Date extends FieldType
                 [
                     'required' => true,
                     'label'    => 'field.date.max',
-                    'years'    => range(1900, (int) date('Y', strtotime('+ 100 years')))
+                    'years'    => range(1900, (int) date('Y', strtotime('+ 100 years'))),
                 ]
             );
     }

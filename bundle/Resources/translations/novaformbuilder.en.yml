@@ -23,6 +23,7 @@ field.file.max_file_size_mb: Maximum File Size
 field.file.file_type: File Type
 file.file_type.image: Image
 file.file_type.file: File
+file.file_type.application: Application
 fieldtype.file: File
 field.number.min: Minimun
 field.number.max: Maximum
