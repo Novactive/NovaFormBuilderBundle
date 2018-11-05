@@ -1,0 +1,39 @@
+system:
+    default:
+        field_templates:
+            -
+                template: "NovaeZFormBuilderBundle:fields:ezcustomform.html.twig"
+
+        fielddefinition_settings_templates:
+            -
+                template: "NovaeZFormBuilderBundle:platformui/content_type/view:ezcustomform.html.twig"
+
+        fielddefinition_edit_templates:
+            -
+                template: "NovaeZFormBuilderBundle:platformui/content_type/edit:ezcustomform.html.twig"
+
+    admin_group:
+        field_templates:
+        -
+            template: "NovaeZFormBuilderBundle:fields:ezcustomform.html.twig"
+
+        fielddefinition_settings_templates:
+        -
+            template: "NovaeZFormBuilderBundle:platformui/content_type/view:ezcustomform.html.twig"
+
+        fielddefinition_edit_templates:
+        -
+            template: "NovaeZFormBuilderBundle:platformui/content_type/edit:ezcustomform.html.twig"
+
+    site_group:
+        field_templates:
+        -
+            template: "NovaeZFormBuilderBundle:fields:ezcustomform.html.twig"
+
+        fielddefinition_settings_templates:
+        -
+            template: "NovaeZFormBuilderBundle:platformui/content_type/view:ezcustomform.html.twig"
+
+        fielddefinition_edit_templates:
+        -
+            template: "NovaeZFormBuilderBundle:platformui/content_type/edit:ezcustomform.html.twig"

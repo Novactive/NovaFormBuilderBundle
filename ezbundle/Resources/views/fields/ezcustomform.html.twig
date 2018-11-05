@@ -1,0 +1,10 @@
+{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
+
+{% block ezcustomform_field %}
+    {% spaceless %}
+        {% set field_value %}
+            {{ field.value.formId }}
+        {% endset %}
+        {{ block( 'simple_block_field' ) }}
+    {% endspaceless %}
+{% endblock %}
