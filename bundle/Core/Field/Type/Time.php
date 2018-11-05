@@ -17,7 +17,6 @@ use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\Range;
 
 class Time extends FieldType
 {
@@ -43,16 +42,8 @@ class Time extends FieldType
                 'value',
                 TimeType::class,
                 [
-                    'required'    => $field->isRequired(),
-                    'label'       => $field->getName(),
-                    'constraints' => [
-                        new Range(
-                            [
-                                'min' => $field->getMin(),
-                                'max' => $field->getMax(),
-                            ]
-                        ),
-                    ],
+                    'required' => $field->isRequired(),
+                    'label'    => $field->getName(),
                 ]
             );
     }

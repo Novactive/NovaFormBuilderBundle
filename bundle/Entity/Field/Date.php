@@ -33,4 +33,40 @@ class Date extends Field
 
         return $this;
     }
+
+    public function getMinValue(): ?\DateTime
+    {
+        return null === $this->getOption('minValue') ? null : new \DateTime($this->getOption('minValue')['date']);
+    }
+
+    public function setMinValue(\DateTime $minValue): self
+    {
+        $this->setOption('minValue', $minValue);
+
+        return $this;
+    }
+
+    public function getMaxValue(): ?\DateTime
+    {
+        return null === $this->getOption('maxValue') ? null : new \DateTime($this->getOption('maxValue')['date']);
+    }
+
+    public function setMaxValue(\DateTime $maxValue): self
+    {
+        $this->setOption('maxValue', $maxValue);
+
+        return $this;
+    }
+
+    public function getValue()
+    {
+        if (null !== $this->value) {
+            return $this->value;
+        }
+        if ($this->getDefaultValue()) {
+            return new \DateTime();
+        }
+
+        return \DateTime::createFromFormat('Y-m-d', '0000-01-01');
+    }
 }

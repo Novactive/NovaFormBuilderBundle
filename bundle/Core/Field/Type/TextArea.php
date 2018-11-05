@@ -66,8 +66,7 @@ class TextArea extends FieldType
                 TextareaType::class,
                 [
                     'required'    => $field->isRequired(),
-                    'label'       => 'field.textline.value',
-                    'empty_data'  => 0,
+                    'label'       => $field->getName(),
                     'constraints' => [
                         new Length(
                             [

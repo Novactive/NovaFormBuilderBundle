@@ -21,7 +21,7 @@ It provides 2 bundles:
 
 ```bash
 make installez
-make serve
+make serveez
 ```
 
 

@@ -29,10 +29,12 @@ installez: ## Install eZ as the local project
 	@WRAP_APP_DIR=./ezplatform WRAP_BUNDLE_DIR=./ php tests/provisioning/wrap.php
 	@rm tests/provisioning/wrap.php
 	@echo "Please set up this way:"
-	@echo "\tenv(DATABASE_HOST)     -> 127.0.0.01"
+	@echo "\tenv(DATABASE_HOST)     -> 127.0.0.1"
 	@echo "\tenv(DATABASE_PORT)     -> 3316"
 	@echo "\tenv(DATABASE_PASSWORD) -> ezplatform"
-	cd $(EZ_DIR) && composer update --lock
+	@cd $(EZ_DIR) && COMPOSER_MEMORY_LIMIT=-1 composer update --lock
+	@bin/console ezplatform:install clean
+	@bin/console novaformbuilder:install
 
 .PHONY: serveez
 serveez: stopez ## Clear the cache and start the web server

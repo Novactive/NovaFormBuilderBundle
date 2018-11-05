@@ -65,7 +65,7 @@ class FieldsCollectionType extends AbstractType
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($options) {
                 /** @var Field $field */
-                $field = $event->getData();
+                $field = (array) $event->getData();
                 $form  = $event->getForm();
 
                 /** @var FieldTypeInterface[] $fieldTypes */

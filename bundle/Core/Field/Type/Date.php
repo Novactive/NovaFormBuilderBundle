@@ -38,7 +38,25 @@ class Date extends FieldType
                 [
                     'required' => true,
                     'label'    => 'field.date.default_value',
-                    'choices'  => ['empty', 'current date'],
+                    'choices'  => ['empty' => 0, 'current date' => 1],
+                ]
+            )
+            ->add(
+                'minValue',
+                DateType::class,
+                [
+                    'required' => true,
+                    'label'    => 'field.date.min',
+                    'years'    => range(1900, (int) date('Y')),
+                ]
+            )
+            ->add(
+                'maxValue',
+                DateType::class,
+                [
+                    'required' => true,
+                    'label'    => 'field.date.max',
+                    'years'    => range(1900, (int) date('Y', strtotime('+ 100 years'))),
                 ]
             );
     }
@@ -55,6 +73,7 @@ class Date extends FieldType
                 [
                     'required' => $field->isRequired(),
                     'label'    => $field->getName(),
+                    'years'    => range($field->getMinValue()->format('Y'), $field->getMaxValue()->format('Y')),
                 ]
             );
     }

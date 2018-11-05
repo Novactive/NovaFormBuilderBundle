@@ -26,6 +26,10 @@ class Number extends Field
 
     public function getValue()
     {
+        if (null === $this->value) {
+            return $this->getMin();
+        }
+
         return (int) $this->value;
     }
 }

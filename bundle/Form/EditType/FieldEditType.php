@@ -49,7 +49,7 @@ class FieldEditType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'field.name'])
-            ->add('required', CheckboxType::class, ['label' => 'field.required'])
+            ->add('required', CheckboxType::class, ['label' => 'field.required', 'required' => false])
             ->add('weight', NumberType::class, ['label' => 'field.weight'])
             ->add('type', HiddenType::class);
 
