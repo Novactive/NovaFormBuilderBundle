@@ -25,8 +25,11 @@ class NovaeZFormBuilderExtension extends Extension implements PrependExtensionIn
 {
     public function prepend(ContainerBuilder $container)
     {
-        $config = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/ez_field_templates.yml'));
-        $container->prependExtensionConfig('ezpublish', $config);
+        $config1 = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/ez_field_templates.yml'));
+        $container->prependExtensionConfig('ezpublish', $config1);
+
+        $config2 = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/ez_admin_edit_field.yml'));
+        $container->prependExtensionConfig('twig', $config2);
     }
 
     /**
