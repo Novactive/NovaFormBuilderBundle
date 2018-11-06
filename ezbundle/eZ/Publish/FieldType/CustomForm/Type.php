@@ -44,11 +44,7 @@ class Type extends FieldType implements Nameable
 
     protected function createValueFromInput($inputValue)
     {
-        if (\is_int($inputValue)) {
-            $inputValue = new Value(['formId' => $inputValue]);
-        }
-
-        return $inputValue;
+        return new Value(['formId' => (int) $inputValue->formId]);
     }
 
     /**
@@ -79,15 +75,13 @@ class Type extends FieldType implements Nameable
         return new Value($hash);
     }
 
-    public function toHash(SPIValue $value): ?array
+    public function toHash(SPIValue $value): ?int
     {
         if ($this->isEmptyValue($value)) {
             return null;
         }
 
-        return [
-            'formId' => $value->formId,
-        ];
+        return (int) $value->formId;
     }
 
     public function toPersistenceValue(SPIValue $value): PersistenceValue

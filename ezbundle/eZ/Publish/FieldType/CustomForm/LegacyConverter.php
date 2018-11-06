@@ -22,14 +22,14 @@ class LegacyConverter implements Converter
 {
     public function toStorageValue(FieldValue $value, StorageFieldValue $storageFieldValue): void
     {
-        $storageFieldValue->dataInt       = json_encode($value->data);
-        $storageFieldValue->sortKeyString = $value->sortKey;
+        $storageFieldValue->dataInt    = $value->data;
+        $storageFieldValue->sortKeyInt = $value->sortKey;
     }
 
     public function toFieldValue(StorageFieldValue $value, FieldValue $fieldValue): void
     {
-        $fieldValue->data    = json_decode($value->dataInt, true);
-        $fieldValue->sortKey = $value->sortKeyString;
+        $fieldValue->data    = $value->dataInt;
+        $fieldValue->sortKey = $value->sortKeyInt;
     }
 
     public function toStorageFieldDefinition(FieldDefinition $fieldDef, StorageFieldDefinition $storageDef): void
