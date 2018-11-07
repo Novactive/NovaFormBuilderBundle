@@ -122,12 +122,12 @@ class DashboardController
         if ($form->isSubmitted() && $form->isValid()) {
             $formService->save($originalFields, $formEntity);
 
-            return ['success' => true];
+            return ['success' => true, 'name' => $formEntity->getName()];
         }
 
         return [
-            'title'       => 'novaezformbuilder.title.edit_form',
-            'renderForm'  => $form->createView(),
+            'title'      => 'novaezformbuilder.title.edit_form',
+            'renderForm' => $form->createView(),
         ];
     }
 

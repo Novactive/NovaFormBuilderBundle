@@ -43,6 +43,7 @@
                 var fieldForm = prototype.replace(/__name__/g, fieldsCount);
                 $collectionHolder.append(fieldForm);
                 $document.trigger('form-builder:field-added');
+                inputNumberEvents();
                 fieldsCount++;
                 $('.js-form-fields__delete-entry:eq(' + (fieldsCount - 1) + ')').click(function () {
                     $(this).closest('.card').remove();
@@ -54,6 +55,22 @@
 
                 $(this).closest('.card').remove();
             });
+
+            inputNumberEvents();
+        });
+    }
+
+    function inputNumberEvents() {
+        var $inputNumbers = $("input[type='number']");
+        $inputNumbers.filter("[name*='[minLength]'],[name*='[maxLength]'],[name*='[min]'],[name*='[max]']").on('blur', function () {
+            if ($(this).val() === '') {
+                $(this).val('0');
+            }
+        });
+        $inputNumbers.filter("[name*='[minLength]'],[name*='[maxLength]'],[name*='[min]'],[name*='[max]']").on('keypress', function (e) {
+            if (e.keyCode === 13 && $(this).val() === '') {
+                $(this).val('0');
+            }
         });
     }
 
@@ -70,17 +87,16 @@
                     $.post($editCustomForm.data('endpoint'), function (data) {
                         $modalBody.append(data);
                         init();
-                        $modalBody.find('form').submit(function(e) {
+                        $modalBody.find('form').submit(function (e) {
                             var form = $(this);
                             var url = $editCustomForm.data('endpoint');
 
                             $.ajax({
                                 type: "POST",
                                 url: url,
-                                data: form.serialize(), // serializes the form's elements.
-                                success: function(data)
-                                {
-                                    alert(data); // show response from the php script.
+                                data: form.serialize(),
+                                success: function (data) {
+                                    console.log(data.success);
                                 }
                             });
                             e.preventDefault();
