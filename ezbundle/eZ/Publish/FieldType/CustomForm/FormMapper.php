@@ -16,7 +16,7 @@ use eZ\Publish\API\Repository\FieldTypeService;
 use EzSystems\RepositoryForms\Data\Content\FieldData;
 use EzSystems\RepositoryForms\FieldType\FieldValueFormMapperInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Form\CustomFormValueTransformer;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Novactive\Bundle\eZFormBuilderBundle\Form\Type\CustomType;
 use Symfony\Component\Form\FormInterface;
 
 class FormMapper implements FieldValueFormMapperInterface
@@ -45,7 +45,7 @@ class FormMapper implements FieldValueFormMapperInterface
                            ->createBuilder()
                            ->create(
                                'value',
-                               TextType::class,
+                               CustomType::class,
                                [
                                    'required' => false,
                                    'label'    => $label,

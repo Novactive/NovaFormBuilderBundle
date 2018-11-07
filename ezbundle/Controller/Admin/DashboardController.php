@@ -15,9 +15,9 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
-use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -30,7 +30,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DashboardController
 {
-    const RESULTS_PER_PAGE = 10;
+    public const RESULTS_PER_PAGE = 10;
 
     /**
      * Test action to render & handle clientside form.
@@ -70,7 +70,7 @@ class DashboardController
         RouterInterface $router,
         Request $request,
         FormFactory $factory,
-        EntityManagerInterface $entityManager
+        FormService $formService
     ) {
         $originalFields = new ArrayCollection();
         if (null === $formEntity) {
@@ -85,16 +85,7 @@ class DashboardController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($originalFields as $field) {
-                /** @var Field $field */
-                if (!$formEntity->getFields()->contains($field)) {
-                    $field->setForm(null);
-                    $entityManager->persist($field);
-                    $entityManager->remove($field);
-                }
-            }
-            $entityManager->persist($formEntity);
-            $entityManager->flush();
+            $formService->save($originalFields, $formEntity);
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
         }
@@ -102,6 +93,41 @@ class DashboardController
         return [
             'title' => 'novaezformbuilder.title.edit_form',
             'form'  => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/render/{id}", name="novaezformbuilder_dashboard_render", defaults={"id"=null})
+     * @Template("@ezdesign/novaezformbuilder/render.html.twig")
+     */
+    public function render(
+        ?Form $formEntity,
+        RouterInterface $router,
+        Request $request,
+        FormFactory $factory,
+        FormService $formService
+    ): array {
+        $originalFields = new ArrayCollection();
+        if (null === $formEntity) {
+            $formEntity = new Form();
+        } else {
+            foreach ($formEntity->getFields() as $field) {
+                $originalFields->add($field);
+            }
+        }
+
+        $form = $factory->createEditForm($formEntity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formService->save($originalFields, $formEntity);
+
+            return ['success' => true];
+        }
+
+        return [
+            'title'       => 'novaezformbuilder.title.edit_form',
+            'renderForm'  => $form->createView(),
         ];
     }
 

@@ -1,4 +1,15 @@
-{% block ezcustomform_widget %}
-    <p>Custom Form</p>
+{% block ezplatform_fieldtype_ezcustomform_widget %}
     {{ block('form_widget') }}
+    <button data-toggle="modal" type="button" data-target="#edit_custom_form" class="btn btn-square btn-sm btn-info">Edit</button>
+    <div class="modal fade" id="edit_custom_form" tabindex="-1" role="dialog" data-endpoint="{{ path('novaezformbuilder_dashboard_render', {id: data.formId}) }}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Form</h5>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

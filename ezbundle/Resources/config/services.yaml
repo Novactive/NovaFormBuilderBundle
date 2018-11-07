@@ -7,3 +7,6 @@ services:
     Novactive\Bundle\eZFormBuilderBundle\Controller\:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
+
+    Novactive\Bundle\eZFormBuilderBundle\Core\:
+        resource: '../../Core'

@@ -34,7 +34,7 @@ class CustomFormValueTransformer implements DataTransformerInterface
             return null;
         }
 
-        return (string) $value;
+        return (array) $value;
     }
 
     public function reverseTransform($value)

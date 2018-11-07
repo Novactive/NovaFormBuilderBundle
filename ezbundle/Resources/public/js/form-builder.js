@@ -3,7 +3,7 @@
 
     var $document = $(document);
 
-    $(function () {
+    function init() {
         $('.js-form-fields-collection').each(function () {
             var $container = $(this);
             var $addButton = $('.js-form-builder__add-new-field', $container);
@@ -44,7 +44,7 @@
                 $collectionHolder.append(fieldForm);
                 $document.trigger('form-builder:field-added');
                 fieldsCount++;
-                $('.js-form-fields__delete-entry:eq('+(fieldsCount - 1)+')').click(function() {
+                $('.js-form-fields__delete-entry:eq(' + (fieldsCount - 1) + ')').click(function () {
                     $(this).closest('.card').remove();
                 });
             });
@@ -55,5 +55,43 @@
                 $(this).closest('.card').remove();
             });
         });
+    }
+
+    $(function () {
+        init();
+
+        // Edit Custom Form on Content Edit page
+        var $editCustomForm = $('#edit_custom_form');
+        if ($editCustomForm.length > 0) {
+
+            $editCustomForm.on('show.bs.modal', function () {
+                var $modalBody = $editCustomForm.find('.modal-body');
+                if ($modalBody.html() === '') {
+                    $.post($editCustomForm.data('endpoint'), function (data) {
+                        $modalBody.append(data);
+                        init();
+                        $modalBody.find('form').submit(function(e) {
+                            var form = $(this);
+                            var url = $editCustomForm.data('endpoint');
+
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: form.serialize(), // serializes the form's elements.
+                                success: function(data)
+                                {
+                                    alert(data); // show response from the php script.
+                                }
+                            });
+                            e.preventDefault();
+                        });
+
+                    });
+                }
+            });
+
+
+        }
+
     });
 })(jQuery);
