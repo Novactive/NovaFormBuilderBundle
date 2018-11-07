@@ -15,7 +15,7 @@ system:
     admin_group:
         field_templates:
         -
-            template: "NovaeZFormBuilderBundle:fields:ezcustomform.html.twig"
+            template: "NovaeZFormBuilderBundle:fields:ezcustomform_admin.html.twig"
 
         fielddefinition_settings_templates:
         -
