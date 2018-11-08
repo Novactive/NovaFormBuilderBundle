@@ -123,11 +123,7 @@ class DashboardController
         if ($form->isSubmitted() && $form->isValid()) {
             $formService->save($originalFields, $formEntity);
 
-            //$data = $serializer->serialize($list, 'json');
-
-            // already concerted in JSON then setContent
             return (new JsonResponse())->setContent(json_encode(['success' => true, 'name' => $formEntity->getName()]));
-            //return ['success' => true, 'name' => $formEntity->getName()];
         }
 
         return [
