@@ -23,6 +23,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -106,7 +107,7 @@ class DashboardController
         Request $request,
         FormFactory $factory,
         FormService $formService
-    ): array {
+    ) {
         $originalFields = new ArrayCollection();
         if (null === $formEntity) {
             $formEntity = new Form();
@@ -122,7 +123,11 @@ class DashboardController
         if ($form->isSubmitted() && $form->isValid()) {
             $formService->save($originalFields, $formEntity);
 
-            return ['success' => true, 'name' => $formEntity->getName()];
+            //$data = $serializer->serialize($list, 'json');
+
+            // already concerted in JSON then setContent
+            return (new JsonResponse())->setContent(json_encode(['success' => true, 'name' => $formEntity->getName()]));
+            //return ['success' => true, 'name' => $formEntity->getName()];
         }
 
         return [

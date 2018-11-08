@@ -96,7 +96,14 @@
                                 url: url,
                                 data: form.serialize(),
                                 success: function (data) {
-                                    console.log(data.success);
+                                    if (data.success === undefined) {
+                                        var regex = /(<form[^>]+>|<form>|<\/form>)/g;
+                                        var formContent = data.replace(regex , '');
+                                        $modalBody.find('form').html(formContent);
+                                    } else {
+                                        $('#attached-form').html(data.name);
+                                        $editCustomForm.modal('hide');
+                                    }
                                 }
                             });
                             e.preventDefault();
