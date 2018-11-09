@@ -17,11 +17,21 @@
 
 {%- block content -%}
     <section class="container my-4">
+        {% if form is not null %}
+            <h2>Form: {{ form.name }}</h2>
+        {% endif %}
         <div class="ez-table-header">
-            <div class="ez-table-header__headline">{{ "Forms Submissions List"|trans }}</div>
-            <div class="pl-3 mr-auto">
-                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'Form builder list'|trans }}</a>
+            <div class="ez-table-header__headline">
+                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ "Forms Submissions List"|trans }}</a>
             </div>
+            <div class="pl-3 mr-auto">
+                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_index') }}">{{ 'Form builder list'|trans }}</a>
+            </div>
+            {% if form is not null %}
+                <div class="ez-table-header__headline">
+                    <a class="btn btn-primary btn-success" href="{{ path('novaezformbuilder_dashboard_submissions_download', {id: form.id}) }}" target="_blank">{{ 'Download Submissions'|trans }}</a>
+                </div>
+            {% endif %}
         </div>
         <table class="table">
             <thead>
@@ -35,9 +45,11 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.form.name }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_submissions', {id: submission.form.id}) }}">{{ submission.form.name }}</a>
                     </td>
-                    <td>{{ submission.createdAt|date("F d, Y H:i:s") }}</td>
+                    <td>
+                        <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.createdAt|date("F d, Y H:i:s") }}</a>
+                    </td>
                     <td>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
                     </td>
@@ -45,6 +57,8 @@
             {% endfor %}
             </tbody>
         </table>
-        {{ pagerfanta(submissions, 'ez') }}
+
+        {{ pagerfanta(submissions, 'ez', {'routeParams' : { 'id': form.id|default(null) } }) }}
+
     </section>
 {%- endblock -%}

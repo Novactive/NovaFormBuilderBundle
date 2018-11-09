@@ -98,9 +98,10 @@
                                 success: function (data) {
                                     if (data.success === undefined) {
                                         var regex = /(<form[^>]+>|<form>|<\/form>)/g;
-                                        var formContent = data.replace(regex , '');
+                                        var formContent = data.replace(regex, '');
                                         $modalBody.find('form').html(formContent);
                                     } else {
+                                        $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(data.id);
                                         $('#attached-form').html(data.name);
                                         $editCustomForm.modal('hide');
                                     }
@@ -113,6 +114,13 @@
                 }
             });
 
+            $('.remove-form', $editCustomForm).click(function() {
+                $.get($(this).data('endpoint'), function (data) {
+                    $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(null);
+                    $('#attached-form').html('');
+                    $editCustomForm.modal('hide');
+                });
+            });
 
         }
 

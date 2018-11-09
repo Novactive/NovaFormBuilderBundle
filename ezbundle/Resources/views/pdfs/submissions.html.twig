@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+
+<body>
+<table border="3" cellpadding="10">
+    <tr>
+        <th>#</th>
+        {% for field in form.fields %}
+            <th>{{ field.name }}</th>
+        {% endfor %}
+        <th>Created</th>
+    </tr>
+    {% for submission in form.submissions %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            {% for item in submission.data %}
+                <td>
+                    {% if item.value is iterable %}
+                        {% if item.value.date is defined %}
+                            {{ item.value.date|date("F d, Y") }}
+                        {% else %}
+                            {{ item.value|join(', ') }}
+                        {% endif %}
+                    {% else %}
+                        {{ item.value }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+            <td>
+                {{ submission.createdAt|date("F d, Y H:i:s") }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

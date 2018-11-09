@@ -140,4 +140,12 @@ class Form
 
         return $this;
     }
+
+    /**
+     * @return ArrayCollection|FormSubmission[]
+     */
+    public function getSubmissions()
+    {
+        return $this->submissions;
+    }
 }

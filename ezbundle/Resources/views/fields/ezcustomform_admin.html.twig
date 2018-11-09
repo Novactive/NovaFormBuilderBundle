@@ -1,10 +1,19 @@
 {% extends "EzPublishCoreBundle::content_fields.html.twig" %}
 
 {% block ezcustomform_field %}
-    HELLO
     {% spaceless %}
         {% set field_value %}
-            {{ field.value.formId }}
+            {% set form = get_form(field.value.formId) %}
+            <p>Form: {{ form.name }}</p>
+            <p>Number of submissions: {{ form.submissions|length }}</p>
+            <p>
+                <a href="{{ path('novaezformbuilder_dashboard_view', {id: field.value.formId}) }}" target="_blank">Test the form</a>
+            </p>
+            {% if form.submissions|length > 0 %}
+                <p>
+                    <a href="{{ path('novaezformbuilder_dashboard_submissions', {id: field.value.formId}) }}" target="_blank">List of Submissions</a>
+                </p>
+            {% endif %}
         {% endset %}
         {{ block( 'simple_block_field' ) }}
     {% endspaceless %}

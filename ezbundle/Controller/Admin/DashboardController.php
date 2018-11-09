@@ -26,6 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -98,12 +99,11 @@ class DashboardController
     }
 
     /**
-     * @Route("/render/{id}", name="novaezformbuilder_dashboard_render", defaults={"id"=null})
+     * @Route("/editmodal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
      * @Template("@ezdesign/novaezformbuilder/render.html.twig")
      */
-    public function render(
+    public function editModal(
         ?Form $formEntity,
-        RouterInterface $router,
         Request $request,
         FormFactory $factory,
         FormService $formService
@@ -121,9 +121,11 @@ class DashboardController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formService->save($originalFields, $formEntity);
+            $formId = $formService->save($originalFields, $formEntity);
 
-            return (new JsonResponse())->setContent(json_encode(['success' => true, 'name' => $formEntity->getName()]));
+            return (new JsonResponse())->setContent(
+                json_encode(['success' => true, 'id' => $formId, 'name' => $formEntity->getName()])
+            );
         }
 
         return [
@@ -133,12 +135,30 @@ class DashboardController
     }
 
     /**
-     * @Route("/submissions/{page}", name="novaezformbuilder_dashboard_submissions", requirements={"page" = "\d+"})
+     * @Route("/remove/form/{id}", name="novaezformbuilder_dashboard_remove_form")
+     */
+    public function removeForm(Form $formEntity, FormService $formService): JsonResponse
+    {
+        $formService->removeForm($formEntity);
+
+        return (new JsonResponse())->setContent(json_encode(['success' => true]));
+    }
+
+    /**
+     * @Route("/submissions/{id}", name="novaezformbuilder_dashboard_submissions", defaults={"id" = null})
      * @Template("@ezdesign/novaezformbuilder/submissions.html.twig")
      */
-    public function submissions(EntityManagerInterface $entityManager, int $page = 1): array
+    public function submissions(EntityManagerInterface $entityManager, ?Form $form, Request $request): array
     {
+        $page = $request->query->get('page') ?? 1;
+
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
+        if (null !== $form) {
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('s.form', ':value'))->setParameter(
+                'value',
+                $form
+            );
+        }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder));
         $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
@@ -147,6 +167,7 @@ class DashboardController
         return [
             'totalCount'  => $paginator->getNbResults(),
             'submissions' => $paginator,
+            'form'        => $form,
         ];
     }
 
@@ -159,6 +180,15 @@ class DashboardController
         return [
             'submission' => $formSubmission,
         ];
+    }
+
+    /**
+     * @Route("/submissions/download/{id}", name="novaezformbuilder_dashboard_submissions_download")
+     */
+    public function downloadSubmissions(Form $form, FormService $formService): Response
+    {
+        $html = $formService->renderSubmissions($form);
+        //$file = $pdfGenerator->generate($html);
     }
 
     /**
