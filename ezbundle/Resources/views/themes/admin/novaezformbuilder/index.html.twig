@@ -35,13 +35,20 @@
             <thead>
             <tr>
                 <th>{{ 'Form Name'|trans }}</th>
-                <th>{{ 'Actions'|trans }}</th>
+                <th>{{ 'Submissions'|trans }}</th>
+                <th class="text-right">{{ 'Actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
             {% for formItem in forms %}
                 <tr>
                     <td>{{ formItem.name }}</td>
+                    <td>
+                        {{ formItem.submissions|length }}
+                        {% if formItem.submissions|length > 0 %}
+                            <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'View'|trans }}</a>
+                        {% endif %}
+                    </td>
                     <td class="text-right">
                         <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_view', {id: formItem.id}) }}">{{ 'Show form'|trans }}</a>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: formItem.id}) }}"

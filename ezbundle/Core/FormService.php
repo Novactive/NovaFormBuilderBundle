@@ -18,7 +18,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use Twig_Environment;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\HttpFoundation\File\File;
 
 class FormService
 {
@@ -27,15 +29,9 @@ class FormService
      */
     private $entityManager;
 
-    /**
-     * @var Twig_Environment
-     */
-    private $twig;
-
-    public function __construct(EntityManagerInterface $entityManager, Twig_Environment $twig)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->twig          = $twig;
     }
 
     public function save(ArrayCollection $originalFields, Form $formEntity): int
@@ -66,18 +62,37 @@ class FormService
         $this->entityManager->flush();
     }
 
-    /**
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     */
-    public function renderSubmissions(Form $form): string
+    public function generateSubmissionsXls(Form $form): File
     {
-        return $this->twig->render(
-            '@NovaeZFormBuilder/pdfs/submissions.html.twig',
-            [
-                'form' => $form,
-            ]
-        );
+        $spreadsheet = new Spreadsheet();
+        $worksheet   = $spreadsheet->getSheet(0);
+        $headerIndex = 'A';
+        foreach ($form->getFields() as $field) {
+            $worksheet->setCellValue("{$headerIndex}1", $field->getName());
+            ++$headerIndex;
+        }
+
+        $rowIndex = 1;
+        foreach ($form->getSubmissions() as $submission) {
+            ++$rowIndex;
+            $columnIndex = 'A';
+            foreach ($submission->getData() as $item) {
+                $value = $item['value'];
+
+                if (\is_array($value)) {
+                    $value = isset($value['date']) ? date('F d, Y', strtotime($value['date'])) : implode(', ', $value);
+                }
+                $worksheet->setCellValue("$columnIndex{$rowIndex}", $value);
+                ++$columnIndex;
+            }
+        }
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:{$headerIndex}1")->getFont()->setBold(true);
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $dest   = tempnam(sys_get_temp_dir(), uniqid('submissions', true)).'.xlsx';
+        $writer->save($dest);
+
+        return new File($dest);
     }
 }

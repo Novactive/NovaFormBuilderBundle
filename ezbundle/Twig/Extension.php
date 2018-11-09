@@ -41,7 +41,7 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
     public function getFunctions()
     {
         return [
-            new \Twig_Function('get_form', [$this, 'getForm'])
+            new \Twig_Function('get_form', [$this, 'getForm']),
         ];
     }
 

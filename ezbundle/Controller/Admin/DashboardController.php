@@ -16,7 +16,6 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
-use Novactive\Bundle\eZFormBuilderBundle\Core\Generator\Pdf;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
@@ -24,10 +23,12 @@ use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -42,6 +43,34 @@ class DashboardController
      * @Template("@ezdesign/novaezformbuilder/show.html.twig")
      */
     public function view(
+        Form $formEntity,
+        RouterInterface $router,
+        Request $request,
+        FormFactory $factory,
+        Submitter $submitter
+    ) {
+        $form = $factory->createCollectForm($formEntity);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
+            $submitter->createAndLogSubmission($formEntity);
+
+            return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * Test action to render & handle clientside form on Front Office.
+     *
+     * @Route("/viewmodal/{id}", name="novaezformbuilder_dashboard_view_modal")
+     * @Template("@ezdesign/novaezformbuilder/show_modal.html.twig")
+     */
+    public function viewModal(
         Form $formEntity,
         RouterInterface $router,
         Request $request,
@@ -101,7 +130,7 @@ class DashboardController
 
     /**
      * @Route("/editmodal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
-     * @Template("@ezdesign/novaezformbuilder/render.html.twig")
+     * @Template("@ezdesign/novaezformbuilder/edit_modal.html.twig")
      */
     public function editModal(
         ?Form $formEntity,
@@ -188,8 +217,12 @@ class DashboardController
      */
     public function downloadSubmissions(Form $form, FormService $formService): Response
     {
-        $html = $formService->renderSubmissions($form);
-        //$file = $pdfGenerator->generate($html);
+        $file = $formService->generateSubmissionsXls($form);
+
+        return (new BinaryFileResponse($file))->deleteFileAfterSend(true)->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'form-'.$form->getId().'-submissions.xlsx'
+        );
     }
 
     /**
