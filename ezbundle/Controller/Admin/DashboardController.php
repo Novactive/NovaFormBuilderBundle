@@ -16,6 +16,7 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
+use Novactive\Bundle\eZFormBuilderBundle\Core\Generator\Pdf;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;

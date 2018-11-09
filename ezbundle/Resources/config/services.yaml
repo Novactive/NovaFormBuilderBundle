@@ -18,6 +18,3 @@ services:
     # Generators
     Novactive\Bundle\eZFormBuilderBundle\Core\Generator\:
         resource: '../../Core/Generator'
-
-    ezsystems.ezformbuilderbundle.pdf.generator:
-        class: Knp\Snappy\GeneratorInterface
