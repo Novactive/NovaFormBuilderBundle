@@ -67,10 +67,10 @@ class DashboardController
     /**
      * Test action to render & handle clientside form on Front Office.
      *
-     * @Route("/viewmodal/{id}", name="novaezformbuilder_dashboard_view_modal")
-     * @Template("@ezdesign/novaezformbuilder/show_modal.html.twig")
+     * @Route("/showfront/{id}", name="novaezformbuilder_dashboard_show_front")
+     * @Template("@NovaeZFormBuilder/fields/ezcustomform_show_front.html.twig")
      */
-    public function viewModal(
+    public function showFront(
         Form $formEntity,
         RouterInterface $router,
         Request $request,
@@ -81,10 +81,12 @@ class DashboardController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
-            $submitter->createAndLogSubmission($formEntity);
+        if ($form->isSubmitted()) {
+            if ($form->isValid() && $submitter->canSubmit($form, $formEntity)) {
+                $submitter->createAndLogSubmission($formEntity);
+            }
 
-            return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+            return new RedirectResponse($request->request->get('redirectUrl'));
         }
 
         return [

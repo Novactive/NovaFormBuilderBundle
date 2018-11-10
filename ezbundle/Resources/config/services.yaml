@@ -14,7 +14,3 @@ services:
     # Twig Extensions
     Novactive\Bundle\eZFormBuilderBundle\Twig\Extension:
         tags: ['twig.extension']
-
-    # Generators
-    Novactive\Bundle\eZFormBuilderBundle\Core\Generator\:
-        resource: '../../Core/Generator'
