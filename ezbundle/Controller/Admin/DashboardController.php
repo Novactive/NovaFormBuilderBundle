@@ -65,35 +65,6 @@ class DashboardController
     }
 
     /**
-     * Test action to render & handle clientside form on Front Office.
-     *
-     * @Route("/showfront/{id}", name="novaezformbuilder_dashboard_show_front")
-     * @Template("@NovaeZFormBuilder/fields/ezcustomform_show_front.html.twig")
-     */
-    public function showFront(
-        Form $formEntity,
-        RouterInterface $router,
-        Request $request,
-        FormFactory $factory,
-        Submitter $submitter
-    ) {
-        $form = $factory->createCollectForm($formEntity);
-
-        $form->handleRequest($request);
-
-        $success = false;
-        if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
-            $submitter->createAndLogSubmission($formEntity);
-            $success = true;
-        }
-
-        return [
-            'form' => $form->createView(),
-            'success' => $success
-        ];
-    }
-
-    /**
      * @Route("/edit/{id}", name="novaezformbuilder_dashboard_edit")
      * @Route("/create", name="novaezformbuilder_dashboard_create")
      * @Template("@ezdesign/novaezformbuilder/edit.html.twig")
