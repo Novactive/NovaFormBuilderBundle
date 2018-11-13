@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Front;
 
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class FormController
 {
@@ -48,7 +48,6 @@ class FormController
         FormFactory $factory,
         Submitter $submitter
     ): array {
-
         $form = $factory->createCollectForm($formEntity);
 
         $form->handleRequest($request);
@@ -64,7 +63,7 @@ class FormController
             'pagelayout' => $this->pageLayout,
             'form'       => $form->createView(),
             'success'    => $success,
-            'stepBack'   => $stepBack
+            'stepBack'   => $stepBack,
         ];
     }
 }
