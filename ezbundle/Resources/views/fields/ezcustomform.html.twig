@@ -1,9 +1,6 @@
 {% extends "EzPublishCoreBundle::content_fields.html.twig" %}
 
 {% block ezcustomform_field %}
-    {#{{ dump(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) }}#}
-    {#{{ dump(app.request.attributes.get('_route')) }}#}
-    {#{{ dump(app.request.attributes.get('_route_params')) }}#}
     {% set controllerAction = 'Novactive\\Bundle\\eZFormBuilderBundle\\Controller\\Admin\\DashboardController:showFront' %}
-    {{ render_esi(controller(controllerAction, {id: field.value.formId, route: app.request.attributes.get('_route'), routeParams: app.request.attributes.get('_route_params')})) }}
+    {{ render_esi(controller(controllerAction, {id: field.value.formId})) }}
 {% endblock %}

@@ -81,16 +81,15 @@ class DashboardController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid() && $submitter->canSubmit($form, $formEntity)) {
-                $submitter->createAndLogSubmission($formEntity);
-            }
-
-            return new RedirectResponse($request->request->get('redirectUrl'));
+        $success = false;
+        if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
+            $submitter->createAndLogSubmission($formEntity);
+            $success = true;
         }
 
         return [
             'form' => $form->createView(),
+            'success' => $success
         ];
     }
 

@@ -2,22 +2,25 @@
 
 <div class="container">
     <h2>{{ form.vars.value.name }}</h2>
-    {% for error in form.vars.errors %}
-        <p class="text-danger p-2">{{ error.message|trans({}, 'novaezformbuilder') }}</p>
-    {% endfor %}
-    <section class="user-form col-md-6 col-md-offset-3">
-        {{ form_start(form, {'attr': {'id' : 'ezcustomform_front'}, 'action': path('novaezformbuilder_dashboard_show_front', {id: form.vars.value.id})}) }}
-
-        {% for field in form.fields.children %}
-            {{ form_widget(field) }}
+    {% if success == true %}
+        <h3>{{ 'Thank you for submitting the form!'|trans }}</h3>
+        <input type="button" value="Back" onClick='window.history.go(-1)'>
+    {% else %}
+        {% for error in form.vars.errors %}
+            <p class="text-danger p-2">{{ error.message|trans({}, 'novaezformbuilder') }}</p>
         {% endfor %}
+        <section class="user-form col-md-6 col-md-offset-3">
+            {{ form_start(form, {'attr': {'id' : 'ezcustomform_front'}, 'action': path('novaezformbuilder_dashboard_show_front', {id: form.vars.value.id})}) }}
 
-        <div class="mt-3">
-            <button class="btn btn-primary" type="submit">{{ 'Submit'|trans }}</button>
-        </div>
+            {% for field in form.fields.children %}
+                {{ form_widget(field) }}
+            {% endfor %}
 
-        <input type="hidden" name="redirectUrl" value="{{ path(app.request.attributes.get('route'), app.request.attributes.get('routeParams')) }}">
+            <div class="mt-3">
+                <button class="btn btn-primary" type="submit">{{ 'Submit'|trans }}</button>
+            </div>
 
-        {{ form_end(form) }}
-    </section>
+            {{ form_end(form) }}
+        </section>
+    {% endif %}
 </div>
