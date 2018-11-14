@@ -1,0 +1,2 @@
+form_themes:
+    - 'NovaeZFormBuilderBundle:fields:ezcustomform_form.html.twig'

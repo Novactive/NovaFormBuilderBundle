@@ -19,4 +19,3 @@ services:
     Novactive\Bundle\eZFormBuilderBundle\Listener\TopMenu:
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure" }
-

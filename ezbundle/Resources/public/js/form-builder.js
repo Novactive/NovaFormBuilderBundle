@@ -3,7 +3,7 @@
 
     var $document = $(document);
 
-    $(function () {
+    function init() {
         $('.js-form-fields-collection').each(function () {
             var $container = $(this);
             var $addButton = $('.js-form-builder__add-new-field', $container);
@@ -43,8 +43,9 @@
                 var fieldForm = prototype.replace(/__name__/g, fieldsCount);
                 $collectionHolder.append(fieldForm);
                 $document.trigger('form-builder:field-added');
+                inputNumberEvents();
                 fieldsCount++;
-                $('.js-form-fields__delete-entry:eq('+(fieldsCount - 1)+')').click(function() {
+                $('.js-form-fields__delete-entry:eq(' + (fieldsCount - 1) + ')').click(function () {
                     $(this).closest('.card').remove();
                 });
             });
@@ -54,6 +55,74 @@
 
                 $(this).closest('.card').remove();
             });
+
+            inputNumberEvents();
         });
+    }
+
+    function inputNumberEvents() {
+        var $inputNumbers = $("input[type='number']");
+        $inputNumbers.filter("[name*='[minLength]'],[name*='[maxLength]'],[name*='[min]'],[name*='[max]']").on('blur', function () {
+            if ($(this).val() === '') {
+                $(this).val('0');
+            }
+        });
+        $inputNumbers.filter("[name*='[minLength]'],[name*='[maxLength]'],[name*='[min]'],[name*='[max]']").on('keypress', function (e) {
+            if (e.keyCode === 13 && $(this).val() === '') {
+                $(this).val('0');
+            }
+        });
+    }
+
+    $(function () {
+        init();
+
+        // Edit Custom Form on Content Edit page
+        var $editCustomForm = $('#edit_custom_form');
+        if ($editCustomForm.length > 0) {
+
+            $editCustomForm.on('show.bs.modal', function () {
+                var $modalBody = $editCustomForm.find('.modal-body');
+                if ($modalBody.html() === '') {
+                    $.post($editCustomForm.data('endpoint'), function (data) {
+                        $modalBody.append(data);
+                        init();
+                        $modalBody.find('form').submit(function (e) {
+                            var form = $(this);
+                            var url = $editCustomForm.data('endpoint');
+
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: form.serialize(),
+                                success: function (data) {
+                                    if (data.success === undefined) {
+                                        var regex = /(<form[^>]+>|<form>|<\/form>)/g;
+                                        var formContent = data.replace(regex, '');
+                                        $modalBody.find('form').html(formContent);
+                                    } else {
+                                        $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(data.id);
+                                        $('#attached-form').html(data.name);
+                                        $editCustomForm.modal('hide');
+                                    }
+                                }
+                            });
+                            e.preventDefault();
+                        });
+
+                    });
+                }
+            });
+
+            $('.remove-form', $editCustomForm).click(function() {
+                $.get($(this).data('endpoint'), function (data) {
+                    $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(null);
+                    $('#attached-form').html('');
+                    $editCustomForm.modal('hide');
+                });
+            });
+
+        }
+
     });
 })(jQuery);

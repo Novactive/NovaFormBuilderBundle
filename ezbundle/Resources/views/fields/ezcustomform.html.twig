@@ -1,0 +1,6 @@
+{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
+
+{% block ezcustomform_field %}
+    {% set controllerAction = 'Novactive\\Bundle\\eZFormBuilderBundle\\Controller\\Front\\FormController:show' %}
+    {{ render_esi(controller(controllerAction, {id: field.value.formId})) }}
+{% endblock %}

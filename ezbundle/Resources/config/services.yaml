@@ -8,3 +8,14 @@ services:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
 
+    Novactive\Bundle\eZFormBuilderBundle\Controller\Front\FormController:
+        tags: ['controller.service_arguments']
+        calls:
+        - [setPagelayout, ["$pagelayout$"]]
+
+    Novactive\Bundle\eZFormBuilderBundle\Core\:
+        resource: '../../Core'
+
+    # Twig Extensions
+    Novactive\Bundle\eZFormBuilderBundle\Twig\Extension:
+        tags: ['twig.extension']

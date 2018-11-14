@@ -1,0 +1,18 @@
+services:
+    ezsystems.ezformbuilderbundle.fieldtype.ezcustomform:
+        parent: ezpublish.fieldType
+        class: Novactive\Bundle\eZFormBuilderBundle\eZ\Publish\FieldType\CustomForm\Type
+        tags:
+        - {name: ezpublish.fieldType, alias: ezcustomform}
+        - {name: ezpublish.fieldType.nameable, alias: ezcustomform}
+
+    ezsystems.ezformbuilderbundle.fieldtype.ezcustomform.converter:
+        class: Novactive\Bundle\eZFormBuilderBundle\eZ\Publish\FieldType\CustomForm\LegacyConverter
+        tags:
+        - {name: ezpublish.storageEngine.legacy.converter, alias: ezcustomform}
+
+    ezsystems.ezformbuilderbundle.fieldtype.ezcustomform.form_mapper:
+        class: Novactive\Bundle\eZFormBuilderBundle\eZ\Publish\FieldType\CustomForm\FormMapper
+        tags:
+        - {name: ez.fieldFormMapper.value, fieldType: ezcustomform}
+        arguments: ['@ezpublish.api.service.field_type']

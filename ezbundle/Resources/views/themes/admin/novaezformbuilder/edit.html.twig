@@ -35,15 +35,3 @@
         </section>
     </div>
 {%- endblock -%}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/novaezformbuilder/css/form-builder.css') }}">
-{% endblock %}
-
-{%- block javascripts -%}
-    {{ parent() }}
-    <script src="{{ asset('bundles/novaezformbuilder/js/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('bundles/novaezformbuilder/js/form-builder.js') }}"></script>
-    <script src="{{ asset('bundles/novaezformbuilder/js/fields-sorting.js') }}"></script>
-{%- endblock -%}

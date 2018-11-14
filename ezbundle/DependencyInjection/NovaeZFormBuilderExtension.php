@@ -16,11 +16,22 @@ namespace Novactive\Bundle\eZFormBuilderBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Yaml\Yaml;
 
-class NovaeZFormBuilderExtension extends Extension
+class NovaeZFormBuilderExtension extends Extension implements PrependExtensionInterface
 {
+    public function prepend(ContainerBuilder $container)
+    {
+        $config1 = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/ez_field_templates.yml'));
+        $container->prependExtensionConfig('ezpublish', $config1);
+
+        $config2 = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/ez_admin_edit_field.yml'));
+        $container->prependExtensionConfig('twig', $config2);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,6 +40,7 @@ class NovaeZFormBuilderExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('ezadminui.yaml');
         $loader->load('services.yaml');
+        $loader->load('fieldtypes.yml');
         $asseticBundles   = $container->getParameter('assetic.bundles');
         $asseticBundles[] = 'NovaeZFormBuilderBundle';
         $container->setParameter('assetic.bundles', $asseticBundles);

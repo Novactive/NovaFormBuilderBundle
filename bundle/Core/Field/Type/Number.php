@@ -57,6 +57,25 @@ class Number extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $min         = $field->getMin() ?: null;
+        $max         = $field->getMax() ?: null;
+        $attributes  = [];
+        $constraints = [];
+        if (null !== $min) {
+            $attributes['min'] = $min;
+        }
+        if (null !== $max) {
+            $attributes['max'] = $max;
+        }
+        if (null !== $min || null !== $max) {
+            $constraints[] = new Range(
+                [
+                    'min' => $min,
+                    'max' => $max,
+                ]
+            );
+        }
+
         $fieldForm
             ->add(
                 'value',
@@ -64,14 +83,8 @@ class Number extends FieldType
                 [
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),
-                    'constraints' => [
-                        new Range(
-                            [
-                                'min' => $field->getMin(),
-                                'max' => $field->getMax(),
-                            ]
-                        ),
-                    ],
+                    'attr'        => $attributes,
+                    'constraints' => $constraints,
                 ]
             );
     }
