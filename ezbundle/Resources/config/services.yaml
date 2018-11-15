@@ -19,3 +19,6 @@ services:
     # Twig Extensions
     Novactive\Bundle\eZFormBuilderBundle\Twig\Extension:
         tags: ['twig.extension']
+
+    Novactive\Bundle\FormBuilderBundle\Command\MigrateCommand:
+        arguments: ['@doctrine.dbal.ezsurvey_connection']
