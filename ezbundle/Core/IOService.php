@@ -42,4 +42,11 @@ class IOService
 
         return $ioFile->id;
     }
+
+    public function readFile(string $filename): string
+    {
+        $file = $this->io->loadBinaryFile($filename);
+
+        return $this->io->getFileContents($file);
+    }
 }

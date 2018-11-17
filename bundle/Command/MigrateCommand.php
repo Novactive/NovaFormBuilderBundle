@@ -14,11 +14,15 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Command;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
+use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -42,30 +46,55 @@ class MigrateCommand extends Command
      */
     private $ioService;
 
+    /**
+     * @var SymfonyStyle
+     */
+    private $io;
+
+    /**
+     * @var FormService
+     */
+    private $formService;
+
     public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'Paragraph', 'MultipleChoice'];
 
     /**
      * MigrateCommand constructor.
      */
-    public function __construct(Connection $connection, IOService $ioService)
+    public function __construct(Connection $connection, IOService $ioService, FormService $formService)
     {
         parent::__construct();
-        $this->connection = $connection;
-        $this->ioService  = $ioService;
+        $this->connection  = $connection;
+        $this->ioService   = $ioService;
+        $this->formService = $formService;
     }
 
     protected function configure(): void
     {
         $this
             ->setName(self::$defaultName)
-            ->setDescription('Import database from the old one.');
+            ->setDescription('Import database from the old one.')
+            ->addOption('export', null, InputOption::VALUE_NONE, 'Export from old DB to json files')
+            ->addOption('import', null, InputOption::VALUE_NONE, 'Import from json files to new DB')
+            ->setHelp('Run novaformbuilder:migrate export|import');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('Update the Database with Custom Novactive Form Builder Tables');
+        $this->io = new SymfonyStyle($input, $output);
+        $this->io->title('Update the Database with Custom Novactive Form Builder Tables');
 
+        if ($input->getOption('export')) {
+            $this->export();
+        } elseif ($input->getOption('import')) {
+            $this->import();
+        } else {
+            $this->io->error('No export or import option found. Run novaformbuilder:migrate --export|--import');
+        }
+    }
+
+    private function export(): void
+    {
         $forms = [];
 
         $surveys = $this->connection->query(
@@ -137,35 +166,82 @@ class MigrateCommand extends Command
                     'weight' => $question['tab_order'], 'options' => $options, 'type' => $type,
                 ];
             }
-            $form    = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => 0, 'fields' => $fields];
-            $fileId  = $this->ioService->saveFile($form['name'], json_encode($form));
-            $forms[] = $fileId;
 
-            // Get the Survey Results
-            $sql = 'SELECT sqr.result_id,sqr.question_id,sq.text,sqr.text answer, ';
+            if (!empty($fields)) {
+                $form    = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => 0, 'fields' => $fields];
+                $fileId  = $this->ioService->saveFile($form['name'], json_encode($form));
+                $forms[] = $fileId;
 
-            $sql .= "CONCAT(sqr.result_id,'-',sqr.question_id) ids, ";
-            $sql .= 'COUNT(CONCAT(sqr.result_id,sqr.question_id)) answersCount ';
-            $sql .= 'FROM ezsurvey s ';
-            $sql .= 'JOIN ezsurveyresult sr ON s.id = sr.survey_id ';
-            $sql .= 'JOIN ezsurveyquestionresult sqr ON sr.id = sqr.result_id ';
-            $sql .= 'JOIN ezsurveyquestion sq ON sqr.question_id = sq.id ';
-            $sql .= 'WHERE s.contentobject_id = ? ';
-            $sql .= 'GROUP BY ids ';
-            $sql .= 'ORDER BY sqr.result_id,sqr.question_id';
+                // Get the Survey Results
+                $sql = 'SELECT sqr.result_id,sqr.question_id,sq.text,sqr.text answer, ';
 
-            $results = $this->runQuery($sql, [$survey['contentobject_id']]);
-            foreach ($results as $result) {
-                $answers = $result['answer'];
-                if ($result['answersCount'] > 1) {
-                    $sql     = 'SELECT text FROM ezsurveyquestionresult WHERE result_id = ? AND question_id = ?';
-                    $answers = $this->runQuery($sql, [$result['result_id'], $result['question_id']], FetchMode::COLUMN);
+                $sql .= "CONCAT(sqr.result_id,'-',sqr.question_id) ids, ";
+                $sql .= 'COUNT(CONCAT(sqr.result_id,sqr.question_id)) answersCount, sr.tstamp ';
+                $sql .= 'FROM ezsurvey s ';
+                $sql .= 'JOIN ezsurveyresult sr ON s.id = sr.survey_id ';
+                $sql .= 'JOIN ezsurveyquestionresult sqr ON sr.id = sqr.result_id ';
+                $sql .= 'JOIN ezsurveyquestion sq ON sqr.question_id = sq.id ';
+                $sql .= 'WHERE s.contentobject_id = ? ';
+                $sql .= 'GROUP BY ids ';
+                $sql .= 'ORDER BY sqr.result_id,sqr.question_id';
+
+                $results     = $this->runQuery($sql, [$survey['contentobject_id']]);
+                $submissions = $data = [];
+                $resultId    = null;
+                $createdDate = 0;
+                foreach ($results as $result) {
+                    if ($result['result_id'] !== $resultId) {
+                        if (!empty($data)) {
+                            $submissions[] = ['data' => $data, 'created_at' => $createdDate];
+                            $data          = [];
+                        }
+                        $resultId = $result['result_id'];
+                    }
+                    $answers = $result['answer'];
+                    if ($result['answersCount'] > 1) {
+                        $sql     = 'SELECT text FROM ezsurveyquestionresult WHERE result_id = ? AND question_id = ?';
+                        $answers = $this->runQuery(
+                            $sql,
+                            [$result['result_id'], $result['question_id']],
+                            FetchMode::COLUMN
+                        );
+                    }
+                    $data[]      = ['name' => $result['text'], 'value' => $answers];
+                    $createdDate = date('Y-m-d H:i:s', (int) $result['tstamp']);
                 }
+                if (!empty($data)) {
+                    $submissions[] = ['data' => $data, 'created_at' => $createdDate];
+                }
+                if (!empty($submissions)) {
+                    $this->ioService->saveFile($form['name'].'_submissions', json_encode($submissions));
+                }
+                $this->io->writeln(
+                    "Exported #{$form['name']} with ".(string) count($fields).' fields and '.
+                    (string) count($submissions).' submissions.'
+                );
             }
         }
         $this->ioService->saveFile('manifest', json_encode($forms));
+        $this->io->section('Total: '.(string) count($forms));
 
-        $io->success('Done.');
+        $this->io->success('Export done.');
+    }
+
+    private function import(): void
+    {
+        $manifest  = $this->ioService->readFile('manifest.json');
+        $fileNames = json_decode($manifest);
+        foreach ($fileNames as $fileName) {
+            $form = json_decode($this->ioService->readFile($fileName));
+            //dump($form);
+            $formEntity = new Form();
+            $formEntity->setName($form->name);
+            $formEntity->setMaxSubmissions($form->maxSubmissions);
+            $this->formService->save(new ArrayCollection(), $formEntity);
+            //break;
+        }
+
+        $this->io->success('Import done.');
     }
 
     private function runQuery(string $sql, array $parameters = [], $fetchMode = null): array
