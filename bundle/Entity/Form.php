@@ -51,7 +51,8 @@ class Form
 
     /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
-     *                                                                                cascade={"persist", "remove"})
+     *                                                                                cascade={"persist", "remove"},
+     *                                                                                  orphanRemoval=true)
      * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
@@ -61,7 +62,7 @@ class Form
     /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission", mappedBy="form",
      *                                                                                         cascade={"persist",
-     *                                                                            "remove"})
+     *                                                                            "remove"}, orphanRemoval=true)
      *
      * @var FormSubmission[]
      */

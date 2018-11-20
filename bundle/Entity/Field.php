@@ -59,6 +59,7 @@ abstract class Field
 
     /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
+     * @ORM\JoinColumn(name="form_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var Form
      */

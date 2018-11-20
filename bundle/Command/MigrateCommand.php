@@ -240,7 +240,7 @@ class MigrateCommand extends Command
                 $className = '\\Novactive\\Bundle\\FormBuilderBundle\\Entity\\Field\\'.$field->type;
                 /* @var Field $fieldEntity */
                 $fieldEntity = new $className();
-                $name        = \strlen($field->name) > 30 ? substr($field->name, 0, 30) : $field->name;
+                $name        = \strlen($field->name) > 255 ? substr($field->name, 0, 255) : $field->name;
                 $fieldEntity->setName($name);
                 $fieldEntity->setWeight($field->weight);
                 $fieldEntity->setRequired($field->required);

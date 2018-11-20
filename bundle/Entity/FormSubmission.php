@@ -34,6 +34,7 @@ class FormSubmission
 
     /**
      * @ORM\ManyToOne(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Form", inversedBy="submissions")
+     * @ORM\JoinColumn(name="form_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var Form
      */
