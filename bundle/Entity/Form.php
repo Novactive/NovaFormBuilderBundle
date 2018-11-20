@@ -88,15 +88,19 @@ class Form
         return $this;
     }
 
-    public function getMaxSubmissions(): int
+    public function getMaxSubmissions(): ?int
     {
+        if (null === $this->maxSubmissions) {
+            return null;
+        }
+
         return (int) $this->maxSubmissions;
     }
 
     /**
      * @return Form
      */
-    public function setMaxSubmissions(int $maxSubmissions): self
+    public function setMaxSubmissions(?int $maxSubmissions): self
     {
         $this->maxSubmissions = $maxSubmissions;
 

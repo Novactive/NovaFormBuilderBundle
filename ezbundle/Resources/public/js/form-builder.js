@@ -72,6 +72,20 @@
                 $(this).val('0');
             }
         });
+        var $submissionsUnlimited = $("input[type='checkbox']").filter("[name*='[submissionsUnlimited]']");
+        var $maxSubmissions = $inputNumbers.filter("[name*='[maxSubmissions]']");
+        if ($submissionsUnlimited.length > 0 && $submissionsUnlimited.prop('checked')) {
+            $maxSubmissions.prop('disabled', true);
+            $maxSubmissions.addClass('bg-grey');
+        }
+        $submissionsUnlimited.change(function () {
+            $maxSubmissions.prop('disabled', this.checked);
+            if (this.checked) {
+                $maxSubmissions.addClass('bg-grey');
+            } else {
+                $maxSubmissions.removeClass('bg-grey');
+            }
+        });
     }
 
     $(function () {
@@ -114,7 +128,7 @@
                 }
             });
 
-            $('.remove-form', $editCustomForm).click(function() {
+            $('.remove-form', $editCustomForm).click(function () {
                 $.get($(this).data('endpoint'), function (data) {
                     $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(null);
                     $('#attached-form').html('');

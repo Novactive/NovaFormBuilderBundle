@@ -3,7 +3,9 @@
 {{ form_start(renderForm) }}
 
 {{ form_row(renderForm.name) }}
-{{ form_row(renderForm.maxSubmissions) }}
+{{ form_label(renderForm.maxSubmissions) }}
+{{ form_row(renderForm.submissionsUnlimited) }}
+{{ form_widget(renderForm.maxSubmissions) }}
 {{ form_row(renderForm.fields) }}
 
 <div class="mt-3">

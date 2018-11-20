@@ -28,3 +28,6 @@
     font-size: 36px;
     cursor: move;
 }
+form:not(.form-inline) .form-control.bg-grey {
+    background-color: #CCCCCC;
+}
