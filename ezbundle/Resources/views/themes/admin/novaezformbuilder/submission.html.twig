@@ -4,6 +4,7 @@
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
+        { value: 'Forms Submissions List'|trans, url: path('novaezformbuilder_dashboard_submissions') },
         { value: 'Form Submission'|trans }
     ]} %}
 {%- endblock -%}

@@ -3,6 +3,8 @@
 
     var $document = $(document);
 
+    $('.nav-item.last:first a').tab('show');
+
     function init() {
         $('.js-form-fields-collection').each(function () {
             var $container = $(this);
