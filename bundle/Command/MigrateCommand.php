@@ -19,6 +19,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,7 +57,7 @@ class MigrateCommand extends Command
      */
     private $formService;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'Paragraph', 'MultipleChoice'];
+    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice'];
 
     /**
      * MigrateCommand constructor.
@@ -116,13 +117,10 @@ class MigrateCommand extends Command
                         $type = 'Email';
                         break;
                     case 'TextEntry':
-                        $type = 'TextLine';
+                        $type = 'TextArea';
                         break;
                     case 'NumberEntry':
                         $type = 'Number';
-                        break;
-                    case 'Paragraph':
-                        $type = 'TextArea';
                         break;
                     case 'MultipleChoice':
                         $type = 'Choice';
@@ -162,13 +160,13 @@ class MigrateCommand extends Command
                 }
 
                 $fields[] = [
-                    'name'   => $question['text'], 'required' => $question['mandatory'],
-                    'weight' => $question['tab_order'], 'options' => $options, 'type' => $type,
+                    'name'   => $question['text'], 'required' => (bool) $question['mandatory'],
+                    'weight' => (int) $question['tab_order'], 'options' => $options, 'type' => $type,
                 ];
             }
 
             if (!empty($fields)) {
-                $form    = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => 0, 'fields' => $fields];
+                $form    = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null, 'fields' => $fields];
                 $fileId  = $this->ioService->saveFile($form['name'], json_encode($form));
                 $forms[] = $fileId;
 
@@ -231,15 +229,35 @@ class MigrateCommand extends Command
     {
         $manifest  = $this->ioService->readFile('manifest.json');
         $fileNames = json_decode($manifest);
+        $counter   = 0;
         foreach ($fileNames as $fileName) {
-            $form = json_decode($this->ioService->readFile($fileName));
-            //dump($form);
+            $form       = json_decode($this->ioService->readFile($fileName));
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
+
+            foreach ($form->fields as $field) {
+                $className = '\\Novactive\\Bundle\\FormBuilderBundle\\Entity\\Field\\'.$field->type;
+                /* @var Field $fieldEntity */
+                $fieldEntity = new $className();
+                $name        = \strlen($field->name) > 30 ? substr($field->name, 0, 30) : $field->name;
+                $fieldEntity->setName($name);
+                $fieldEntity->setWeight($field->weight);
+                $fieldEntity->setRequired($field->required);
+                $fieldEntity->setOptions((array) $field->options);
+                $formEntity->addField($fieldEntity);
+            }
+
             $this->formService->save(new ArrayCollection(), $formEntity);
-            //break;
+            ++$counter;
+
+            $this->io->writeln(
+                "Imported #{$formEntity->getName()} with ".(string) $formEntity->getFields()->count().' fields and '.
+                (string) $formEntity->getSubmissions()->count().' submissions.'
+            );
         }
+
+        $this->io->section('Total: '.(string) $counter);
 
         $this->io->success('Import done.');
     }
