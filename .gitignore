@@ -4,3 +4,4 @@ vendor
 composer.lock
 ezplatform
 tests/provisioning/wrap.php
+.web-server-pid

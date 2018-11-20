@@ -1,5 +1,6 @@
 form.name: Name
 form.max_submissions: Max Submissions
+form.submissions_unlimited: Unlimited
 form.fields: Fields
 field.name: Name
 field.required:	Required

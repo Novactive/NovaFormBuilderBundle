@@ -87,11 +87,17 @@ class DashboardController
 
         $form = $factory->createEditForm($formEntity);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            if (\array_key_exists('submissionsUnlimited', $request->request->get('novaformbuilder_form_edit'))) {
+                $formEntity->setMaxSubmissions(null);
+            }
             $formService->save($originalFields, $formEntity);
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+        }
+        if (null === $form->get('maxSubmissions')->getData()) {
+            $form->get('maxSubmissions')->setData(0);
+            $form->get('submissionsUnlimited')->setData(true);
         }
 
         return [
@@ -123,11 +129,18 @@ class DashboardController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (\array_key_exists('submissionsUnlimited', $request->request->get('novaformbuilder_form_edit'))) {
+                $formEntity->setMaxSubmissions(null);
+            }
             $formId = $formService->save($originalFields, $formEntity);
 
             return (new JsonResponse())->setContent(
                 json_encode(['success' => true, 'id' => $formId, 'name' => $formEntity->getName()])
             );
+        }
+        if (null === $form->get('maxSubmissions')->getData()) {
+            $form->get('maxSubmissions')->setData(0);
+            $form->get('submissionsUnlimited')->setData(true);
         }
 
         return [

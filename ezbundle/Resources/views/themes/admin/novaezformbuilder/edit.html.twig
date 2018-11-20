@@ -24,7 +24,9 @@
             <div>
                 {{ form_start(form) }}
                 {{ form_row(form.name) }}
-                {{ form_row(form.maxSubmissions) }}
+                {{ form_label(form.maxSubmissions) }}
+                {{ form_row(form.submissionsUnlimited) }}
+                {{ form_widget(form.maxSubmissions) }}
                 {{ form_row(form.fields) }}
 
                 <div class="mt-3">

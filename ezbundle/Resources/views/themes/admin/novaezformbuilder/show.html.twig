@@ -1,5 +1,21 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 
+{% block title %}{{ form.vars.value.name }}{% endblock %}
+
+{%- block breadcrumbs -%}
+    {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
+        { value: 'Forms list'|trans, url: path('novaezformbuilder_dashboard_index') },
+        { value: form.vars.value.name }
+    ]} %}
+{%- endblock -%}
+
+{%- block page_title -%}
+    {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
+        title: form.vars.value.name,
+        iconName: 'article'
+    } %}
+{%- endblock -%}
+
 {% form_theme form '@EzPlatformAdminUi/form_fields.html.twig' %}
 
 {% block content %}

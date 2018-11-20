@@ -3,6 +3,8 @@
 
     var $document = $(document);
 
+    $('.nav-item.last:first a').tab('show');
+
     function init() {
         $('.js-form-fields-collection').each(function () {
             var $container = $(this);
@@ -57,6 +59,8 @@
             });
 
             inputNumberEvents();
+
+            fieldSorting();
         });
     }
 
@@ -71,6 +75,44 @@
             if (e.keyCode === 13 && $(this).val() === '') {
                 $(this).val('0');
             }
+        });
+        var $submissionsUnlimited = $("input[type='checkbox']").filter("[name*='[submissionsUnlimited]']");
+        var $maxSubmissions = $inputNumbers.filter("[name*='[maxSubmissions]']");
+        if ($submissionsUnlimited.length > 0 && $submissionsUnlimited.prop('checked')) {
+            $maxSubmissions.prop('disabled', true);
+            $maxSubmissions.addClass('bg-grey');
+        }
+        $submissionsUnlimited.change(function () {
+            $maxSubmissions.prop('disabled', this.checked);
+            if (this.checked) {
+                $maxSubmissions.addClass('bg-grey');
+            } else {
+                $maxSubmissions.removeClass('bg-grey');
+            }
+        });
+    }
+
+    function fieldSorting() {
+        var weightSelector = '[name$="weight]"]';
+        var $fieldCollection = $('.js-form-fields-collection-entries');
+        var $document = $(document);
+
+        $document.on('form-builder:field-added', function () {
+            setWeights($('.js-form-field-row'), weightSelector);
+        });
+
+        $fieldCollection.sortable({
+            update: function (event, ui) {
+                setWeights($('.js-form-field-row'), weightSelector);
+            },
+            placeholder: 'formbuilder__sort-placeholder',
+            forcePlaceholderSize: true
+        });
+    }
+
+    function setWeights($elems, weightSelector) {
+        $elems.each(function (index) {
+            $(this).find(weightSelector).val(index);
         });
     }
 
@@ -114,7 +156,7 @@
                 }
             });
 
-            $('.remove-form', $editCustomForm).click(function() {
+            $('.remove-form', $editCustomForm).click(function () {
                 $.get($(this).data('endpoint'), function (data) {
                     $(".ez-field-edit--ezcustomform input").filter("[name*='[formId]']").val(null);
                     $('#attached-form').html('');

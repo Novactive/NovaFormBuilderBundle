@@ -68,7 +68,8 @@ class Submitter
 
     public function canSubmit(FormInterface $form, Form $formEntity): bool
     {
-        if ($formEntity->getMaxSubmissions() > $this->getFormSubmissionCounter($formEntity)) {
+        $maxSubmissions = $formEntity->getMaxSubmissions();
+        if (null === $maxSubmissions || $maxSubmissions > $formEntity->getSubmissions()->count()) {
             return true;
         }
         $form->addError(
