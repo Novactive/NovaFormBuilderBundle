@@ -36,7 +36,7 @@ class IOService
         $temporaryPath = tempnam(sys_get_temp_dir(), uniqid($name, true));
         $fs->dumpFile($temporaryPath, $content);
         $uploadedFileStruct     = $this->io->newBinaryCreateStructFromLocalFile($temporaryPath);
-        $uploadedFileStruct->id = $name.'.json';
+        $uploadedFileStruct->id = $name;
         $ioFile                 = $this->io->createBinaryFile($uploadedFileStruct);
         $fs->remove($temporaryPath);
 
@@ -48,5 +48,10 @@ class IOService
         $file = $this->io->loadBinaryFile($filename);
 
         return $this->io->getFileContents($file);
+    }
+
+    public function fileExists(string $filename): bool
+    {
+        return $this->io->exists($filename);
     }
 }

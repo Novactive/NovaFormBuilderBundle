@@ -21,6 +21,7 @@ use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,6 +102,9 @@ class MigrateCommand extends Command
         $surveys = $this->connection->query(
             'SELECT max(id) as surveyId, contentobject_id FROM ezsurvey GROUP BY contentobject_id ORDER BY surveyId'
         )->fetchAll();
+
+        $fieldsCounter = $submissionsCounter = 0;
+
         foreach ($surveys as $survey) {
             $fields = [];
 
@@ -165,10 +169,12 @@ class MigrateCommand extends Command
                 ];
             }
 
+            $fieldsCounter += count($fields);
+
             if (!empty($fields)) {
-                $form    = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null, 'fields' => $fields];
-                $fileId  = $this->ioService->saveFile($form['name'], json_encode($form));
-                $forms[] = $fileId;
+                $form = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null, 'fields' => $fields];
+                $this->ioService->saveFile($form['name'].'.json', json_encode($form));
+                $forms[] = $form['name'];
 
                 // Get the Survey Results
                 $sql = 'SELECT sqr.result_id,sqr.question_id,sq.text,sqr.text answer, ';
@@ -211,27 +217,31 @@ class MigrateCommand extends Command
                     $submissions[] = ['data' => $data, 'created_at' => $createdDate];
                 }
                 if (!empty($submissions)) {
-                    $this->ioService->saveFile($form['name'].'_submissions', json_encode($submissions));
+                    $this->ioService->saveFile($form['name'].'_submissions.json', json_encode($submissions));
                 }
                 $this->io->writeln(
                     "Exported #{$form['name']} with ".(string) count($fields).' fields and '.
                     (string) count($submissions).' submissions.'
                 );
+
+                $submissionsCounter += count($submissions);
             }
         }
-        $this->ioService->saveFile('manifest', json_encode($forms));
-        $this->io->section('Total: '.(string) count($forms));
+        $this->ioService->saveFile('manifest.json', json_encode($forms));
+        $this->io->section(
+            'Total: '.(string) count($forms).' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
+        );
 
         $this->io->success('Export done.');
     }
 
     private function import(): void
     {
-        $manifest  = $this->ioService->readFile('manifest.json');
-        $fileNames = json_decode($manifest);
-        $counter   = 0;
+        $manifest     = $this->ioService->readFile('manifest.json');
+        $fileNames    = json_decode($manifest);
+        $formsCounter = $fieldsCounter = $submissionsCounter = 0;
         foreach ($fileNames as $fileName) {
-            $form       = json_decode($this->ioService->readFile($fileName));
+            $form       = json_decode($this->ioService->readFile($fileName.'.json'));
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
@@ -246,10 +256,23 @@ class MigrateCommand extends Command
                 $fieldEntity->setRequired($field->required);
                 $fieldEntity->setOptions((array) $field->options);
                 $formEntity->addField($fieldEntity);
+                ++$fieldsCounter;
+            }
+
+            // Importing Submissions
+            if ($this->ioService->fileExists($fileName.'_submissions.json')) {
+                $submissions = json_decode($this->ioService->readFile($fileName.'_submissions.json'));
+                foreach ($submissions as $submission) {
+                    $submissionEntity = new FormSubmission();
+                    $submissionEntity->setCreatedAt(new \DateTime($submission->created_at));
+                    $submissionEntity->setData((array) $submission->data);
+                    $formEntity->addSubmission($submissionEntity);
+                    ++$submissionsCounter;
+                }
             }
 
             $this->formService->save(new ArrayCollection(), $formEntity);
-            ++$counter;
+            ++$formsCounter;
 
             $this->io->writeln(
                 "Imported #{$formEntity->getName()} with ".(string) $formEntity->getFields()->count().' fields and '.
@@ -257,7 +280,9 @@ class MigrateCommand extends Command
             );
         }
 
-        $this->io->section('Total: '.(string) $counter);
+        $this->io->section(
+            'Total: '.$formsCounter.' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
+        );
 
         $this->io->success('Import done.');
     }

@@ -113,17 +113,11 @@ class Form
         return (int) $this->id;
     }
 
-    /**
-     * @return Field[]|ArrayCollection
-     */
     public function getFields()
     {
         return $this->fields;
     }
 
-    /**
-     * @param Field[] $fields
-     */
     public function setFields(array $fields): void
     {
         $this->fields = $fields;
@@ -146,11 +140,30 @@ class Form
         return $this;
     }
 
-    /**
-     * @return ArrayCollection|FormSubmission[]
-     */
     public function getSubmissions()
     {
         return $this->submissions;
+    }
+
+    public function setSubmissions(array $submissions): void
+    {
+        $this->submissions = $submissions;
+    }
+
+    public function addSubmission(FormSubmission $submission): self
+    {
+        if (!$this->submissions->contains($submission)) {
+            $submission->setForm($this);
+            $this->submissions->add($submission);
+        }
+
+        return $this;
+    }
+
+    public function removeSubmission(FormSubmission $submission): self
+    {
+        $this->submissions->removeElement($submission);
+
+        return $this;
     }
 }
