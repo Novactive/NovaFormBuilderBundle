@@ -41,6 +41,7 @@ class NovaeZFormBuilderExtension extends Extension implements PrependExtensionIn
         $loader->load('ezadminui.yaml');
         $loader->load('services.yaml');
         $loader->load('fieldtypes.yml');
+        $loader->load('services_nonautowired.yaml');
         $asseticBundles   = $container->getParameter('assetic.bundles');
         $asseticBundles[] = 'NovaeZFormBuilderBundle';
         $container->setParameter('assetic.bundles', $asseticBundles);

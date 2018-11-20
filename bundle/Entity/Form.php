@@ -51,7 +51,8 @@ class Form
 
     /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
-     *                                                                                cascade={"persist", "remove"})
+     *                                                                                cascade={"persist", "remove"},
+     *                                                                                  orphanRemoval=true)
      * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]
@@ -61,7 +62,7 @@ class Form
     /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission", mappedBy="form",
      *                                                                                         cascade={"persist",
-     *                                                                            "remove"})
+     *                                                                            "remove"}, orphanRemoval=true)
      *
      * @var FormSubmission[]
      */
@@ -112,17 +113,11 @@ class Form
         return (int) $this->id;
     }
 
-    /**
-     * @return Field[]|ArrayCollection
-     */
     public function getFields()
     {
         return $this->fields;
     }
 
-    /**
-     * @param Field[] $fields
-     */
     public function setFields(array $fields): void
     {
         $this->fields = $fields;
@@ -145,11 +140,30 @@ class Form
         return $this;
     }
 
-    /**
-     * @return ArrayCollection|FormSubmission[]
-     */
     public function getSubmissions()
     {
         return $this->submissions;
+    }
+
+    public function setSubmissions(array $submissions): void
+    {
+        $this->submissions = $submissions;
+    }
+
+    public function addSubmission(FormSubmission $submission): self
+    {
+        if (!$this->submissions->contains($submission)) {
+            $submission->setForm($this);
+            $this->submissions->add($submission);
+        }
+
+        return $this;
+    }
+
+    public function removeSubmission(FormSubmission $submission): self
+    {
+        $this->submissions->removeElement($submission);
+
+        return $this;
     }
 }

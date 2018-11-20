@@ -19,3 +19,10 @@ services:
     # Twig Extensions
     Novactive\Bundle\eZFormBuilderBundle\Twig\Extension:
         tags: ['twig.extension']
+
+    Novactive\Bundle\FormBuilderBundle\Command\MigrateCommand:
+        arguments: ['@doctrine.dbal.ezsurvey_connection', '@formbuilderbundle.io_service']
+
+    formbuilderbundle.io_service:
+        class: Novactive\Bundle\eZFormBuilderBundle\Core\IOService
+        arguments: ['@formbuilderbundle.storage.forms.io_service']
