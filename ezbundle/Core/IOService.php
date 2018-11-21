@@ -29,14 +29,14 @@ class IOService
         $this->io = $io;
     }
 
-    public function saveFile(string $name, string $content): string
+    public function saveFile(string $fileName, string $content): string
     {
         $fs = new Filesystem();
 
-        $temporaryPath = tempnam(sys_get_temp_dir(), uniqid($name, true));
+        $temporaryPath = tempnam(sys_get_temp_dir(), uniqid($fileName, true));
         $fs->dumpFile($temporaryPath, $content);
         $uploadedFileStruct     = $this->io->newBinaryCreateStructFromLocalFile($temporaryPath);
-        $uploadedFileStruct->id = $name;
+        $uploadedFileStruct->id = $fileName;
         $ioFile                 = $this->io->createBinaryFile($uploadedFileStruct);
         $fs->remove($temporaryPath);
 

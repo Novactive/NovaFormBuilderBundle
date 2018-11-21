@@ -14,9 +14,8 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Listener;
 
-use Novactive\Bundle\FormBuilderBundle\Core\FileUploader;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Mapping\PrePersist;
+use Novactive\Bundle\FormBuilderBundle\Core\FileUploader;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
 
 class EntityFileField

@@ -173,7 +173,7 @@ class MigrateCommand extends Command
 
             if (!empty($fields)) {
                 $form = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null, 'fields' => $fields];
-                $this->ioService->saveFile($form['name'].'.json', json_encode($form));
+                $this->ioService->saveFile('forms/'.$form['name'].'.json', json_encode($form));
                 $forms[] = $form['name'];
 
                 // Get the Survey Results
@@ -217,7 +217,7 @@ class MigrateCommand extends Command
                     $submissions[] = ['data' => $data, 'created_at' => $createdDate];
                 }
                 if (!empty($submissions)) {
-                    $this->ioService->saveFile($form['name'].'_submissions.json', json_encode($submissions));
+                    $this->ioService->saveFile('forms/'.$form['name'].'_submissions.json', json_encode($submissions));
                 }
                 $this->io->writeln(
                     "Exported #{$form['name']} with ".(string) count($fields).' fields and '.
@@ -227,7 +227,7 @@ class MigrateCommand extends Command
                 $submissionsCounter += count($submissions);
             }
         }
-        $this->ioService->saveFile('manifest.json', json_encode($forms));
+        $this->ioService->saveFile('forms/manifest.json', json_encode($forms));
         $this->io->section(
             'Total: '.(string) count($forms).' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
         );
@@ -237,11 +237,11 @@ class MigrateCommand extends Command
 
     private function import(): void
     {
-        $manifest     = $this->ioService->readFile('manifest.json');
+        $manifest     = $this->ioService->readFile('forms/manifest.json');
         $fileNames    = json_decode($manifest);
         $formsCounter = $fieldsCounter = $submissionsCounter = 0;
         foreach ($fileNames as $fileName) {
-            $form       = json_decode($this->ioService->readFile($fileName.'.json'));
+            $form       = json_decode($this->ioService->readFile('forms/'.$fileName.'.json'));
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
@@ -260,8 +260,8 @@ class MigrateCommand extends Command
             }
 
             // Importing Submissions
-            if ($this->ioService->fileExists($fileName.'_submissions.json')) {
-                $submissions = json_decode($this->ioService->readFile($fileName.'_submissions.json'));
+            if ($this->ioService->fileExists('forms/'.$fileName.'_submissions.json')) {
+                $submissions = json_decode($this->ioService->readFile('forms/'.$fileName.'_submissions.json'));
                 foreach ($submissions as $submission) {
                     $submissionEntity = new FormSubmission();
                     $submissionEntity->setCreatedAt(new \DateTime($submission->created_at));

@@ -52,7 +52,7 @@ class Submitter
         EntityManagerInterface $em,
         TranslatorInterface $translator,
         SessionInterface $session,
-        FileUploader $fileUploader
+        FileUploaderInterface $fileUploader
     ) {
         $this->em           = $em;
         $this->translator   = $translator;
@@ -71,6 +71,7 @@ class Submitter
             $data[] = [
                 'name'  => $field->getName(),
                 'value' => $value,
+                'type'  => $field->getType(),
             ];
         }
         $formSubmission = new FormSubmission();

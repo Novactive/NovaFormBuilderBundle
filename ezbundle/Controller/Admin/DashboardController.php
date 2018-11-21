@@ -16,8 +16,10 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
+use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -29,6 +31,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -208,6 +211,23 @@ class DashboardController
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             'form-'.$form->getId().'-submissions.xlsx'
         );
+    }
+
+    /**
+     * @Route("/submission/file/download/{id}", name="novaezformbuilder_dashboard_submission_file_download")
+     */
+    public function downloadSubmissionFile(
+        FormSubmission $formSubmission,
+        FileUploaderInterface $fileUploader
+    ): Response {
+        /* @var Field $field */
+        foreach ($formSubmission->getData() as $field) {
+            if ('file' === $field['type']) {
+                return $fileUploader->getFile($field['value']);
+            }
+        }
+
+        throw new NotFoundHttpException('File is not available.');
     }
 
     /**

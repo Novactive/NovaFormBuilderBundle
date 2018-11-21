@@ -25,4 +25,9 @@ services:
 
     formbuilderbundle.io_service:
         class: Novactive\Bundle\eZFormBuilderBundle\Core\IOService
-        arguments: ['@formbuilderbundle.storage.forms.io_service']
+        arguments: ['@form_builder.ezpublish.core.io_service']
+
+    Novactive\Bundle\eZFormBuilderBundle\Core\FileUploader:
+        arguments: ['@formbuilderbundle.io_service']
+
+    Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface: '@Novactive\Bundle\eZFormBuilderBundle\Core\FileUploader'

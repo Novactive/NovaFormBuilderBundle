@@ -12,40 +12,44 @@
 
 declare(strict_types=1);
 
-namespace Novactive\Bundle\FormBuilderBundle\Core;
+namespace Novactive\Bundle\eZFormBuilderBundle\Core;
 
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileUploader implements FileUploaderInterface
 {
-    public const TARGET_DIR = '/tmp';
+    /**
+     * @var IOService
+     */
+    private $ioService;
+
+    /**
+     * FileUploader constructor.
+     */
+    public function __construct(IOService $ioService)
+    {
+        $this->ioService = $ioService;
+    }
 
     public function upload(UploadedFile $file): string
     {
         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $fileName         = md5(uniqid($originalFileName, true)).'.'.$file->guessExtension();
+        $fileContents     = file_get_contents($file->getPathname());
 
-        try {
-            $file->move(self::TARGET_DIR, $fileName);
-        } catch (FileException $e) {
-            throw new NotFoundHttpException('Failed to upload the file: '.$e->getMessage());
-        }
-
-        return $fileName;
+        return $this->ioService->saveFile($fileName, $fileContents);
     }
 
     public function getFile(string $fileName): Response
     {
-        $filePath = self::TARGET_DIR.'/'.$fileName;
-        if (!file_exists($filePath)) {
+        if (!$this->ioService->fileExists($fileName)) {
             return new Response('File not found.');
         }
 
-        $response = new Response(file_get_contents($filePath));
+        $response = new Response($this->ioService->readFile($fileName));
 
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_INLINE,

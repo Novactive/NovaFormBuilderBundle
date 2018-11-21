@@ -1,6 +1,6 @@
 services:
 
-    formbuilderbundle.storage.forms.io_service:
+    form_builder.ezpublish.core.io_service:
         parent: ezpublish.core.io.service
         calls:
-        - [ setPrefix, [ "forms" ] ]
+        - [ setPrefix, [ "files" ] ]
