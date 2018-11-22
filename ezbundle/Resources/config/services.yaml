@@ -21,13 +21,13 @@ services:
         tags: ['twig.extension']
 
     Novactive\Bundle\FormBuilderBundle\Command\MigrateCommand:
-        arguments: ['@doctrine.dbal.ezsurvey_connection', '@formbuilderbundle.io_service']
+        arguments: ['@doctrine.dbal.ezsurvey_connection', '@form_builder.io_service']
 
-    formbuilderbundle.io_service:
+    form_builder.io_service:
         class: Novactive\Bundle\eZFormBuilderBundle\Core\IOService
         arguments: ['@form_builder.ezpublish.core.io_service']
 
     Novactive\Bundle\eZFormBuilderBundle\Core\FileUploader:
-        arguments: ['@formbuilderbundle.io_service']
+        arguments: ['@form_builder.io_service']
 
     Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface: '@Novactive\Bundle\eZFormBuilderBundle\Core\FileUploader'

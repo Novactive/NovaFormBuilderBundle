@@ -41,7 +41,7 @@ class Submitter
     private $session;
 
     /**
-     * @var FileUploader
+     * @var FileUploaderInterface
      */
     private $fileUploader;
 
@@ -85,7 +85,7 @@ class Submitter
     public function canSubmit(FormInterface $form, Form $formEntity): bool
     {
         $maxSubmissions = $formEntity->getMaxSubmissions();
-        if (null === $maxSubmissions || $maxSubmissions > $formEntity->getSubmissions()->count()) {
+        if (null === $maxSubmissions || $maxSubmissions > $this->getFormSubmissionCounter($formEntity)) {
             return true;
         }
         $form->addError(

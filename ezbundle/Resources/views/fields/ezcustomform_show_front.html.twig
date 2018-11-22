@@ -13,8 +13,7 @@
                 <p class="text-danger p-2">{{ error.message|trans({}, 'novaezformbuilder') }}</p>
             {% endfor %}
             <section class="user-form col-md-6 col-md-offset-3">
-                {% set maxSubmissions = form.vars.value.maxSubmissions %}
-                {% if maxSubmissions is null or maxSubmissions > form.vars.data.submissions|length %}
+                {% if canSubmit %}
                     {{ form_start(form, {'action': path('novaezformbuilder_front_show_form', {id: form.vars.value.id})}) }}
 
                     {% for field in form.fields.children %}
