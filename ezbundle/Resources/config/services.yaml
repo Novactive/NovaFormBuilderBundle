@@ -20,8 +20,8 @@ services:
     Novactive\Bundle\eZFormBuilderBundle\Twig\Extension:
         tags: ['twig.extension']
 
-    Novactive\Bundle\FormBuilderBundle\Command\MigrateCommand:
-        arguments: ['@doctrine.dbal.ezsurvey_connection', '@form_builder.io_service']
+    Novactive\Bundle\eZFormBuilderBundle\Command\MigrateCommand:
+        arguments: ['@form_builder.io_service']
 
     form_builder.io_service:
         class: Novactive\Bundle\eZFormBuilderBundle\Core\IOService
