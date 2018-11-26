@@ -32,7 +32,11 @@
                                         {{ item.value|join(', ') }}
                                     {% endif %}
                                 {% else %}
-                                    {{ item.value }}
+                                    {% if item.type == 'file' %}
+                                        <a class="btn btn-info" href="{{ path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id}) }}" target="_blank">{{ 'Download'|trans }}</a>
+                                    {% else %}
+                                        {{ item.value }}
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </tr>

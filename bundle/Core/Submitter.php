@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\Form\FormError;
@@ -40,22 +41,37 @@ class Submitter
     private $session;
 
     /**
+     * @var FileUploaderInterface
+     */
+    private $fileUploader;
+
+    /**
      * Submitter constructor.
      */
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, SessionInterface $session)
-    {
-        $this->em         = $em;
-        $this->translator = $translator;
-        $this->session    = $session;
+    public function __construct(
+        EntityManagerInterface $em,
+        TranslatorInterface $translator,
+        SessionInterface $session,
+        FileUploaderInterface $fileUploader
+    ) {
+        $this->em           = $em;
+        $this->translator   = $translator;
+        $this->session      = $session;
+        $this->fileUploader = $fileUploader;
     }
 
     private function createSubmission(Form $formEntity, string $user): FormSubmission
     {
         $data = [];
         foreach ($formEntity->getFields() as $field) {
+            $value = $field->getValue();
+            if ($field instanceof File) {
+                $value = $this->fileUploader->upload($field->getValue());
+            }
             $data[] = [
                 'name'  => $field->getName(),
-                'value' => $field->getValue(),
+                'value' => $value,
+                'type'  => $field->getType(),
             ];
         }
         $formSubmission = new FormSubmission();
@@ -69,7 +85,7 @@ class Submitter
     public function canSubmit(FormInterface $form, Form $formEntity): bool
     {
         $maxSubmissions = $formEntity->getMaxSubmissions();
-        if (null === $maxSubmissions || $maxSubmissions > $formEntity->getSubmissions()->count()) {
+        if (null === $maxSubmissions || $maxSubmissions > $this->getFormSubmissionCounter($formEntity)) {
             return true;
         }
         $form->addError(

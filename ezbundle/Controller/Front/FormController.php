@@ -64,6 +64,7 @@ class FormController
             'form'       => $form->createView(),
             'success'    => $success,
             'stepBack'   => $stepBack,
+            'canSubmit'  => $submitter->canSubmit($form, $formEntity),
         ];
     }
 }

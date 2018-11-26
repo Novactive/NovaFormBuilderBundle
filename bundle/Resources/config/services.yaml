@@ -9,3 +9,5 @@ services:
 
     Novactive\Bundle\FormBuilderBundle\Core\FieldTypeRegistry:
         arguments: [!tagged novaformbuilder.fieldtype]
+
+    Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface: '@Novactive\Bundle\FormBuilderBundle\Core\FileUploader'
