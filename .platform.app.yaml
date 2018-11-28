@@ -15,7 +15,7 @@ web:
             root: "ezplatform/web"
             passthru: "/app.php"
             expires: 600
-disk: 2048
+disk: 4096
 mounts:
     "/ezplatform/var/cache": "shared:files/cache"
     "/ezplatform/var/logs": "shared:files/logs"

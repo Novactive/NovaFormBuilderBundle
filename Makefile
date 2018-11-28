@@ -33,8 +33,8 @@ installez: ## Install eZ as the local project
 	@echo "\tenv(DATABASE_PORT)     -> 3316"
 	@echo "\tenv(DATABASE_PASSWORD) -> ezplatform"
 	@cd $(EZ_DIR) && COMPOSER_MEMORY_LIMIT=-1 composer update --lock
-	@bin/console ezplatform:install clean
-	@bin/console novaformbuilder:install
+	@cd $(EZ_DIR) && bin/console ezplatform:install clean
+	@cd $(EZ_DIR) && bin/console novaformbuilder:install
 
 .PHONY: serveez
 serveez: stopez ## Clear the cache and start the web server
