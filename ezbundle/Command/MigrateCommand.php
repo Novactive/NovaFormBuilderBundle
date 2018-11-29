@@ -16,6 +16,7 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\FetchMode;
+use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
@@ -26,7 +27,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class MigrateCommand.
@@ -116,22 +116,7 @@ class MigrateCommand extends Command
                 if (empty($question['text'])) {
                     continue;
                 }
-                switch ($question['type']) {
-                    case 'EmailEntry':
-                        $type = 'Email';
-                        break;
-                    case 'TextEntry':
-                        $type = 'TextArea';
-                        break;
-                    case 'NumberEntry':
-                        $type = 'Number';
-                        break;
-                    case 'MultipleChoice':
-                        $type = 'Choice';
-                        break;
-                    default:
-                        $type = '';
-                }
+                $type    = $this->convertType($question['type']);
                 $options = [];
                 if ('Choice' === $type) {
                     $xml     = simplexml_load_string($question['text2']);
@@ -177,7 +162,7 @@ class MigrateCommand extends Command
                 $forms[] = $form['name'];
 
                 // Get the Survey Results
-                $sql = 'SELECT sqr.result_id,sqr.question_id,sq.text,sqr.text answer, ';
+                $sql = 'SELECT sqr.result_id,sqr.question_id,sq.type,sq.text,sqr.text answer, ';
 
                 $sql .= "CONCAT(sqr.result_id,'-',sqr.question_id) ids, ";
                 $sql .= 'COUNT(CONCAT(sqr.result_id,sqr.question_id)) answersCount, sr.tstamp ';
@@ -210,7 +195,10 @@ class MigrateCommand extends Command
                             FetchMode::COLUMN
                         );
                     }
-                    $data[]      = ['name' => $result['text'], 'value' => $answers];
+                    $data[]      = [
+                        'name' => $result['text'], 'value' => $answers,
+                        'type' => strtolower($this->convertType($result['type'])),
+                    ];
                     $createdDate = date('Y-m-d H:i:s', (int) $result['tstamp']);
                 }
                 if (!empty($data)) {
@@ -237,6 +225,12 @@ class MigrateCommand extends Command
 
     private function import(): void
     {
+        // clear the tables, reset the IDs
+        $this->entityManager->getConnection()->query('DELETE FROM novaformbuilder_form');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form AUTO_INCREMENT = 1');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_field AUTO_INCREMENT = 1');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form_submission AUTO_INCREMENT = 1');
+
         $manifest     = $this->ioService->readFile('forms/manifest.json');
         $fileNames    = json_decode($manifest);
         $formsCounter = $fieldsCounter = $submissionsCounter = 0;
@@ -296,5 +290,27 @@ class MigrateCommand extends Command
         $stmt->execute();
 
         return $stmt->fetchAll($fetchMode);
+    }
+
+    private function convertType(string $oldType): string
+    {
+        switch ($oldType) {
+            case 'EmailEntry':
+                $type = 'Email';
+                break;
+            case 'TextEntry':
+                $type = 'TextArea';
+                break;
+            case 'NumberEntry':
+                $type = 'Number';
+                break;
+            case 'MultipleChoice':
+                $type = 'Choice';
+                break;
+            default:
+                $type = $oldType;
+        }
+
+        return $type;
     }
 }
