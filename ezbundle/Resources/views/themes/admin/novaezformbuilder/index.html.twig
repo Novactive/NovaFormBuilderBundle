@@ -58,6 +58,13 @@
                                 <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#edit"></use>
                             </svg>
                         </a>
+                        <a href="{{ path('novaezformbuilder_dashboard_delete', {id: formItem.id}) }}"
+                           class="btn btn-icon"
+                           title="{{ 'Delete'|trans }}">
+                            <svg class="ez-icon ez-icon-edit">
+                                <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
+                            </svg>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

@@ -109,7 +109,7 @@ class DashboardController
     }
 
     /**
-     * @Route("/editmodal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
+     * @Route("/edit/modal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
      * @Template("@ezdesign/novaezformbuilder/edit_modal.html.twig")
      */
     public function editModal(
@@ -152,9 +152,19 @@ class DashboardController
     }
 
     /**
-     * @Route("/remove/form/{id}", name="novaezformbuilder_dashboard_remove_form")
+     * @Route("/delete/{id}", name="novaezformbuilder_dashboard_delete")
      */
-    public function removeForm(Form $formEntity, FormService $formService): JsonResponse
+    public function delete(Form $formEntity, FormService $formService, RouterInterface $router): RedirectResponse
+    {
+        $formService->removeForm($formEntity);
+
+        return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+    }
+
+    /**
+     * @Route("/remove/modal/{id}", name="novaezformbuilder_dashboard_remove_modal")
+     */
+    public function removeModal(Form $formEntity, FormService $formService): JsonResponse
     {
         $formService->removeForm($formEntity);
 
