@@ -58,6 +58,13 @@ abstract class Field
     private $weight;
 
     /**
+     * @ORM\Column(name="css_class", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $cssClass;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
      * @ORM\JoinColumn(name="form_id", referencedColumnName="id", onDelete="CASCADE")
      *
@@ -160,6 +167,18 @@ abstract class Field
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCssClass(): ?string
+    {
+        return $this->cssClass;
+    }
+
+    public function setCssClass(?string $cssClass): self
+    {
+        $this->cssClass = $cssClass;
 
         return $this;
     }
