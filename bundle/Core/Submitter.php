@@ -21,6 +21,9 @@ use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Submitter
@@ -46,18 +49,25 @@ class Submitter
     private $fileUploader;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * Submitter constructor.
      */
     public function __construct(
         EntityManagerInterface $em,
         TranslatorInterface $translator,
         SessionInterface $session,
-        FileUploaderInterface $fileUploader
+        FileUploaderInterface $fileUploader,
+        TokenStorage $tokenStorage
     ) {
         $this->em           = $em;
         $this->translator   = $translator;
         $this->session      = $session;
         $this->fileUploader = $fileUploader;
+        $this->tokenStorage = $tokenStorage;
     }
 
     private function createSubmission(Form $formEntity, string $user): FormSubmission
@@ -78,6 +88,13 @@ class Submitter
         $formSubmission->setCreatedAt(new \DateTime());
         $formSubmission->setForm($formEntity);
         $formSubmission->setData($data);
+
+        /* @var TokenInterface $token */
+        $token = $this->tokenStorage->getToken();
+        if ($token instanceof UsernamePasswordToken) {
+            $user = $token->getUser()->getAPIUser();
+            $formSubmission->setUserId($user->content->versionInfo->contentInfo->id);
+        }
 
         return $formSubmission;
     }
