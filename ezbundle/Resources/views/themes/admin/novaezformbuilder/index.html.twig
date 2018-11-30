@@ -44,7 +44,7 @@
                 <tr>
                     <td>{{ formItem.name }}</td>
                     <td>
-                        {{ formItem.submissions|length }}{% if formItem.maxSubmissions is not null %}/{{ formItem.maxSubmissions }}{% endif %}
+                        {{ formItem.submissions|length }}
                         {% if formItem.submissions|length > 0 %}
                             <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'View'|trans }}</a>
                         {% endif %}
