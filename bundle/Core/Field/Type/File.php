@@ -23,8 +23,19 @@ use Symfony\Component\Validator\Constraints;
 
 class File extends FieldType
 {
-    const TYPE_IMAGE       = 'image';
-    const TYPE_APPLICATION = 'file';
+    public const TYPE_IMAGE = 'image';
+
+    public const TYPE_APPLICATION = 'file';
+
+    public const APPLICATION_MIME_TYPES = [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ];
 
     public function getEntityClass(): string
     {
@@ -54,8 +65,8 @@ class File extends FieldType
                     'required' => true,
                     'label'    => 'field.file.file_type',
                     'choices'  => [
-                        'file.file_type.image' => self::TYPE_IMAGE,
-                        'file.file_type.file'  => self::TYPE_APPLICATION,
+                        'file.file_type.image'       => self::TYPE_IMAGE,
+                        'file.file_type.application' => self::TYPE_APPLICATION,
                     ],
                 ]
             );
@@ -67,8 +78,10 @@ class File extends FieldType
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
         $constraintClass = Constraints\File::class;
+        $mimeTypes       = self::APPLICATION_MIME_TYPES;
         if (self::TYPE_IMAGE === $field->getFileType()) {
             $constraintClass = Constraints\Image::class;
+            $mimeTypes       = 'image/*';
         }
         $fieldForm->add(
             'value',
@@ -79,7 +92,8 @@ class File extends FieldType
                 'constraints' => [
                     new $constraintClass(
                         [
-                            'maxSize' => $field->getMaxFileSizeMb().'M',
+                            'maxSize'   => $field->getMaxFileSizeMb().'M',
+                            'mimeTypes' => $mimeTypes,
                         ]
                     ),
                 ],
