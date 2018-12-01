@@ -4,7 +4,7 @@
     {% set form = get_form(value.formId)|default(null) %}
     <p class="text-info" id="attached-form">{% if form is not null %}{{ form.name }}{% endif %}</p>
     <div class="modal fade" id="edit_custom_form" tabindex="-1" role="dialog" data-endpoint="{{ path('novaezformbuilder_dashboard_edit_modal', {id: data.formId}) }}">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Form</h5>
