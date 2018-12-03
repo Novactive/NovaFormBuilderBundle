@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\Core\MVC\Symfony\Security\User as EzSecurityUser;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
@@ -70,7 +71,7 @@ class Submitter
         $this->tokenStorage = $tokenStorage;
     }
 
-    private function createSubmission(Form $formEntity, string $user): FormSubmission
+    private function createSubmission(Form $formEntity): FormSubmission
     {
         $data = [];
         foreach ($formEntity->getFields() as $field) {
@@ -91,9 +92,9 @@ class Submitter
 
         /* @var TokenInterface $token */
         $token = $this->tokenStorage->getToken();
-        if ($token instanceof UsernamePasswordToken) {
-            $user = $token->getUser()->getAPIUser();
-            $formSubmission->setUserId($user->content->versionInfo->contentInfo->id);
+        $user  = $token->getUser();
+        if ($token instanceof UsernamePasswordToken && $user instanceof EzSecurityUser) {
+            $formSubmission->setUserId($user->getAPIUser()->content->versionInfo->contentInfo->id);
         }
 
         return $formSubmission;
@@ -112,9 +113,9 @@ class Submitter
         return false;
     }
 
-    public function createAndLogSubmission(Form $formEntity, $user = null): FormSubmission
+    public function createAndLogSubmission(Form $formEntity): FormSubmission
     {
-        $formSubmission = $this->createSubmission($formEntity, (string) $user);
+        $formSubmission = $this->createSubmission($formEntity);
         $this->em->persist($formSubmission);
         $this->em->flush();
 
