@@ -10,6 +10,7 @@
     font-weight: 400;
     src: url(https://fonts.gstatic.com/s/materialicons/v38/flUhRq6tzZclQEJ-Vdg-IuiaDsNZ.ttf) format('truetype');
 }
+
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -24,10 +25,33 @@
     direction: ltr;
     -webkit-font-smoothing: antialiased;
 }
+
 .material-icons.drag-field-icon {
     font-size: 36px;
     cursor: move;
 }
+
 form:not(.form-inline) .form-control.bg-grey {
     background-color: #CCCCCC;
+}
+
+a.delete-form {
+    position: relative;
+    top: -38px;
+    left: 78px;
+}
+
+#edit_custom_form .form-group {
+    width: auto;
+}
+
+#edit_custom_form .form-control {
+    margin-bottom: auto;
+}
+
+.btn-success.add-new-field {
+    height: 36px;
+}
+#edit_custom_form .card-body {
+    padding: 1.25rem;
 }

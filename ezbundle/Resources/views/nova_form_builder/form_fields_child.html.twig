@@ -3,7 +3,7 @@
 {% block collection_row %}
     <div class="js-form-fields-choices-collection" data-items-count="0">
         {{ form_row(form) }}
-        <button type="button" class="mt-3 btn btn-sm btn-primary js-form-field-choices__add-choice">{{ 'Add choice'|trans }}</button>
+        <button type="button" class="mt-3 btn btn-sm btn-success js-form-field-choices__add-choice">{{ 'Add choice'|trans }}</button>
     </div>
 {% endblock %}
 
@@ -11,13 +11,13 @@
 {% block novaformbuilder_choice_item_row %}
     <div class="js-form-fields-choice-item">
         <div class="mt-3 row align-items-center">
-            <div class="col-5 input-group-sm">
+            <div class="col-8 input-group-sm">
                 {{ form_widget(form.value) }}
             </div>
-            <div class="col-5 input-group-sm">
+            <div class="col-1 input-group-sm pl-0">
                 {{ form_widget(form.weight) }}
             </div>
-            <div class="col-2">
+            <div class="col-3 input-group-sm text-right">
                 <button type="button" class="btn btn-sm btn-outline-danger js-form-field-choices__delete-item">{{ 'Delete choice item'|trans }}</button>
             </div>
         </div>

@@ -15,12 +15,16 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\Core\MVC\Symfony\Security\User as EzSecurityUser;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Submitter
@@ -46,21 +50,28 @@ class Submitter
     private $fileUploader;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * Submitter constructor.
      */
     public function __construct(
         EntityManagerInterface $em,
         TranslatorInterface $translator,
         SessionInterface $session,
-        FileUploaderInterface $fileUploader
+        FileUploaderInterface $fileUploader,
+        TokenStorage $tokenStorage
     ) {
         $this->em           = $em;
         $this->translator   = $translator;
         $this->session      = $session;
         $this->fileUploader = $fileUploader;
+        $this->tokenStorage = $tokenStorage;
     }
 
-    private function createSubmission(Form $formEntity, string $user): FormSubmission
+    private function createSubmission(Form $formEntity): FormSubmission
     {
         $data = [];
         foreach ($formEntity->getFields() as $field) {
@@ -79,6 +90,13 @@ class Submitter
         $formSubmission->setForm($formEntity);
         $formSubmission->setData($data);
 
+        /* @var TokenInterface $token */
+        $token = $this->tokenStorage->getToken();
+        $user  = $token->getUser();
+        if ($token instanceof UsernamePasswordToken && $user instanceof EzSecurityUser) {
+            $formSubmission->setUserId($user->getAPIUser()->content->versionInfo->contentInfo->id);
+        }
+
         return $formSubmission;
     }
 
@@ -95,9 +113,9 @@ class Submitter
         return false;
     }
 
-    public function createAndLogSubmission(Form $formEntity, $user = null): FormSubmission
+    public function createAndLogSubmission(Form $formEntity): FormSubmission
     {
-        $formSubmission = $this->createSubmission($formEntity, (string) $user);
+        $formSubmission = $this->createSubmission($formEntity);
         $this->em->persist($formSubmission);
         $this->em->flush();
 

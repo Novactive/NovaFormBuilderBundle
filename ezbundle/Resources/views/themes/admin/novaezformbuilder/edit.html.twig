@@ -21,7 +21,7 @@
 
     <div class="container">
         <section class="user-form col-md-12 col-md-offset-6">
-            <div>
+            <div class="pb-3 pt-3">
                 {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_label(form.maxSubmissions) }}
@@ -30,9 +30,12 @@
                 {{ form_row(form.fields) }}
 
                 <div class="mt-3">
-                    <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+                    <button class="btn btn-success" type="submit">{{ 'Save' }}</button>
                 </div>
                 {{ form_end(form) }}
+                {% if form.vars.value.id != 0 %}
+                    <a href="{{ path('novaezformbuilder_dashboard_delete', {id: form.vars.value.id}) }}" class="btn btn-primary delete-form" onclick="return confirm('Are you sure?')">Delete</a>
+                {% endif %}
             </div>
         </section>
     </div>

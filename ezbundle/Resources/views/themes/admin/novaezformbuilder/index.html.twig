@@ -53,9 +53,16 @@
                         <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_view', {id: formItem.id}) }}">{{ 'Preview'|trans }}</a>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: formItem.id}) }}"
                            class="btn btn-icon"
-                           title="{{ 'Edit'|trans }}">
+                           title='Edit'>
                             <svg class="ez-icon ez-icon-edit">
                                 <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#edit"></use>
+                            </svg>
+                        </a>
+                        <a href="{{ path('novaezformbuilder_dashboard_delete', {id: formItem.id}) }}"
+                           class="btn btn-icon"
+                           title='Delete' onclick="return confirm('Are you sure?')">
+                            <svg class="ez-icon ez-icon-trash">
+                                <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
                             </svg>
                         </a>
                     </td>

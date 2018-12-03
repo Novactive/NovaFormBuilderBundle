@@ -78,6 +78,7 @@ class MigrateCommand extends Command
             ->setDescription('Import database from the old one.')
             ->addOption('export', null, InputOption::VALUE_NONE, 'Export from old DB to json files')
             ->addOption('import', null, InputOption::VALUE_NONE, 'Import from json files to new DB')
+            ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean the existing data')
             ->setHelp('Run novaformbuilder:migrate export|import');
     }
 
@@ -90,6 +91,8 @@ class MigrateCommand extends Command
             $this->export();
         } elseif ($input->getOption('import')) {
             $this->import();
+        } elseif ($input->getOption('clean')) {
+            $this->clean();
         } else {
             $this->io->error('No export or import option found. Run novaformbuilder:migrate --export|--import');
         }
@@ -226,10 +229,7 @@ class MigrateCommand extends Command
     private function import(): void
     {
         // clear the tables, reset the IDs
-        $this->entityManager->getConnection()->query('DELETE FROM novaformbuilder_form');
-        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form AUTO_INCREMENT = 1');
-        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_field AUTO_INCREMENT = 1');
-        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form_submission AUTO_INCREMENT = 1');
+        $this->clean();
 
         $manifest     = $this->ioService->readFile('forms/manifest.json');
         $fileNames    = json_decode($manifest);
@@ -279,6 +279,15 @@ class MigrateCommand extends Command
         );
 
         $this->io->success('Import done.');
+    }
+
+    private function clean(): void
+    {
+        $this->entityManager->getConnection()->query('DELETE FROM novaformbuilder_form');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form AUTO_INCREMENT = 1');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_field AUTO_INCREMENT = 1');
+        $this->entityManager->getConnection()->query('ALTER TABLE novaformbuilder_form_submission AUTO_INCREMENT = 1');
+        $this->io->success('Current forms cleaned.');
     }
 
     private function runQuery(string $sql, array $parameters = [], $fetchMode = null): array
