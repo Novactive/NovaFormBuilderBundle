@@ -46,7 +46,7 @@
                 var fieldForm = prototype.replace(/__name__/g, fieldsCount);
                 $collectionHolder.append(fieldForm);
                 $document.trigger('form-builder:field-added');
-                inputNumberEvents();
+                inputEvents();
                 fieldsCount++;
                 $('.js-form-fields__delete-entry:eq(' + (fieldsCount - 1) + ')').click(function () {
                     $(this).closest('.card').remove();
@@ -59,14 +59,15 @@
                 $(this).closest('.card').remove();
             });
 
-            inputNumberEvents();
+            inputEvents();
 
             fieldSorting();
         });
     }
 
-    function inputNumberEvents() {
+    function inputEvents() {
         var $inputNumbers = $("input[type='number']");
+        var $inputCheckboxes = $("input[type='checkbox']");
         $inputNumbers.filter("[name*='[minLength]'],[name*='[maxLength]'],[name*='[min]'],[name*='[max]']").on('blur', function () {
             if ($(this).val() === '') {
                 $(this).val('0');
@@ -77,7 +78,8 @@
                 $(this).val('0');
             }
         });
-        var $submissionsUnlimited = $("input[type='checkbox']").filter("[name*='[submissionsUnlimited]']");
+
+        var $submissionsUnlimited = $inputCheckboxes.filter("[name*='[submissionsUnlimited]']");
         var $maxSubmissions = $inputNumbers.filter("[name*='[maxSubmissions]']");
         if ($submissionsUnlimited.length > 0 && $submissionsUnlimited.prop('checked')) {
             $maxSubmissions.prop('disabled', true);

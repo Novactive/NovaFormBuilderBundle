@@ -50,6 +50,22 @@ class Form
     private $maxSubmissions;
 
     /**
+     * @ORM\Column(name="receiver_email", type="string", nullable=true)
+     *
+     * @Assert\Email()
+     *
+     * @var string
+     */
+    private $receiverEmail;
+
+    /**
+     * @ORM\Column(name="send_data", type="boolean")
+     *
+     * @var bool
+     */
+    private $sendData;
+
+    /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
      *                                                                                cascade={"persist", "remove"},
      *                                                                                  orphanRemoval=true)
@@ -98,12 +114,33 @@ class Form
         return (int) $this->maxSubmissions;
     }
 
-    /**
-     * @return Form
-     */
     public function setMaxSubmissions(?int $maxSubmissions): self
     {
         $this->maxSubmissions = $maxSubmissions;
+
+        return $this;
+    }
+
+    public function getReceiverEmail(): ?string
+    {
+        return $this->receiverEmail;
+    }
+
+    public function setReceiverEmail(?string $receiverEmail): self
+    {
+        $this->receiverEmail = $receiverEmail;
+
+        return $this;
+    }
+
+    public function isSendData(): bool
+    {
+        return $this->sendData ?? false;
+    }
+
+    public function setSendData(bool $sendData): self
+    {
+        $this->sendData = $sendData;
 
         return $this;
     }

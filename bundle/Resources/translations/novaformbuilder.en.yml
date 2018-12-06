@@ -5,6 +5,8 @@ form.fields: Fields
 field.name: Name
 field.required:	Required
 field.weight: Priority
+form.receiver_email: Email address to receive the submission data
+form.send_data: Send submission data
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length
 field.textline.max_length: Maximum Length

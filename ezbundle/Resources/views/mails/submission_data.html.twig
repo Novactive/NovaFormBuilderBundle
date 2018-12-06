@@ -1,0 +1,22 @@
+<table border="1" cellpadding="5">
+    {% for item in submission.data %}
+        <tr>
+            <td><strong>{{ item.name }}</strong></td>
+            <td>
+                {% if item.value is iterable %}
+                    {% if item.value.date is defined %}
+                        {{ item.value.date|date("F d, Y") }}
+                    {% else %}
+                        {{ item.value|join(', ') }}
+                    {% endif %}
+                {% else %}
+                    {% if item.type == 'file' %}
+                        <a href="{{ absolute_url(path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id})) }}" target="_blank">{{ 'Download'|trans }}</a>
+                    {% else %}
+                        {{ item.value }}
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
