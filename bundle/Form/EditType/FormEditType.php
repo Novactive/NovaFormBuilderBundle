@@ -55,7 +55,7 @@ class FormEditType extends AbstractType
             ->add(
                 'sendData',
                 CheckboxType::class,
-                ['mapped' => false, 'label' => 'form.send_data', 'required' => false]
+                ['label' => 'form.send_data', 'required' => false]
             )
             ->add(
                 'fields',

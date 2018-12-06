@@ -93,28 +93,6 @@
                 $maxSubmissions.removeClass('bg-grey');
             }
         });
-
-        var $sendData = $inputCheckboxes.filter("[name*='[sendData]']");
-        var $receiverEmail = $("input[type='email']").filter("[name*='[receiverEmail]']");
-        if ($sendData.length > 0) {
-            if ($sendData.prop('checked')) {
-                $receiverEmail.prop('required', true);
-            } else {
-                $receiverEmail.prop('disabled', true);
-                $receiverEmail.prop('required', false);
-                $receiverEmail.addClass('bg-grey');
-            }
-        }
-        $sendData.change(function () {
-            $receiverEmail.prop('disabled', !this.checked);
-            $receiverEmail.prop('required', this.checked);
-            if (this.checked) {
-                $receiverEmail.removeClass('bg-grey');
-            } else {
-                $receiverEmail.addClass('bg-grey');
-            }
-        });
-
     }
 
     function fieldSorting() {
