@@ -16,6 +16,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,6 +50,12 @@ class FormEditType extends AbstractType
                 'submissionsUnlimited',
                 CheckboxType::class,
                 ['mapped' => false, 'label' => 'form.submissions_unlimited', 'required' => false]
+            )
+            ->add('receiverEmail', EmailType::class, ['label' => 'form.receiver_email', 'required' => false])
+            ->add(
+                'sendData',
+                CheckboxType::class,
+                ['mapped' => false, 'label' => 'form.send_data', 'required' => false]
             )
             ->add(
                 'fields',

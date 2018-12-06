@@ -26,6 +26,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig_Environment;
 
 class Submitter
 {
@@ -55,6 +56,16 @@ class Submitter
     private $tokenStorage;
 
     /**
+     * @var Mailer
+     */
+    private $mailer;
+
+    /**
+     * @var Twig_Environment
+     */
+    private $twig;
+
+    /**
      * Submitter constructor.
      */
     public function __construct(
@@ -62,13 +73,17 @@ class Submitter
         TranslatorInterface $translator,
         SessionInterface $session,
         FileUploaderInterface $fileUploader,
-        TokenStorage $tokenStorage
+        TokenStorage $tokenStorage,
+        Mailer $mailer,
+        Twig_Environment $twig
     ) {
         $this->em           = $em;
         $this->translator   = $translator;
         $this->session      = $session;
         $this->fileUploader = $fileUploader;
         $this->tokenStorage = $tokenStorage;
+        $this->mailer       = $mailer;
+        $this->twig         = $twig;
     }
 
     private function createSubmission(Form $formEntity): FormSubmission
@@ -119,6 +134,11 @@ class Submitter
         $this->em->persist($formSubmission);
         $this->em->flush();
 
+        // Send submitted data to email if specified
+        if (null !== $formEntity->getReceiverEmail()) {
+            $this->sendSubmissionData($formEntity, $formSubmission);
+        }
+
         $this->incFormSubmissionCounter($formEntity);
 
         return $formSubmission;
@@ -140,5 +160,17 @@ class Submitter
     private function generateSessionFormId(Form $formEntity): string
     {
         return 'novaformbuilder_form_id_'.$formEntity->getId();
+    }
+
+    private function sendSubmissionData(Form $formEntity, FormSubmission $formSubmission): void
+    {
+        $message = $this->mailer->createMessage();
+        $message->setTo($formEntity->getReceiverEmail());
+        $content = $this->twig->render(
+            '@NovaeZFormBuilder/mails/submission_data.html.twig',
+            ['submission' => $formSubmission]
+        );
+        $this->mailer->build("NovaFormBuilder Submission Data from {$formEntity->getName()}", $content, $message);
+        $this->mailer->send($message);
     }
 }

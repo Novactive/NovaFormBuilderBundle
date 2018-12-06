@@ -79,7 +79,7 @@ class MigrateCommand extends Command
             ->addOption('export', null, InputOption::VALUE_NONE, 'Export from old DB to json files')
             ->addOption('import', null, InputOption::VALUE_NONE, 'Import from json files to new DB')
             ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean the existing data')
-            ->setHelp('Run novaformbuilder:migrate export|import');
+            ->setHelp('Run novaformbuilder:migrate export|import|clean');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -101,6 +101,9 @@ class DashboardController
             $form->get('maxSubmissions')->setData(0);
             $form->get('submissionsUnlimited')->setData(true);
         }
+        if (null !== $form->get('receiverEmail')->getData()) {
+            $form->get('sendData')->setData(true);
+        }
 
         return [
             'title' => 'novaezformbuilder.title.edit_form',
@@ -109,7 +112,7 @@ class DashboardController
     }
 
     /**
-     * @Route("/edit/modal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
+     * @Route("/editmodal/{id}", name="novaezformbuilder_dashboard_edit_modal", defaults={"id"=null})
      * @Template("@ezdesign/novaezformbuilder/edit_modal.html.twig")
      */
     public function editModal(
@@ -143,6 +146,9 @@ class DashboardController
         if (null === $form->get('maxSubmissions')->getData()) {
             $form->get('maxSubmissions')->setData(0);
             $form->get('submissionsUnlimited')->setData(true);
+        }
+        if (null !== $form->get('receiverEmail')->getData()) {
+            $form->get('sendData')->setData(true);
         }
 
         return [

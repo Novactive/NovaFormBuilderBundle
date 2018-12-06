@@ -55,3 +55,7 @@ a.delete-form {
 #edit_custom_form .card-body {
     padding: 1.25rem;
 }
+
+table.table-bordered {
+    margin-bottom: 0;
+}
