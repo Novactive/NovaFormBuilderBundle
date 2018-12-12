@@ -34,8 +34,12 @@ class FormService
         $this->entityManager = $entityManager;
     }
 
-    public function save(ArrayCollection $originalFields, Form $formEntity): int
+    public function save(Form $formEntity): int
     {
+        $originalFields = new ArrayCollection();
+        foreach ($formEntity->getFields() as $field) {
+            $originalFields->add($field);
+        }
         foreach ($originalFields as $field) {
             /** @var Field $field */
             if (!$formEntity->getFields()->contains($field)) {

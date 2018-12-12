@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
@@ -78,15 +77,9 @@ class DashboardController
         FormFactory $factory,
         FormService $formService
     ) {
-        $originalFields = new ArrayCollection();
         if (null === $formEntity) {
             $formEntity = new Form();
-        } else {
-            foreach ($formEntity->getFields() as $field) {
-                $originalFields->add($field);
-            }
         }
-
         $form = $factory->createEditForm($formEntity);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -96,7 +89,7 @@ class DashboardController
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
             $formEntity->setSendData((bool) $sendData);
 
-            $formService->save($originalFields, $formEntity);
+            $formService->save($formEntity);
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
         }
@@ -121,18 +114,11 @@ class DashboardController
         FormFactory $factory,
         FormService $formService
     ) {
-        $originalFields = new ArrayCollection();
         if (null === $formEntity) {
             $formEntity = new Form();
-        } else {
-            foreach ($formEntity->getFields() as $field) {
-                $originalFields->add($field);
-            }
         }
-
         $form = $factory->createEditForm($formEntity);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             if (\array_key_exists('submissionsUnlimited', $request->request->get('novaformbuilder_form_edit'))) {
                 $formEntity->setMaxSubmissions(null);
@@ -140,7 +126,7 @@ class DashboardController
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
             $formEntity->setSendData((bool) $sendData);
 
-            $formId = $formService->save($originalFields, $formEntity);
+            $formId = $formService->save($formEntity);
 
             return (new JsonResponse())->setContent(
                 json_encode(['success' => true, 'id' => $formId, 'name' => $formEntity->getName()])
