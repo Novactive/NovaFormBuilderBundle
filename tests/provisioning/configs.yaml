@@ -1,2 +1,0 @@
-parameters:
-    mailer_host: '%env(PLATFORM_SMTP_HOST)%'
