@@ -1,3 +1,4 @@
+<h3>Form data submitted on "{{ submission.form.name }}"</h3>
 <table border="1" cellpadding="5">
     {% for item in submission.data %}
         <tr>
@@ -13,7 +14,11 @@
                     {% if item.type == 'file' %}
                         <a href="{{ absolute_url(path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id})) }}" target="_blank">{{ 'Download'|trans }}</a>
                     {% else %}
-                        {{ item.value }}
+                        {% if item.value.date is defined %}
+                            {{ item.value.date|date("F d, Y") }}
+                        {% else %}
+                            {{ item.value }}
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </td>

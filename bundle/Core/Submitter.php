@@ -167,7 +167,7 @@ class Submitter
         $message = $this->mailer->createMessage();
         $message->setTo($formEntity->getReceiverEmail());
         $content = $this->twig->render(
-            '@NovaeZFormBuilder/mails/submission_data.html.twig',
+            '@FormBuilder/mails/submission_data.html.twig',
             ['submission' => $formSubmission]
         );
         $this->mailer->build("NovaFormBuilder Submission Data from {$formEntity->getName()}", $content, $message);
