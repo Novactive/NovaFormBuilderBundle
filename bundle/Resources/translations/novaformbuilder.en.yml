@@ -6,6 +6,7 @@ field.name: Name
 field.required:	Required
 field.weight: Priority
 form.receiver_email: Email address to receive the submission data
+form.sender_email: Sender email address
 form.send_data: Send submission data
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length
@@ -37,3 +38,4 @@ field.textarea.max_length: Maximum Length
 fieldtype.time: Time
 fieldtype.text_area: Text Area
 fieldtype.text_line: Text Line
+error.reached_max_submissions: "No more submissions allowed!"

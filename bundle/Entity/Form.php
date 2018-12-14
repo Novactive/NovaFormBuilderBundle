@@ -50,6 +50,15 @@ class Form
     private $maxSubmissions;
 
     /**
+     * @ORM\Column(name="sender_email", type="string", nullable=true)
+     *
+     * @Assert\Email()
+     *
+     * @var string
+     */
+    private $senderEmail;
+
+    /**
      * @ORM\Column(name="receiver_email", type="string", nullable=true)
      *
      * @Assert\Email()
@@ -117,6 +126,18 @@ class Form
     public function setMaxSubmissions(?int $maxSubmissions): self
     {
         $this->maxSubmissions = $maxSubmissions;
+
+        return $this;
+    }
+
+    public function getSenderEmail(): ?string
+    {
+        return $this->senderEmail;
+    }
+
+    public function setSenderEmail(?string $senderEmail): self
+    {
+        $this->senderEmail = $senderEmail;
 
         return $this;
     }
