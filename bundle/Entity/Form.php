@@ -171,7 +171,7 @@ class Form
     {
         foreach ($this->getFields() as $field) {
             if ($field instanceof Email) {
-                return $field->isSendData();
+                return $field->isSendData() && $field->getValue();
             }
         }
 
