@@ -90,7 +90,14 @@ class Mailer
     {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? self::DEFAULT_SENDER_EMAIL);
-        $message->setBcc($formEntity->getReceiverEmail());
+        $receivers = [];
+        if ($formEntity->isUserSendData()) {
+            $receivers[] = $formEntity->getUserSendEmail();
+        }
+        if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
+            $receivers[] = $formEntity->getReceiverEmail();
+        }
+        $message->setBcc($receivers);
         $message->setSubject("NovaFormBuilder Submission Data from {$formEntity->getName()}");
         $message->setBody($body, 'text/html', 'utf8');
 

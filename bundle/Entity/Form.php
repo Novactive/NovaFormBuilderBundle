@@ -16,6 +16,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\Email;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -164,6 +165,28 @@ class Form
         $this->sendData = $sendData;
 
         return $this;
+    }
+
+    public function isUserSendData(): bool
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof Email) {
+                return $field->isSendData();
+            }
+        }
+
+        return false;
+    }
+
+    public function getUserSendEmail(): ?string
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof Email) {
+                return $field->getValue();
+            }
+        }
+
+        return null;
     }
 
     public function getId(): int

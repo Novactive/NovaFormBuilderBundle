@@ -15,6 +15,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormInterface;
 
@@ -30,6 +31,8 @@ class Email extends FieldType
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
+        $fieldForm
+            ->add('sendData', CheckboxType::class, ['label' => 'form.send_data_to_user', 'required' => false]);
     }
 
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void

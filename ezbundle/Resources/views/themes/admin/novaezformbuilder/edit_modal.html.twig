@@ -7,9 +7,9 @@
 {{ form_row(renderForm.submissionsUnlimited) }}
 {{ form_widget(renderForm.maxSubmissions) }}
 <br/>
-{{ form_label(renderForm.receiverEmail) }}
-{{ form_row(renderForm.sendData) }}
-{{ form_widget(renderForm.receiverEmail) }}
+{{ form_row(form.sendData) }}
+{{ form_row(form.receiverEmail) }}
+{{ form_row(form.senderEmail) }}
 <br/>
 {{ form_row(renderForm.fields) }}
 

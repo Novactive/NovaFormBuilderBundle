@@ -135,7 +135,7 @@ class Submitter
         $this->em->flush();
 
         // Send submitted data to email if specified
-        if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
+        if ($formEntity->isUserSendData() || (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData())) {
             $this->sendSubmissionData($formEntity, $formSubmission);
         }
 
