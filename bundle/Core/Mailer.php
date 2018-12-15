@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
 use Exception;
+use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Psr\Log\LoggerInterface;
 use Swift_Mailer;
 use Swift_Message;
@@ -43,6 +44,8 @@ class Mailer
         $this->mailer = $mailer;
         $this->logger = $logger;
     }
+
+    public const DEFAULT_SENDER_EMAIL = 'noreply@company.com';
 
     /**
      * @return Swift_Message|mixed
@@ -83,15 +86,24 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build(string $subject, string $body, ?Swift_Mime_SimpleMessage $message = null): void
+    public function build(Form $formEntity, string $body): Swift_Mime_SimpleMessage
     {
-        if (null === $message) {
-            $message = $this->createMessage();
+        $message = $this->createMessage();
+        $message->setFrom($formEntity->getSenderEmail() ?? self::DEFAULT_SENDER_EMAIL);
+        $receivers = [];
+        if ($formEntity->isUserSendData()) {
+            $userSendEmail = $formEntity->getUserSendEmail();
+            if (null !== $userSendEmail) {
+                $receivers[] = $userSendEmail;
+            }
         }
-
-        $message->setFrom($message->getTo(), 'NovaFormBuilder');
-
-        $message->setSubject($subject);
+        if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
+            $receivers[] = $formEntity->getReceiverEmail();
+        }
+        $message->setBcc($receivers);
+        $message->setSubject("NovaFormBuilder Submission Data from {$formEntity->getName()}");
         $message->setBody($body, 'text/html', 'utf8');
+
+        return $message;
     }
 }

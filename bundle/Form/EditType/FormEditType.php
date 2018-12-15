@@ -51,6 +51,7 @@ class FormEditType extends AbstractType
                 CheckboxType::class,
                 ['mapped' => false, 'label' => 'form.submissions_unlimited', 'required' => false]
             )
+            ->add('senderEmail', EmailType::class, ['label' => 'form.sender_email', 'required' => false])
             ->add('receiverEmail', EmailType::class, ['label' => 'form.receiver_email', 'required' => false])
             ->add(
                 'sendData',

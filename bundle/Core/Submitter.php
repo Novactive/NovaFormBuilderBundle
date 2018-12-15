@@ -135,7 +135,7 @@ class Submitter
         $this->em->flush();
 
         // Send submitted data to email if specified
-        if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
+        if ($formEntity->isUserSendData() || (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData())) {
             $this->sendSubmissionData($formEntity, $formSubmission);
         }
 
@@ -164,13 +164,11 @@ class Submitter
 
     private function sendSubmissionData(Form $formEntity, FormSubmission $formSubmission): void
     {
-        $message = $this->mailer->createMessage();
-        $message->setTo($formEntity->getReceiverEmail());
         $content = $this->twig->render(
             '@FormBuilder/mails/submission_data.html.twig',
             ['submission' => $formSubmission]
         );
-        $this->mailer->build("NovaFormBuilder Submission Data from {$formEntity->getName()}", $content, $message);
+        $message = $this->mailer->build($formEntity, $content);
         $this->mailer->send($message);
     }
 }

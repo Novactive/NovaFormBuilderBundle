@@ -17,7 +17,7 @@
                         {% if item.value.date is defined %}
                             {{ item.value.date|date("F d, Y") }}
                         {% else %}
-                            {{ item.value }}
+                            {{ item.value|nl2br }}
                         {% endif %}
                     {% endif %}
                 {% endif %}

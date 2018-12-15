@@ -22,4 +22,15 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Email extends Field
 {
+    public function isSendData(): bool
+    {
+        return (bool) ($this->getOption('send_data') ?? false);
+    }
+
+    public function setSendData(bool $sendData): self
+    {
+        $this->setOption('send_data', $sendData);
+
+        return $this;
+    }
 }
