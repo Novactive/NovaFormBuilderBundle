@@ -181,7 +181,7 @@ class Form
     public function getUserSendEmail(): ?string
     {
         foreach ($this->getFields() as $field) {
-            if ($field instanceof Email) {
+            if ($field instanceof Email && $field->isSendData()) {
                 return $field->getValue();
             }
         }
