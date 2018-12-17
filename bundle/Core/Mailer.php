@@ -92,10 +92,7 @@ class Mailer
         $message->setFrom($formEntity->getSenderEmail() ?? self::DEFAULT_SENDER_EMAIL);
         $receivers = [];
         if ($formEntity->isUserSendData()) {
-            $userSendEmail = $formEntity->getUserSendEmail();
-            if (null !== $userSendEmail) {
-                $receivers[] = $userSendEmail;
-            }
+            $receivers = $formEntity->getUserSendEmails();
         }
         if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
             $receivers[] = $formEntity->getReceiverEmail();
