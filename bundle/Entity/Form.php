@@ -170,23 +170,24 @@ class Form
     public function isUserSendData(): bool
     {
         foreach ($this->getFields() as $field) {
-            if ($field instanceof Email) {
-                return $field->isSendData() && $field->getValue();
+            if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
+                return true;
             }
         }
 
         return false;
     }
 
-    public function getUserSendEmail(): ?string
+    public function getUserSendEmails(): array
     {
+        $emails = [];
         foreach ($this->getFields() as $field) {
-            if ($field instanceof Email && $field->isSendData()) {
-                return $field->getValue();
+            if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
+                $emails[] = $field->getValue();
             }
         }
 
-        return null;
+        return $emails;
     }
 
     public function getId(): int
