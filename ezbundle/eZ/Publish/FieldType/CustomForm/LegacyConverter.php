@@ -23,7 +23,7 @@ class LegacyConverter implements Converter
     public function toStorageValue(FieldValue $value, StorageFieldValue $storageFieldValue): void
     {
         $storageFieldValue->dataInt    = $value->data;
-        $storageFieldValue->sortKeyInt = $value->sortKey;
+        $storageFieldValue->sortKeyInt = (int) $value->sortKey;
     }
 
     public function toFieldValue(StorageFieldValue $value, FieldValue $fieldValue): void
