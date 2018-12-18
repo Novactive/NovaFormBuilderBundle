@@ -37,9 +37,9 @@ class Type extends FieldType implements Nameable
         );
     }
 
-    protected function getSortInfo(CoreValue $value): int
+    protected function getSortInfo(CoreValue $value)
     {
-        return (int) $value->formId;
+        return false;
     }
 
     protected function createValueFromInput($inputValue)
@@ -89,9 +89,9 @@ class Type extends FieldType implements Nameable
         if (null === $value) {
             return new PersistenceValue(
                 [
-                    'data'         => null,
+                    'data'         => $this->toHash($value),
                     'externalData' => null,
-                    'sortKey'      => null,
+                    'sortKey'      => $this->getSortInfo($value)
                 ]
             );
         }
@@ -99,7 +99,7 @@ class Type extends FieldType implements Nameable
         return new PersistenceValue(
             [
                 'data'    => $this->toHash($value),
-                'sortKey' => $this->getSortInfo($value),
+                'sortKey' => $this->getSortInfo($value)
             ]
         );
     }
@@ -120,8 +120,8 @@ class Type extends FieldType implements Nameable
     /**
      * @param string $languageCode
      */
-    public function getFieldName(SPIValue $value, FieldDefinition $fieldDefinition, $languageCode): int
+    public function getFieldName(SPIValue $value, FieldDefinition $fieldDefinition, $languageCode): string
     {
-        return (int) $value->formId;
+        return (string) $value->formId;
     }
 }
