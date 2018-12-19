@@ -1,42 +1,42 @@
-form.name: Name
-form.max_submissions: Max Submissions
-form.submissions_unlimited: Unlimited
-form.fields: Fields
-field.name: Name
-field.required:	Required
-field.weight: Priority
-form.receiver_email: Email address to receive the submission data
-form.sender_email: Sender email address
-form.send_data: Send submission data
-form.send_data_to_user: Send submission data to this email address
-field.css_class: CSS Class
-field.textline.min_length: Minimun Length
-field.textline.max_length: Maximum Length
-field.choice.choice_type: Choice Type
+form.name: Nom
+form.max_submissions: Transmissions max.
+form.submissions_unlimited: Illimitées
+form.fields: Champs
+field.name: Nom
+field.required:	Requis
+field.weight: Priorité
+form.sender_email: Adresse courriel qui transmettra les données de formulaire
+form.receiver_email: Adresse courriel qui recevra les données de formulaire
+form.send_data: Envoyer les données du formulaire
+field.css_class: Classe CSS
+field.textline.min_length: Longueur Minimale
+field.textline.max_length: Longueur Maximale
+field.choice.choice_type: Type de choix
 field.choice.choice_type.radio:	Radio
-field.choice.choice_type.checkboxes: Checkboxes
-field.choice.choice_type.dropdown: Dropdown
-field.choice.choices: Choices
-field.choice.choices.value:	Value
-field.choice.choices.weight: Priority
-fieldtype.choice: Choice
-field.date.default_value: Default Value
-field.date.min: Minimal Value
-field.date.max: Maximum Value
+field.choice.choice_type.checkboxes: Cases à cocher
+field.choice.choice_type.dropdown: Menu déroulant
+field.choice.choices: Choix
+field.choice.choices.value:	Valeur
+field.choice.choices.weight: Priorité
+fieldtype.choice: Choix
+field.date.default_value: Valeur par défaut
+field.date.min: Valeur minimale
+field.date.max: Valeur maximale
 fieldtype.date: Date
-fieldtype.email: Email
-field.file.max_file_size_mb: Maximum File Size
-field.file.file_type: File Type
+fieldtype.email: Courriel
+field.file.max_file_size_mb: Taille de fichier maximale
+field.file.file_type: Type de fichier
 file.file_type.image: Image
-file.file_type.file: File
+file.file_type.file: Fichier
 file.file_type.application: Application
-fieldtype.file: File
-field.number.min: Minimun
+fieldtype.file: Fichier
+field.number.min: Minimum
 field.number.max: Maximum
-fieldtype.number: Number
-field.textarea.min_length: Minimun Length
-field.textarea.max_length: Maximum Length
-fieldtype.time: Time
-fieldtype.text_area: Text Area
-fieldtype.text_line: Text Line
-error.reached_max_submissions: "No more submissions allowed!"
+fieldtype.number: Nombre
+field.textarea.min_length: Longueur Minimale
+field.textarea.max_length: Longueur Maximale
+fieldtype.time: Heure
+fieldtype.text_area: Zone de texte
+fieldtype.text_line: Ligne de texte
+form.submission.submitted_on: Données du formulaire transmises à
+form.send_data_to_user: Envoyer les données à l'utilisateur

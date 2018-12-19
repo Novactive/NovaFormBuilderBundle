@@ -5,10 +5,9 @@ form.fields: Fields
 field.name: Name
 field.required:	Required
 field.weight: Priority
+form.sender_email: Email adress used to send form
 form.receiver_email: Email address to receive the submission data
-form.sender_email: Sender email address
 form.send_data: Send submission data
-form.send_data_to_user: Send submission data to this email address
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length
 field.textline.max_length: Maximum Length
@@ -39,4 +38,5 @@ field.textarea.max_length: Maximum Length
 fieldtype.time: Time
 fieldtype.text_area: Text Area
 fieldtype.text_line: Text Line
-error.reached_max_submissions: "No more submissions allowed!"
+form.submission.submitted_on: Form data submitted on
+form.send_data_to_user: Send data to user

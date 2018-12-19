@@ -1,21 +1,22 @@
+{% trans_default_domain "novaezformbuilder" %}
 {% block ezplatform_fieldtype_ezcustomform_widget %}
     {{ block('form_widget') }}
-    <button data-toggle="modal" type="button" data-target="#edit_custom_form" class="btn btn-square btn-info">Edit</button>
+    <button data-toggle="modal" type="button" data-target="#edit_custom_form" class="btn btn-square btn-info">{{ "customform.form.edit"|trans }}</button>
     {% set form = get_form(value.formId)|default(null) %}
     <p class="text-info" id="attached-form">{% if form is not null %}{{ form.name }}{% endif %}</p>
     <div class="modal fade" id="edit_custom_form" tabindex="-1" role="dialog" data-endpoint="{{ path('novaezformbuilder_dashboard_edit_modal', {id: data.formId}) }}">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Form</h5>
+                    <h5 class="modal-title">{{ "customform.form.edit_form"|trans }}</h5>
                     {% if form is not null %}
-                        <button type="button" class="btn btn-primary remove-form" data-endpoint="{{ path('novaezformbuilder_dashboard_remove_modal', {id: data.formId}) }}">Remove form</button>
+                        <button type="button" class="btn btn-primary remove-form" data-endpoint="{{ path('novaezformbuilder_dashboard_remove_modal', {id: data.formId}) }}">{{ "customform.form.remove_form"|trans }}</button>
                     {% endif %}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ "generic.button.close"|trans }}</button>
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ "generic.button.close"|trans }}</button>
                 </div>
             </div>
         </div>

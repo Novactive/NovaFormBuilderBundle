@@ -14,26 +14,34 @@ declare(strict_types=1);
 namespace Novactive\Bundle\eZFormBuilderBundle\Listener;
 
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class TopMenu.
  */
 class TopMenu
 {
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
         $menu = $event->getMenu();
         $item = $menu->addChild(
             'novaezformbuilder',
             [
-                'label' => 'Nova eZ Form Builder',
+                'label' => $this->translator->trans('topmenu.tab.novaezformbuilder', [], 'novaezformbuilder'),
             ]
         );
 
         $item->addChild(
             'novaezformbuilder_forms_list',
             [
-                'label' => 'Forms',
+                'label' => $this->translator->trans('topmenu.tab.forms', [], 'novaezformbuilder'),
                 'route' => 'novaezformbuilder_dashboard_index',
             ]
         );
@@ -41,7 +49,7 @@ class TopMenu
         $item->addChild(
             'novaezformbuilder_forms_submissions',
             [
-                'label' => 'Submissions',
+                'label' => $this->translator->trans('topmenu.tab.submissions', [], 'novaezformbuilder'),
                 'route' => 'novaezformbuilder_dashboard_submissions',
             ]
         );

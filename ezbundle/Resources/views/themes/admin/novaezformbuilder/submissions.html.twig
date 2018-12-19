@@ -1,16 +1,17 @@
+{% trans_default_domain "novaezformbuilder" %}
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 
-{% block title %}{{ 'Forms Submissions List'|trans }}{% endblock %}
+{% block title %}{{ 'generic.forms_submissions_list'|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms Submissions List'|trans }
+        { value: 'generic.forms_submissions_list'|trans }
     ]} %}
 {%- endblock -%}
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: 'Forms Submissions List'|trans,
+        title: 'generic.forms_submissions_list'|trans,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -18,27 +19,27 @@
 {%- block content -%}
     <section class="container my-4">
         {% if form is not null %}
-            <h2>Form: {{ form.name }}</h2>
+            <h2>{{ "generic.subtitle.form"|trans }}: {{ form.name }}</h2>
         {% endif %}
         <div class="ez-table-header">
             <div class="ez-table-header__headline">
-                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ "Forms Submissions List"|trans }}</a>
+                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ "generic.forms_submissions_list"|trans }}</a>
             </div>
             <div class="pl-3 mr-auto">
-                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_index') }}">{{ 'Form builder list'|trans }}</a>
+                <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_index') }}">{{ 'theme.submissions.form_builder_list'|trans }}</a>
             </div>
             {% if form is not null %}
                 <div class="ez-table-header__headline">
-                    <a class="btn btn-primary btn-success" href="{{ path('novaezformbuilder_dashboard_submissions_download', {id: form.id}) }}" target="_blank">{{ 'Download Submissions'|trans }}</a>
+                    <a class="btn btn-primary btn-success" href="{{ path('novaezformbuilder_dashboard_submissions_download', {id: form.id}) }}" target="_blank">{{ 'theme.submissions.download_submissions'|trans }}</a>
                 </div>
             {% endif %}
         </div>
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'Form Name'|trans }}</th>
-                <th>{{ 'Date' }}</th>
-                <th>{{ 'Actions'|trans }}</th>
+                <th>{{ 'generic.table.form_name'|trans }}</th>
+                <th>{{ 'generic.table.date'|trans }}</th>
+                <th>{{ 'generic.table.actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -51,7 +52,7 @@
                         <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.createdAt|date("F d, Y H:i:s") }}</a>
                     </td>
                     <td>
-                        <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'Edit form'|trans }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'theme.submissions.edit_form'|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -61,4 +62,5 @@
         {{ pagerfanta(submissions, 'ez', {'routeParams' : { 'id': form.id|default(null) } }) }}
 
     </section>
+    {% include '@ezdesign/novaezformbuilder/footer.html.twig' %}
 {%- endblock -%}

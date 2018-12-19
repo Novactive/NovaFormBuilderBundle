@@ -1,18 +1,19 @@
+{% trans_default_domain "novaezformbuilder" %}
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 {% form_theme form '@NovaeZFormBuilder/nova_form_builder/form_fields.html.twig' %}
 
-{% block title %}{{ title|trans({}, 'novaezformbuilder') }}{% endblock %}
+{% block title %}{{ title|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms list'|trans, url: path('novaezformbuilder_dashboard_index') },
-        { value: title|trans({}, 'novaezformbuilder')}
+        { value: 'generic.forms_list'|trans, url: path('novaezformbuilder_dashboard_index') },
+        { value: title|trans }
     ]} %}
 {%- endblock -%}
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: title|trans({}, 'novaezformbuilder'),
+        title: title|trans,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -34,13 +35,15 @@
                 <br/>
                 {{ form_row(form.fields) }}
                 <div class="mt-3">
-                    <button class="btn btn-success" type="submit">{{ 'Save' }}</button>
+                    <button class="btn btn-success" type="submit">{{ 'generic.button.save'|trans }}</button>
                 </div>
                 {{ form_end(form) }}
                 {% if form.vars.value.id != 0 %}
-                    <a href="{{ path('novaezformbuilder_dashboard_delete', {id: form.vars.value.id}) }}" class="btn btn-primary delete-form" onclick="return confirm('Are you sure?')">Delete</a>
+                    {% set confirmation = "generic.confirmation_message"|trans %}
+                    <a href="{{ path('novaezformbuilder_dashboard_delete', {id: form.vars.value.id}) }}" class="btn btn-primary delete-form" onclick="return confirm( '{{ confirmation }}' )">{{ "generic.button.delete"|trans }}</a>
                 {% endif %}
             </div>
         </section>
     </div>
+    {% include '@ezdesign/novaezformbuilder/footer.html.twig' %}
 {%- endblock -%}
