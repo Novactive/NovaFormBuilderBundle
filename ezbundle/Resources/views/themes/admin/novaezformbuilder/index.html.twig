@@ -1,6 +1,7 @@
+{% trans_default_domain "novaezformbuilder" %}
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 
-{% block title %}{{ 'Forms List'|trans }}{% endblock %}
+{% block title %}{{ 'generic.forms_list'|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
@@ -10,7 +11,7 @@
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: 'Forms List'|trans,
+        title: 'generic.forms_list'|trans,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -18,9 +19,9 @@
 {%- block content -%}
     <section class="container my-4">
         <div class="ez-table-header">
-            <div class="ez-table-header__headline">{{ "Forms List"|trans }}</div>
+            <div class="ez-table-header__headline">{{ "generic.forms_list"|trans }}</div>
             <div class="pl-3 mr-auto">
-                {#<a class="btn btn-light" href="{{ path('form_builder_submission_list') }}">{{ 'Form submissions list'|trans }}</a>#}
+                {#<a class="btn btn-light" href="{{ path('form_builder_submission_list') }}">{{ 'generic.forms_list'|trans }}</a>#}
             </div>
             <div>
                 <a class="btn btn-primary" href="{{ path('novaezformbuilder_dashboard_create') }}">
@@ -34,9 +35,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'Form Name'|trans }}</th>
-                <th>{{ 'Submissions'|trans }}</th>
-                <th class="text-right">{{ 'Actions'|trans }}</th>
+                <th>{{ 'generic.table.form_name'|trans }}</th>
+                <th>{{ 'generic.table.date'|trans }}</th>
+                <th class="text-right">{{ 'generic.table.actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -46,11 +47,11 @@
                     <td>
                         {{ formItem.submissions|length }}
                         {% if formItem.submissions|length > 0 %}
-                            <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'View'|trans }}</a>
+                            <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'theme.index.view'|trans }}</a>
                         {% endif %}
                     </td>
                     <td class="text-right">
-                        <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_view', {id: formItem.id}) }}">{{ 'Preview'|trans }}</a>
+                        <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_view', {id: formItem.id}) }}">{{ 'theme.index.preview'|trans }}</a>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: formItem.id}) }}"
                            class="btn btn-icon"
                            title='Edit'>
@@ -58,9 +59,12 @@
                                 <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#edit"></use>
                             </svg>
                         </a>
+
+                        {% set confirmation = "generic.confirmation_message"|trans %}
+
                         <a href="{{ path('novaezformbuilder_dashboard_delete', {id: formItem.id}) }}"
                            class="btn btn-icon"
-                           title='Delete' onclick="return confirm('Are you sure?')">
+                           title='Delete' onclick="return confirm( '{{ confirmation }}' )">
                             <svg class="ez-icon ez-icon-trash">
                                 <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
                             </svg>
@@ -72,4 +76,5 @@
         </table>
         {{ pagerfanta(forms, 'ez') }}
     </section>
+    {% include '@ezdesign/novaezformbuilder/footer.html.twig' %}
 {%- endblock -%}

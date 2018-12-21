@@ -1,4 +1,4 @@
-<h3>Form data submitted on "{{ submission.form.name }}"</h3>
+<h3>{{ "form.submission.submitted_on"|trans }} "{{ submission.form.name }}"</h3>
 <table border="1" cellpadding="5">
     {% for item in submission.data %}
         <tr>

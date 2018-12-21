@@ -1,11 +1,12 @@
+{% trans_default_domain 'novaezformbuilder' %}
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 
-{% block title %}{{ 'Form Submission'|trans }}{% endblock %}
+{% block title %}{{ 'generic.forms_list'|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms Submissions List'|trans, url: path('novaezformbuilder_dashboard_submissions') },
-        { value: 'Form Submission'|trans }
+        { value: 'generic.forms_submissions_list'|trans, url: path('novaezformbuilder_dashboard_submissions') },
+        { value: 'generic.forms_list'|trans }
     ]} %}
 {%- endblock -%}
 
@@ -33,7 +34,7 @@
                                     {% endif %}
                                 {% else %}
                                     {% if item.type == 'file' %}
-                                        <a class="btn btn-info" href="{{ path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id}) }}" target="_blank">{{ 'Download'|trans }}</a>
+                                        <a class="btn btn-info" href="{{ path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id}) }}" target="_blank">{{ 'theme.submission.download'|trans }}</a>
                                     {% else %}
                                         {{ item.value|nl2br }}
                                     {% endif %}
@@ -45,7 +46,7 @@
             </div>
             <div>
                 <a class="btn btn-link"
-                   href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'Back to the list'|trans }}</a>
+                   href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'theme.submission.back_to_list'|trans }}</a>
             </div>
         </section>
     </div>

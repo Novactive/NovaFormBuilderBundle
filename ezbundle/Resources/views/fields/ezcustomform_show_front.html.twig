@@ -1,3 +1,4 @@
+{% trans_default_domain "novaezformbuilder" %}
 {% extends pagelayout %}
 
 {% form_theme form '@EzPlatformAdminUi/form_fields.html.twig' %}
@@ -6,11 +7,11 @@
     <div class="container">
         <h2>{{ form.vars.value.name }}</h2>
         {% if success == true %}
-            <h3>{{ 'Thank you for submitting the form!'|trans }}</h3>
+            <h3>{{ "customform.show.thanks_for_submitting"|trans }}</h3>
             <input type="button" value="Back" onClick='window.history.go(-{{ stepBack }})'>
         {% else %}
             {% for error in form.vars.errors %}
-                <p class="text-danger p-2">{{ error.message|trans({}, 'novaezformbuilder') }}</p>
+                <p class="text-danger p-2">{{ error.message|trans }}</p>
             {% endfor %}
             <section class="user-form col-md-6 col-md-offset-3">
                 {% if canSubmit %}
@@ -21,14 +22,14 @@
                     {% endfor %}
 
                     <div class="mt-3">
-                        <button class="btn btn-success" type="submit">{{ 'Submit'|trans }}</button>
+                        <button class="btn btn-success" type="submit">{{ 'customform.show.submit'|trans }}</button>
                     </div>
 
                     <input type="hidden" name="stepBack" value="{{ stepBack + 1 }}">
 
                     {{ form_end(form) }}
                 {% else %}
-                    <h5>This form is waiting for its maximum number of replies</h5>
+                    <h5>{{ 'customform.show.form_waiting_max_replies'|trans }}</h5>
                 {% endif %}
             </section>
 

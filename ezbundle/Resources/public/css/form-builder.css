@@ -59,3 +59,7 @@ a.delete-form {
 table.table-bordered {
     margin-bottom: 0;
 }
+
+footer#novaSignature {
+    justify-content: space-around;
+}
