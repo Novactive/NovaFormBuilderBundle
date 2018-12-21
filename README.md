@@ -24,6 +24,23 @@ make installez
 make serveez
 ```
 
+## Migrate DB from Ez Survey
+
+The database of the old **Ez Survey Bundle** can be migrated to this **Novactive Form Builder Bundle**.
+To do that run the following commands inside _ezplatform_ folder:
+
+    php bin/console novaformbuilder:migrate --export
+    php bin/console novaformbuilder:migrate --import
+
+The first one exports the data from the old database to json files.
+The second one imports the data from json files to the new database.
+After that the dumped data is still in the json files inside web/var/site/storage/files/forms folder. 
+They can be removed manually if they are not needed anymore.
+
+There is also the option for both cases to truncate the current **Novactive Form Builder Bundle** 
+tables in the database:
+
+    php bin/console novaformbuilder:migrate --clean
 
 Contributing
 ----------------
