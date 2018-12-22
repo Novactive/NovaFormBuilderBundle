@@ -37,7 +37,13 @@ The second one imports the data from json files to the new database.
 After that the dumped data is still in the json files inside web/var/site/storage/files/forms folder. 
 They can be removed manually if they are not needed anymore.
 
-There is also the option for both cases to truncate the current **Novactive Form Builder Bundle** 
+What the migration script does is:
+It takes all surveys to convert them into forms. Each of them is related to particular _Ez content_. 
+If more than one record have the same content_id the script takes the latest one due to the _ID_ value.
+Then it takes all questions to convert into fields and results + questions results to convert into submissions.
+ 
+
+There is also the option to truncate the current **Novactive Form Builder Bundle** 
 tables in the database:
 
     php bin/console novaformbuilder:migrate --clean
