@@ -239,6 +239,7 @@ class MigrateCommand extends Command
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
+            $formEntity->setSendData(false);
 
             foreach ($form->fields as $field) {
                 $className = '\\Novactive\\Bundle\\FormBuilderBundle\\Entity\\Field\\'.$field->type;
@@ -265,7 +266,7 @@ class MigrateCommand extends Command
                 }
             }
 
-            $this->formService->save(new ArrayCollection(), $formEntity);
+            $this->formService->save($formEntity);
             ++$formsCounter;
 
             $this->io->writeln(
