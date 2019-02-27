@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
@@ -58,7 +57,7 @@ class MigrateCommand extends Command
      */
     private $entityManager;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice'];
+    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver'];
 
     /**
      * MigrateCommand constructor.
@@ -100,7 +99,8 @@ class MigrateCommand extends Command
 
     private function export(): void
     {
-        $forms = [];
+        $timeStart = time();
+        $forms     = [];
 
         $surveys = $this->runQuery(
             'SELECT max(id) as surveyId, contentobject_id FROM ezsurvey GROUP BY contentobject_id ORDER BY surveyId'
@@ -109,13 +109,24 @@ class MigrateCommand extends Command
         $fieldsCounter = $submissionsCounter = 0;
 
         foreach ($surveys as $survey) {
-            $fields = [];
-
-            $sql = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
+            $fields        = [];
+            $receiverEmail = null;
+            $sql           = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
                     AND `type` IN ('".implode("','", self::QUESTION_TYPES)."') ORDER BY tab_order";
 
             $questions = $this->runQuery($sql, [$survey['surveyId']]);
             foreach ($questions as $question) {
+                // Getting the Receiver email if checked
+                if ('Receiver' === $question['type']) {
+                    $xml = simplexml_load_string($question['text2']);
+                    foreach ($xml as $option) {
+                        if ('1' === (string) $option->checked) {
+                            $receiverEmail = (string) $option->email;
+                        }
+                    }
+                    continue;
+                }
+
                 if (empty($question['text'])) {
                     continue;
                 }
@@ -160,7 +171,15 @@ class MigrateCommand extends Command
             $fieldsCounter += count($fields);
 
             if (!empty($fields)) {
-                $form = ['name' => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null, 'fields' => $fields];
+                $form             = [
+                    'name'   => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null,
+                    'fields' => $fields,
+                ];
+                $form['sendData'] = false;
+                if (null !== $receiverEmail) {
+                    $form['receiverEmail'] = $receiverEmail;
+                    $form['sendData']      = true;
+                }
                 $this->ioService->saveFile('forms/'.$form['name'].'.json', json_encode($form));
                 $forms[] = $form['name'];
 
@@ -173,7 +192,7 @@ class MigrateCommand extends Command
                 $sql .= 'JOIN ezsurveyresult sr ON s.id = sr.survey_id ';
                 $sql .= 'JOIN ezsurveyquestionresult sqr ON sr.id = sqr.result_id ';
                 $sql .= 'JOIN ezsurveyquestion sq ON sqr.question_id = sq.id ';
-                $sql .= 'WHERE s.contentobject_id = ? ';
+                $sql .= 'WHERE s.contentobject_id = ? AND type != "Receiver" ';
                 $sql .= 'GROUP BY ids ';
                 $sql .= 'ORDER BY sqr.result_id,sqr.question_id';
 
@@ -223,11 +242,14 @@ class MigrateCommand extends Command
             'Total: '.(string) count($forms).' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
         );
 
-        $this->io->success('Export done.');
+        $timeEnd      = time();
+        $timeInterval = gmdate('i:s', $timeEnd - $timeStart);
+        $this->io->success("Export done in {$timeInterval}.");
     }
 
     private function import(): void
     {
+        $timeStart = time();
         // clear the tables, reset the IDs
         $this->clean();
 
@@ -239,7 +261,10 @@ class MigrateCommand extends Command
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
-            $formEntity->setSendData(false);
+            $formEntity->setSendData($form->sendData);
+            if ($form->sendData) {
+                $formEntity->setReceiverEmail($form->receiverEmail);
+            }
 
             foreach ($form->fields as $field) {
                 $className = '\\Novactive\\Bundle\\FormBuilderBundle\\Entity\\Field\\'.$field->type;
@@ -273,13 +298,16 @@ class MigrateCommand extends Command
                 "Imported #{$formEntity->getName()} with ".(string) $formEntity->getFields()->count().' fields and '.
                 (string) $formEntity->getSubmissions()->count().' submissions.'
             );
+            $this->entityManager->clear();
         }
 
         $this->io->section(
             'Total: '.$formsCounter.' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
         );
 
-        $this->io->success('Import done.');
+        $timeEnd      = time();
+        $timeInterval = gmdate('i:s', $timeEnd - $timeStart);
+        $this->io->success("Import done in {$timeInterval}.");
     }
 
     private function clean(): void
