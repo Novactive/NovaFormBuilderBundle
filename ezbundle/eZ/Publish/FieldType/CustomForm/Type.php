@@ -91,7 +91,7 @@ class Type extends FieldType implements Nameable
                 [
                     'data'         => $this->toHash($value),
                     'externalData' => null,
-                    'sortKey'      => $this->getSortInfo($value)
+                    'sortKey'      => $this->getSortInfo($value),
                 ]
             );
         }
@@ -99,7 +99,7 @@ class Type extends FieldType implements Nameable
         return new PersistenceValue(
             [
                 'data'    => $this->toHash($value),
-                'sortKey' => $this->getSortInfo($value)
+                'sortKey' => $this->getSortInfo($value),
             ]
         );
     }
