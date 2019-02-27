@@ -16,15 +16,72 @@ It provides 2 bundles:
 
 > Note that eZ Platform is a pure symfony app then the bridge is just about wiring the IHM
 
+<br>
+<hr/>
+<br>
 
-## Install
+# Installation
 
-```bash
-make installez
-make serveez
+### Requirements
+
+* eZ Platform 2+
+* PHP 7.1+
+* MySQL 5.7.8+ / Maria DB 10.1+
+
+### Installation steps
+
+Run `composer require novactive/formbuilder` to install the bundle and its dependencies:
+
+### Register the bundles
+
+Activate the bundle in `app\AppKernel.php` file.
+
+```php
+// app\AppKernel.php
+
+public function registerBundles()
+{
+   ...
+   $bundles = array(
+        new FrameworkBundle(),
+        ...
+        // FormBuilder bundles
+        new Novactive\Bundle\FormBuilderBundle\FormBuilderBundle(),
+        new Novactive\Bundle\eZFormBuilderBundle\NovaeZFormBuilderBundle()
+   );
+   ...
+}
 ```
 
-## Migrate DB from Ez Survey
+### Add routes
+
+```yaml
+_novaezmailing_routes:
+    resource: '@NovaeZMailingBundle/Resources/config/routing.yml'
+```
+
+### Install the database schema
+
+```bash
+bin/console novaformbuilder:install
+```
+
+### Troubleshooting
+
+If the bundle web assets (css, js etc.) are missing in the public directory it can be fixed by running the following commands:
+```bash
+bin/console assets:install --symlink --relative
+bin/console assetic:dump
+```
+That will install bundles web assets under a public directory and dump them to the filesystem.
+
+Also if the **translations** are not loaded at once clearing the Symfony cache folder must help. 
+
+<br>
+<hr/>
+<br>
+
+# Migrate DB from Ez Survey
 
 The database of the old **Ez Survey Bundle** can be migrated to this **Novactive Form Builder Bundle**.
 To do that run the following commands inside _ezplatform_ folder:
@@ -47,6 +104,10 @@ There is also the option to truncate the current **Novactive Form Builder Bundle
 tables in the database:
 
     php bin/console novaformbuilder:migrate --clean
+
+<br>
+<hr/>
+<br>
 
 Contributing
 ----------------
