@@ -35,17 +35,22 @@ class Mailer
     private $logger;
 
     /**
+     * @var string
+     */
+    private $defaultSenderEmail;
+
+    /**
      * Mailer constructor.
      */
     public function __construct(
         Swift_Mailer $mailer,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        string $defaultSenderEmail
     ) {
-        $this->mailer = $mailer;
-        $this->logger = $logger;
+        $this->defaultSenderEmail = $defaultSenderEmail;
+        $this->mailer             = $mailer;
+        $this->logger             = $logger;
     }
-
-    public const DEFAULT_SENDER_EMAIL = 'noreply@company.com';
 
     /**
      * @return Swift_Message|mixed
@@ -89,7 +94,7 @@ class Mailer
     public function build(Form $formEntity, string $body): Swift_Mime_SimpleMessage
     {
         $message = $this->createMessage();
-        $message->setFrom($formEntity->getSenderEmail() ?? self::DEFAULT_SENDER_EMAIL);
+        $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
         $receivers = [];
         if ($formEntity->isUserSendData()) {
             $receivers = $formEntity->getUserSendEmails();

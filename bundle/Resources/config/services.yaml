@@ -1,3 +1,6 @@
+parameters:
+    default_sender_email: 'noreply@novactive.com'
+
 services:
     _defaults:
         autowire: true
@@ -11,3 +14,7 @@ services:
         arguments: [!tagged novaformbuilder.fieldtype]
 
     Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface: '@Novactive\Bundle\FormBuilderBundle\Core\FileUploader'
+
+    Novactive\Bundle\FormBuilderBundle\Core\Mailer:
+        arguments:
+            $defaultSenderEmail: '%default_sender_email%'
