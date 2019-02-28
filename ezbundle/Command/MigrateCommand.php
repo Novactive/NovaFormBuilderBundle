@@ -108,6 +108,8 @@ class MigrateCommand extends Command
 
         $fieldsCounter = $submissionsCounter = 0;
 
+        $this->io->progressStart(count($surveys));
+
         foreach ($surveys as $survey) {
             $fields        = [];
             $receiverEmail = null;
@@ -229,14 +231,13 @@ class MigrateCommand extends Command
                 if (!empty($submissions)) {
                     $this->ioService->saveFile('forms/'.$form['name'].'_submissions.json', json_encode($submissions));
                 }
-                $this->io->writeln(
-                    "Exported #{$form['name']} with ".(string) count($fields).' fields and '.
-                    (string) count($submissions).' submissions.'
-                );
 
                 $submissionsCounter += count($submissions);
             }
+            $this->io->progressAdvance();
         }
+        $this->io->progressFinish();
+
         $this->ioService->saveFile('forms/manifest.json', json_encode($forms));
         $this->io->section(
             'Total: '.(string) count($forms).' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
@@ -256,6 +257,9 @@ class MigrateCommand extends Command
         $manifest     = $this->ioService->readFile('forms/manifest.json');
         $fileNames    = json_decode($manifest);
         $formsCounter = $fieldsCounter = $submissionsCounter = 0;
+
+        $this->io->progressStart(count($fileNames));
+
         foreach ($fileNames as $fileName) {
             $form       = json_decode($this->ioService->readFile('forms/'.$fileName.'.json'));
             $formEntity = new Form();
@@ -294,12 +298,10 @@ class MigrateCommand extends Command
             $this->formService->save($formEntity);
             ++$formsCounter;
 
-            $this->io->writeln(
-                "Imported #{$formEntity->getName()} with ".(string) $formEntity->getFields()->count().' fields and '.
-                (string) $formEntity->getSubmissions()->count().' submissions.'
-            );
             $this->entityManager->clear();
+            $this->io->progressAdvance();
         }
+        $this->io->progressFinish();
 
         $this->io->section(
             'Total: '.$formsCounter.' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
