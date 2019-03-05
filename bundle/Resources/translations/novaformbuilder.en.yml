@@ -20,11 +20,13 @@ field.choice.choices.value:	Value
 field.choice.choices.weight: Priority
 fieldtype.choice: Choice
 field.date.default_value: Default Value
+field.date.empty: Empty
+field.date.current: Current Date
 field.date.min: Minimal Value
 field.date.max: Maximum Value
 fieldtype.date: Date
 fieldtype.email: Email
-field.file.max_file_size_mb: Maximum File Size
+field.file.max_file_size_mb: Maximum File Size in MB
 field.file.file_type: File Type
 file.file_type.image: Image
 file.file_type.file: File

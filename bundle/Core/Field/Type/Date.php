@@ -38,7 +38,7 @@ class Date extends FieldType
                 [
                     'required' => true,
                     'label'    => 'field.date.default_value',
-                    'choices'  => ['empty' => 0, 'current date' => 1],
+                    'choices'  => ['field.date.empty' => 0, 'field.date.current' => 1],
                 ]
             )
             ->add(
