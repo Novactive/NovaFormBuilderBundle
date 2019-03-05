@@ -1,7 +1,7 @@
 novaezformbuilder.title.edit_form: "Modifier le formulaire"
 error.reached_max_submissions: "Nombre maximum de fourmulaires envoyés atteint"
 customform.admin.form: "Formulaire"
-customform.admin.Number_of_submissions: "Nombre de transmissions"
+customform.admin.Number_of_submissions: "Nombre de Transmissions"
 custom.admin.test_form: "Tester le formulaire"
 custom.admin.list_of_submissions: "Liste des transmissions"
 customform.form.edit: "Modifier"

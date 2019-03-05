@@ -1,7 +1,7 @@
 novaezformbuilder.title.edit_form: "Edit Form"
 error.reached_max_submissions: "No more submissions allowed!"
 customform.admin.form: "Form"
-customform.admin.Number_of_submissions: "Number of submissions"
+customform.admin.Number_of_submissions: "Number of Submissions"
 custom.admin.test_form: "Test the form"
 custom.admin.list_of_submissions: "List of Submissions"
 customform.form.edit: "Edit"
