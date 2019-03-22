@@ -63,3 +63,9 @@ table.table-bordered {
 footer#novaSignature {
     justify-content: space-around;
 }
+td.form-actions a {
+    margin-right: 10px;
+}
+td.form-actions a:last-child {
+    margin-right: 0;
+}

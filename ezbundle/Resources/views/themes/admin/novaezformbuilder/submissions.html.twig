@@ -37,9 +37,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'generic.table.form_name'|trans }}</th>
-                <th>{{ 'generic.table.date'|trans }}</th>
-                <th>{{ 'generic.table.actions'|trans }}</th>
+                <th style="width: 35%">{{ 'generic.table.form_name'|trans }}</th>
+                <th style="width: 35%">{{ 'generic.table.date'|trans }}</th>
+                <th style="width: 30%">{{ 'generic.table.actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
@@ -51,8 +51,10 @@
                     <td>
                         <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ submission.createdAt|date("F d, Y H:i:s") }}</a>
                     </td>
-                    <td>
+                    <td class="form-actions">
+                        <a href="{{ path('novaezformbuilder_dashboard_submission', {id: submission.id}) }}">{{ 'theme.submissions.view_submission'|trans }}</a>
                         <a href="{{ path('novaezformbuilder_dashboard_edit', {id: submission.form.id}) }}">{{ 'theme.submissions.edit_form'|trans }}</a>
+                        <a href="{{ path('novaezformbuilder_dashboard_view', {id: submission.form.id}) }}">{{ 'theme.submissions.preview_form'|trans }}</a>
                     </td>
                 </tr>
             {% endfor %}

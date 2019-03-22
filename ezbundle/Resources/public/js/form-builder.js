@@ -130,7 +130,8 @@
                 var $modalBody = $editCustomForm.find('.modal-body');
                 if ($modalBody.html().indexOf('submit') < 0) {
                     $.post($editCustomForm.data('endpoint'), function (data) {
-                        $modalBody.html(data);
+                        $modalBody.find('.edit-form-preloader').hide();
+                        $modalBody.append(data);
                         init();
                         $modalBody.find('form').submit(function (e) {
                             var form = $(this);
