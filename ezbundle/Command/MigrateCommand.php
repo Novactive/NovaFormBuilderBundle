@@ -180,8 +180,9 @@ class MigrateCommand extends Command
 
             if (!empty($fields)) {
                 $form             = [
-                    'name'   => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null,
-                    'fields' => $fields,
+                    'name'     => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null,
+                    'fields'   => $fields,
+                    'objectId' => $survey['contentobject_id']
                 ];
                 $form['sendData'] = false;
                 if (null !== $receiverEmail) {
@@ -314,7 +315,7 @@ class MigrateCommand extends Command
             $formId = $this->formService->save($formEntity);
 
             // Updating the attributes in Content Objects from ezsurvey to ezcustomform
-            $sql = "UPDATE ezcontentobject_attribute SET data_type_string = 'ezcustomform', data_int = ?
+            $sql = "UPDATE ezcontentobject_attribute SET data_type_string = 'ezcustomform', data_int = ? 
                     WHERE contentobject_id = ? AND data_type_string = 'ezsurvey'";
             $this->runQuery($sql, [$formId, $form->objectId]);
 
@@ -350,6 +351,9 @@ class MigrateCommand extends Command
             $stmt->bindValue($i, $parameters[$i - 1]);
         }
         $stmt->execute();
+        if (false === \strpos($sql, 'SELECT')) {
+            return [];
+        }
 
         return $stmt->fetchAll($fetchMode);
     }
