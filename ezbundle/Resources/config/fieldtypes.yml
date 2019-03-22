@@ -16,3 +16,8 @@ services:
         tags:
         - {name: ez.fieldFormMapper.value, fieldType: ezcustomform}
         arguments: ['@ezpublish.api.service.field_type']
+
+    ezsystems.ezformbuilderbundle.indexable.unindexed:
+        class: "%ezpublish.fieldType.indexable.unindexed.class%"
+        tags:
+            - {name: ezpublish.fieldType.indexable, alias: ezcustomform}

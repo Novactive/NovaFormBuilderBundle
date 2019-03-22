@@ -57,7 +57,9 @@ class DashboardController
         if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
             $submitter->createAndLogSubmission($formEntity);
 
-            return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
+            return new RedirectResponse(
+                $router->generate('novaezformbuilder_dashboard_submissions', ['id' => $formEntity->getId()])
+            );
         }
 
         return [
@@ -180,6 +182,7 @@ class DashboardController
                 'value',
                 $form
             );
+            $queryBuilder->orderBy('s.createdAt', 'DESC');
         }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder));
