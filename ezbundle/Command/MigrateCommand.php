@@ -267,6 +267,11 @@ class MigrateCommand extends Command
         $fileNames    = json_decode($manifest);
         $formsCounter = $fieldsCounter = $submissionsCounter = 0;
 
+        // Updating the attributes in Content Types from ezsurvey to ezcustomform
+        $sql = "UPDATE ezcontentclass_attribute SET data_type_string = 'ezcustomform' 
+                WHERE data_type_string = 'ezsurvey'";
+        $this->runQuery($sql);
+
         $this->io->progressStart(count($fileNames));
 
         foreach ($fileNames as $fileName) {
@@ -306,7 +311,13 @@ class MigrateCommand extends Command
                 }
             }
 
-            $this->formService->save($formEntity);
+            $formId = $this->formService->save($formEntity);
+
+            // Updating the attributes in Content Objects from ezsurvey to ezcustomform
+            $sql = "UPDATE ezcontentobject_attribute SET data_type_string = 'ezcustomform', data_int = ?
+                    WHERE contentobject_id = ? AND data_type_string = 'ezsurvey'";
+            $this->runQuery($sql, [$formId, $form->objectId]);
+
             ++$formsCounter;
 
             $this->entityManager->clear();

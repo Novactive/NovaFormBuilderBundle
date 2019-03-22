@@ -57,7 +57,9 @@ class DashboardController
         if ($form->isSubmitted() && $form->isValid() && $submitter->canSubmit($form, $formEntity)) {
             $submitter->createAndLogSubmission($formEntity);
 
-            return new RedirectResponse($router->generate('novaezformbuilder_dashboard_submissions', ['id' => $formEntity->getId()]));
+            return new RedirectResponse(
+                $router->generate('novaezformbuilder_dashboard_submissions', ['id' => $formEntity->getId()])
+            );
         }
 
         return [
