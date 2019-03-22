@@ -108,6 +108,14 @@ tables in the database:
 
 After running the Migrate scripts you might need to clear the **Redis Cache** 
 if it's used on the project to apply the changes that have been made to the database.
+
+The migration doen't support the cases if there are more than one **ezsurvey** fields
+ in any particular Content Type.
+ 
+To apply the custom Form design on the Front End the bundle template 
+**fields/ezcustomform_show_front.html.twig** should be overridden 
+with another template inside _Ez Platform_.
+ 
 <br>
 <hr/>
 <br>
