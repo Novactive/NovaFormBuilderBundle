@@ -54,4 +54,9 @@ class IOService
     {
         return $this->io->exists($filename);
     }
+
+    public function cleanDir(string $dirPath): void
+    {
+        $this->io->deleteDirectory($dirPath);
+    }
 }

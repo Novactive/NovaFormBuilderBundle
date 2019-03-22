@@ -128,9 +128,9 @@
 
             $editCustomForm.on('show.bs.modal', function () {
                 var $modalBody = $editCustomForm.find('.modal-body');
-                if ($modalBody.html() === '') {
+                if ($modalBody.html().indexOf('submit') < 0) {
                     $.post($editCustomForm.data('endpoint'), function (data) {
-                        $modalBody.append(data);
+                        $modalBody.html(data);
                         init();
                         $modalBody.find('form').submit(function (e) {
                             var form = $(this);

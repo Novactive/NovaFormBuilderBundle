@@ -105,6 +105,9 @@ tables in the database:
 
     php bin/console novaformbuilder:migrate --clean
 
+
+After running the Migrate scripts you might need to clear the **Redis Cache** 
+if it's used on the project to apply the changes that have been made to the database.
 <br>
 <hr/>
 <br>

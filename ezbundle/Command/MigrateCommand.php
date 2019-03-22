@@ -59,6 +59,8 @@ class MigrateCommand extends Command
 
     public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver'];
 
+    public const DUMP_FOLDER = 'migrate';
+
     /**
      * MigrateCommand constructor.
      */
@@ -99,6 +101,10 @@ class MigrateCommand extends Command
 
     private function export(): void
     {
+        // clean the 'ezmailing' dir
+        $this->ioService->cleanDir(self::DUMP_FOLDER);
+        $this->io->section('Cleaned the folder with json files.');
+
         $timeStart = time();
         $forms     = [];
 
@@ -182,7 +188,7 @@ class MigrateCommand extends Command
                     $form['receiverEmail'] = $receiverEmail;
                     $form['sendData']      = true;
                 }
-                $this->ioService->saveFile('forms/'.$form['name'].'.json', json_encode($form));
+                $this->ioService->saveFile(self::DUMP_FOLDER.'/'.$form['name'].'.json', json_encode($form));
                 $forms[] = $form['name'];
 
                 // Get the Survey Results
@@ -229,7 +235,10 @@ class MigrateCommand extends Command
                     $submissions[] = ['data' => $data, 'created_at' => $createdDate];
                 }
                 if (!empty($submissions)) {
-                    $this->ioService->saveFile('forms/'.$form['name'].'_submissions.json', json_encode($submissions));
+                    $this->ioService->saveFile(
+                        self::DUMP_FOLDER.'/'.$form['name'].'_submissions.json',
+                        json_encode($submissions)
+                    );
                 }
 
                 $submissionsCounter += count($submissions);
@@ -238,7 +247,7 @@ class MigrateCommand extends Command
         }
         $this->io->progressFinish();
 
-        $this->ioService->saveFile('forms/manifest.json', json_encode($forms));
+        $this->ioService->saveFile(self::DUMP_FOLDER.'/manifest.json', json_encode($forms));
         $this->io->section(
             'Total: '.(string) count($forms).' forms, '.$fieldsCounter.' fields, '.$submissionsCounter.' submissions.'
         );
@@ -254,14 +263,14 @@ class MigrateCommand extends Command
         // clear the tables, reset the IDs
         $this->clean();
 
-        $manifest     = $this->ioService->readFile('forms/manifest.json');
+        $manifest     = $this->ioService->readFile(self::DUMP_FOLDER.'/manifest.json');
         $fileNames    = json_decode($manifest);
         $formsCounter = $fieldsCounter = $submissionsCounter = 0;
 
         $this->io->progressStart(count($fileNames));
 
         foreach ($fileNames as $fileName) {
-            $form       = json_decode($this->ioService->readFile('forms/'.$fileName.'.json'));
+            $form       = json_decode($this->ioService->readFile(self::DUMP_FOLDER.'/'.$fileName.'.json'));
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
@@ -284,8 +293,10 @@ class MigrateCommand extends Command
             }
 
             // Importing Submissions
-            if ($this->ioService->fileExists('forms/'.$fileName.'_submissions.json')) {
-                $submissions = json_decode($this->ioService->readFile('forms/'.$fileName.'_submissions.json'));
+            if ($this->ioService->fileExists(self::DUMP_FOLDER.'/'.$fileName.'_submissions.json')) {
+                $submissions = json_decode(
+                    $this->ioService->readFile(self::DUMP_FOLDER.'/'.$fileName.'_submissions.json')
+                );
                 foreach ($submissions as $submission) {
                     $submissionEntity = new FormSubmission();
                     $submissionEntity->setCreatedAt(new \DateTime($submission->created_at));
