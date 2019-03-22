@@ -44,9 +44,10 @@
                     {% endfor %}
                 </table>
             </div>
-            <div>
-                <a class="btn btn-link"
-                   href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'theme.submission.back_to_list'|trans }}</a>
+            <div class="submission-back-links">
+                <span class="btn">{{ 'theme.submission.back_to_list'|trans }}:</span>
+                <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'theme.submission.back_to_list.all'|trans }}</a>
+                <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: submission.form.id}) }}">{{ submission.form.name }} {{ 'theme.submission.back_to_list.form'|trans }}</a>
             </div>
         </section>
     </div>
