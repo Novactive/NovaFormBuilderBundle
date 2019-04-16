@@ -18,7 +18,7 @@
                     {{ form_start(form, {'action': path('novaezformbuilder_front_show_form', {id: form.vars.value.id})}) }}
 
                     {% for field in form.fields.children %}
-                        {{ form_widget(field) }}
+                        {{ form_widget(field, { 'attr': {'class': field.vars.data.cssClass} }) }}
                     {% endfor %}
 
                     <div class="mt-3">
