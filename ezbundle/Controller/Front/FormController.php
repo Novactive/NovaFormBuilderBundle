@@ -40,7 +40,7 @@ class FormController
      * Render & handle clientside form on Front Office.
      *
      * @Route("/showfront/{id}", name="novaezformbuilder_front_show_form")
-     * @Template("@NovaeZFormBuilder/fields/ezcustomform_show_front.html.twig")
+     * @Template("@ezdesign/fields/ezcustomform_show_front.html.twig")
      */
     public function show(
         Form $formEntity,
