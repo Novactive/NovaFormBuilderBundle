@@ -56,8 +56,9 @@ public function registerBundles()
 ### Add routes
 
 ```yaml
-_novaezmailing_routes:
-    resource: '@NovaeZMailingBundle/Resources/config/routing.yml'
+
+_novaezformbuilder_routes:
+    resource: '@NovaeZFormBuilderBundle/Resources/config/routing.yml'
 ```
 
 ### Install the database schema
