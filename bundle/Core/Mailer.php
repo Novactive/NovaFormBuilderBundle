@@ -24,8 +24,6 @@ use Swift_Mime_SimpleMessage;
  */
 class Mailer
 {
-    const SUBMISSION_SUBJECT_TPL = 'NovaFormBuilder Submission Data from %FORM_NAME%';
-    
     /**
      * @var Swift_Mailer
      */
@@ -93,7 +91,7 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build(Form $formEntity, string $body): Swift_Mime_SimpleMessage
+    public function build(Form $formEntity, string $subject, string $body): Swift_Mime_SimpleMessage
     {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
@@ -105,18 +103,9 @@ class Mailer
             $receivers[] = $formEntity->getReceiverEmail();
         }
         $message->setBcc($receivers);
-        $message->setSubject($this->createSubject($formEntity));
+        $message->setSubject($subject);
         $message->setBody($body, 'text/html', 'utf8');
 
         return $message;
-    }
-
-    private function createSubject(Form $formEntity): string
-    {
-        $subject = $formEntity->getSubjectEmail() ?
-            $formEntity->getSubjectEmail() : self::SUBMISSION_SUBJECT_TPL;
-        $subject = str_replace(['%FORM_NAME%'], [$formEntity->getName()], $subject);
-
-        return $subject;
     }
 }

@@ -76,6 +76,13 @@ class Form
     private $subjectEmail;
 
     /**
+     * @ORM\Column(name="title_email", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $titleEmail;
+
+    /**
      * @ORM\Column(name="send_data", type="boolean")
      *
      * @var bool
@@ -170,6 +177,18 @@ class Form
     public function setSubjectEmail(?string $subjectEmail): self
     {
         $this->subjectEmail = $subjectEmail;
+
+        return $this;
+    }
+
+    public function getTitleEmail(): ?string
+    {
+        return $this->titleEmail;
+    }
+
+    public function setTitleEmail(?string $titleEmail): self
+    {
+        $this->titleEmail = $titleEmail;
 
         return $this;
     }
