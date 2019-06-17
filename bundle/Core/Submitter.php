@@ -30,6 +30,9 @@ use Twig_Environment;
 
 class Submitter
 {
+    const SUBMISSION_SUBJECT_TPL = 'NovaFormBuilder Submission Data from %FORM_NAME%';
+    const TITLE_EMAIL_TPL = 'Form data submitted on "%FORM_NAME%"';
+
     /**
      * @var EntityManagerInterface
      */
@@ -166,9 +169,30 @@ class Submitter
     {
         $content = $this->twig->render(
             '@FormBuilder/mails/submission_data.html.twig',
-            ['submission' => $formSubmission]
+            [
+                'submission' => $formSubmission,
+                'title' => $this->createEmailTitle($formEntity),
+            ]
         );
-        $message = $this->mailer->build($formEntity, $content);
+        $message = $this->mailer->build($formEntity, $this->createSubject($formEntity), $content);
         $this->mailer->send($message);
+    }
+
+    private function createEmailTitle(Form $formEntity): string
+    {
+        $header = $formEntity->getTitleEmail() ?
+            $formEntity->getTitleEmail() : self::TITLE_EMAIL_TPL;
+        $header = str_replace(['%FORM_NAME%'], [$formEntity->getName()], $header);
+
+        return $header;
+    }
+
+    private function createSubject(Form $formEntity): string
+    {
+        $subject = $formEntity->getSubjectEmail() ?
+            $formEntity->getSubjectEmail() : self::SUBMISSION_SUBJECT_TPL;
+        $subject = str_replace(['%FORM_NAME%'], [$formEntity->getName()], $subject);
+
+        return $subject;
     }
 }

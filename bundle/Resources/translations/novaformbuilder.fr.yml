@@ -7,6 +7,8 @@ field.required:	Requis
 field.weight: Priorité
 form.sender_email: Adresse courriel qui transmettra les données de formulaire
 form.receiver_email: Adresse courriel qui recevra les données de formulaire
+form.subject_email: Objet de l'e-mail avec les données de soumission
+form.title_email: Titre dans l'email
 form.send_data: Envoyer les données du formulaire
 field.css_class: Classe CSS
 field.textline.min_length: Longueur Minimale

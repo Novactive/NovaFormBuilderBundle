@@ -69,6 +69,20 @@ class Form
     private $receiverEmail;
 
     /**
+     * @ORM\Column(name="subject_email", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $subjectEmail;
+
+    /**
+     * @ORM\Column(name="title_email", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $titleEmail;
+
+    /**
      * @ORM\Column(name="send_data", type="boolean")
      *
      * @var bool
@@ -151,6 +165,30 @@ class Form
     public function setReceiverEmail(?string $receiverEmail): self
     {
         $this->receiverEmail = $receiverEmail;
+
+        return $this;
+    }
+
+    public function getSubjectEmail(): ?string
+    {
+        return $this->subjectEmail;
+    }
+
+    public function setSubjectEmail(?string $subjectEmail): self
+    {
+        $this->subjectEmail = $subjectEmail;
+
+        return $this;
+    }
+
+    public function getTitleEmail(): ?string
+    {
+        return $this->titleEmail;
+    }
+
+    public function setTitleEmail(?string $titleEmail): self
+    {
+        $this->titleEmail = $titleEmail;
 
         return $this;
     }

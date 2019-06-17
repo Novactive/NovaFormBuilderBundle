@@ -91,7 +91,7 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build(Form $formEntity, string $body): Swift_Mime_SimpleMessage
+    public function build(Form $formEntity, string $subject, string $body): Swift_Mime_SimpleMessage
     {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
@@ -103,7 +103,7 @@ class Mailer
             $receivers[] = $formEntity->getReceiverEmail();
         }
         $message->setBcc($receivers);
-        $message->setSubject("NovaFormBuilder Submission Data from {$formEntity->getName()}");
+        $message->setSubject($subject);
         $message->setBody($body, 'text/html', 'utf8');
 
         return $message;

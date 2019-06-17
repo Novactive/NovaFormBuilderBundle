@@ -7,6 +7,8 @@ field.required:	Required
 field.weight: Priority
 form.sender_email: Email address used to send from
 form.receiver_email: Email address to receive the submission data
+form.subject_email: Subject of the Email with submission data
+form.title_email: Title in the Email
 form.send_data: Send submission data
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length

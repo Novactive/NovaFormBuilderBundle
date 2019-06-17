@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Form\EditType;
 
+use Novactive\Bundle\FormBuilderBundle\Core\Mailer;
+use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -53,6 +55,16 @@ class FormEditType extends AbstractType
             )
             ->add('senderEmail', EmailType::class, ['label' => 'form.sender_email', 'required' => false])
             ->add('receiverEmail', EmailType::class, ['label' => 'form.receiver_email', 'required' => false])
+            ->add('subjectEmail', TextType::class, [
+                'label' => 'form.subject_email',
+                'required' => false,
+                'attr' => ['placeholder' => Submitter::SUBMISSION_SUBJECT_TPL],
+            ])
+            ->add('titleEmail', TextType::class, [
+                'label' => 'form.title_email',
+                'required' => false,
+                'attr' => ['placeholder' => Submitter::TITLE_EMAIL_TPL]
+            ])
             ->add(
                 'sendData',
                 CheckboxType::class,
