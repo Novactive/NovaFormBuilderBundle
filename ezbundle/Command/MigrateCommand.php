@@ -125,22 +125,26 @@ class MigrateCommand extends Command
             $questions = $this->runQuery($sql, [$survey['surveyId']]);
             foreach ($questions as $question) {
                 // Getting the Receiver email if checked
+                $options = [];
                 if ('Receiver' === $question['type']) {
                     $xml = simplexml_load_string($question['text2']);
+                    $choices = [];
+                    $counter = 0;
                     foreach ($xml as $option) {
+                        ++$counter;
                         if ('1' === (string) $option->checked) {
                             $receiverEmail = (string) $option->email;
                         }
+                        $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label , 'weight' => $counter];
                     }
-                    continue;
+                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
                 }
 
                 if (empty($question['text'])) {
                     continue;
                 }
                 $type    = $this->convertType($question['type']);
-                $options = [];
-                if ('Choice' === $type) {
+                if ('Choice' === $type && 'Receiver' !== $question['type'] ) {
                     $xml     = simplexml_load_string($question['text2']);
                     $choices = [];
                     $counter = 0;
@@ -371,6 +375,7 @@ class MigrateCommand extends Command
                 $type = 'Number';
                 break;
             case 'MultipleChoice':
+            case 'Receiver':
                 $type = 'Choice';
                 break;
             default:
