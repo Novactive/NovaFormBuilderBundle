@@ -16,6 +16,8 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\API\Repository\ContentService;
+use eZ\Publish\Core\Repository\Repository;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
@@ -57,19 +59,33 @@ class MigrateCommand extends Command
      */
     private $entityManager;
 
+    /**
+     * @var Repository
+     */
+    private $repository;
+
     public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver'];
 
     public const DUMP_FOLDER = 'migrate';
 
     /**
      * MigrateCommand constructor.
+     * @param IOService $ioService
+     * @param FormService $formService
+     * @param EntityManagerInterface $entityManager
+     * @param Repository $repository
      */
-    public function __construct(IOService $ioService, FormService $formService, EntityManagerInterface $entityManager)
+    public function __construct(IOService $ioService, FormService $formService, EntityManagerInterface $entityManager, Repository $repository)
     {
         parent::__construct();
         $this->ioService     = $ioService;
         $this->formService   = $formService;
         $this->entityManager = $entityManager;
+        $this->repository = $repository;
+
+        // set admin to repository
+        $user               = $repository->getUserService()->loadUserByLogin('admin');
+        $repository->getPermissionResolver()->setCurrentUserReference($user);
     }
 
     protected function configure(): void
@@ -117,6 +133,8 @@ class MigrateCommand extends Command
         $this->io->progressStart(count($surveys));
 
         foreach ($surveys as $survey) {
+
+            $content = $this->repository->getContentService()->loadContent($survey['contentobject_id']);
             $fields        = [];
             $receiverEmail = null;
             $sql           = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
@@ -135,7 +153,7 @@ class MigrateCommand extends Command
                         if ('1' === (string) $option->checked) {
                             $receiverEmail = (string) $option->email;
                         }
-                        $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label , 'weight' => $counter];
+                        $choices[(string) $option->label] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
                     $options = ['choice_type' => 'dropdown', 'choices' => $choices];
                 }
@@ -150,7 +168,7 @@ class MigrateCommand extends Command
                     $counter = 0;
                     foreach ($xml as $option) {
                         ++$counter;
-                        $choices[$counter] = ['value' => (string) $option->value, 'weight' => $counter];
+                        $choices[$counter] = ['value' => (string) $option->value, 'label' => (string) $option->label, 'weight' => $counter];
                     }
                     switch ($question['num']) {
                         case 1:
@@ -184,7 +202,7 @@ class MigrateCommand extends Command
 
             if (!empty($fields)) {
                 $form             = [
-                    'name'     => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null,
+                    'name'     => $content->getName(), 'maxSubmissions' => null,
                     'fields'   => $fields,
                     'objectId' => $survey['contentobject_id']
                 ];
