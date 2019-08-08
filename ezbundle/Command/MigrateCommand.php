@@ -84,7 +84,7 @@ class MigrateCommand extends Command
         $this->repository = $repository;
 
         // set admin to repository
-        $user               = $repository->getUserService()->loadUserByLogin('admin');
+        $user = $repository->getUserService()->loadUserByLogin('admin');
         $repository->getPermissionResolver()->setCurrentUserReference($user);
     }
 
@@ -133,8 +133,11 @@ class MigrateCommand extends Command
         $this->io->progressStart(count($surveys));
 
         foreach ($surveys as $survey) {
-
-            $content = $this->repository->getContentService()->loadContent($survey['contentobject_id']);
+            try {
+                $content = $this->repository->getContentService()->loadContent($survey['contentobject_id']);
+            } catch(\Exception $e) {
+                $content = false;
+            }
             $fields        = [];
             $receiverEmail = null;
             $sql           = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
@@ -202,7 +205,7 @@ class MigrateCommand extends Command
 
             if (!empty($fields)) {
                 $form             = [
-                    'name'     => $content->getName(), 'maxSubmissions' => null,
+                    'name'     => ($content ? preg_replace('/[^\p{L}\-. 0-9]/u', '', $content->getName()) : 'Form_'.$survey['surveyId']), 'maxSubmissions' => null,
                     'fields'   => $fields,
                     'objectId' => $survey['contentobject_id']
                 ];
