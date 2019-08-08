@@ -158,14 +158,14 @@ class MigrateCommand extends Command
                         }
                         $choices[(string) $option->label] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
-                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
+                    $options = ['choiceReceiver_type' => 'dropdown', 'choices' => $choices];
                 }
 
                 if (empty($question['text'])) {
                     continue;
                 }
                 $type    = $this->convertType($question['type']);
-                if ('Choice' === $type && 'Receiver' !== $question['type'] ) {
+                if ('Choice' === $type) {
                     $xml     = simplexml_load_string($question['text2']);
                     $choices = [];
                     $counter = 0;
@@ -396,8 +396,10 @@ class MigrateCommand extends Command
                 $type = 'Number';
                 break;
             case 'MultipleChoice':
-            case 'Receiver':
                 $type = 'Choice';
+                break;
+            case 'Receiver':
+                $type = 'ChoiceReceiver';
                 break;
             default:
                 $type = $oldType;
