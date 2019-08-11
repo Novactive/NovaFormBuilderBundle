@@ -17,6 +17,7 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\API\Repository\ContentService;
+use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\Core\Repository\Repository;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
@@ -204,8 +205,10 @@ class MigrateCommand extends Command
             $fieldsCounter += count($fields);
 
             if (!empty($fields)) {
+                $formName = ($content ? $this->getNormalizeContentName($content) : 'Form_'.$survey['surveyId']);
                 $form             = [
-                    'name'     => ($content ? preg_replace('/[^\p{L}\-. 0-9]/u', '', $content->getName()) : 'Form_'.$survey['surveyId']), 'maxSubmissions' => null,
+                    'name'     => $formName,
+                    'maxSubmissions' => null,
                     'fields'   => $fields,
                     'objectId' => $survey['contentobject_id']
                 ];
@@ -406,5 +409,15 @@ class MigrateCommand extends Command
         }
 
         return $type;
+    }
+
+    private function getNormalizeContentName(Content $content)
+    {
+        $name = $content->getName();
+        $name = preg_replace("/æ/", "ae", $name);
+        $name = preg_replace("/œ/", "oe", $name);
+        $name = iconv("UTF-8", "ASCII//TRANSLIT", preg_replace('/[^\p{L}\-. 0-9]/u', '',  $name));
+
+        return $name;
     }
 }
