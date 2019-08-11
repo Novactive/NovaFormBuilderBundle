@@ -16,6 +16,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\ChoiceReceiver;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\Email;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -159,7 +160,15 @@ class Form
 
     public function getReceiverEmail(): ?string
     {
-        return $this->receiverEmail;
+        $email = '';
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ChoiceReceiver && $field->getValue()) {
+                var_dump($field->getValue());
+                $email = $field->getValue();
+            }
+        }
+
+        return $email !== '' ? $email : $this->receiverEmail;
     }
 
     public function setReceiverEmail(?string $receiverEmail): self
