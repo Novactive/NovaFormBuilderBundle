@@ -163,7 +163,6 @@ class Form
         $email = '';
         foreach ($this->getFields() as $field) {
             if ($field instanceof ChoiceReceiver && $field->getValue()) {
-                var_dump($field->getValue());
                 $email = $field->getValue();
             }
         }
