@@ -77,7 +77,7 @@ class Choice extends FieldType
     {
         $formattedChoices = [];
         foreach ($field->getChoices() as $choice) {
-            $formattedChoices[$choice['value']] = $choice['value'];
+            $formattedChoices[$choice['label']] = $choice['value'];
         }
 
         switch ($field->getChoiceType()) {

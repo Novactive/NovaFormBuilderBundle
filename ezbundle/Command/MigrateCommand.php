@@ -65,7 +65,7 @@ class MigrateCommand extends Command
      */
     private $repository;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver'];
+    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver', 'Paragraph', 'MailSubject'];
 
     public const DUMP_FOLDER = 'migrate';
 
@@ -124,6 +124,8 @@ class MigrateCommand extends Command
 
         $timeStart = time();
         $forms     = [];
+        $dateStartSubmission = null;
+        $dateEndSubmission = null;
 
         $surveys = $this->runQuery(
             'SELECT max(id) as surveyId, contentobject_id FROM ezsurvey GROUP BY contentobject_id ORDER BY surveyId'
@@ -139,6 +141,14 @@ class MigrateCommand extends Command
             } catch(\Exception $e) {
                 $content = false;
             }
+
+            $surveyInfo = $this->runQuery(
+                sprintf('SELECT valid_from, valid_to FROM ezsurvey WHERE id=%s', $survey['surveyId'])
+            );
+
+            $dateStartSubmission = $surveyInfo[0]['valid_from'];
+            $dateEndSubmission = $surveyInfo[0]['valid_to'];
+
             $fields        = [];
             $receiverEmail = null;
             $sql           = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
@@ -157,7 +167,7 @@ class MigrateCommand extends Command
                         if ('1' === (string) $option->checked) {
                             $receiverEmail = (string) $option->email;
                         }
-                        $choices[(string) $option->label] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
+                        $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
                     $options = ['choiceReceiver_type' => 'dropdown', 'choices' => $choices];
                 }
@@ -196,21 +206,30 @@ class MigrateCommand extends Command
                     $options = ['choice_type' => $choiceType, 'choices' => $choices];
                 }
 
+                if ('Paragraph' === $type) {
+                    $options = ['value' => $question['text']];
+                }
+
                 $fields[] = [
-                    'name'   => $question['text'], 'required' => (bool) $question['mandatory'],
-                    'weight' => (int) $question['tab_order'], 'options' => $options, 'type' => $type,
+                    'name'   => ('Paragraph' === $type) ? 'Paragraphe Libre' : $question['text'],
+                    'required' => (bool) $question['mandatory'],
+                    'weight' => (int) $question['tab_order'],
+                    'options' => $options,
+                    'type' => $type,
                 ];
             }
 
             $fieldsCounter += count($fields);
 
             if (!empty($fields)) {
-                $formName = ($content ? $this->getNormalizeContentName($content) : 'Form_'.$survey['surveyId']);
+                $formName = ($content ? $this->getNormalizeString($content->getName()) : 'Form_'.$survey['surveyId']);
                 $form             = [
                     'name'     => $formName,
                     'maxSubmissions' => null,
                     'fields'   => $fields,
-                    'objectId' => $survey['contentobject_id']
+                    'objectId' => $survey['contentobject_id'],
+                    'dateStartSubmission' => (int)$dateStartSubmission > 0 ? $dateStartSubmission : null,
+                    'dateEndSubmission' => (int)$dateEndSubmission > 0 ? $dateEndSubmission : null,
                 ];
                 $form['sendData'] = false;
                 if (null !== $receiverEmail) {
@@ -255,7 +274,8 @@ class MigrateCommand extends Command
                         );
                     }
                     $data[]      = [
-                        'name' => $result['text'], 'value' => $answers,
+                        'name' => $result['text'],
+                        'value' => $answers,
                         'type' => strtolower($this->convertType($result['type'])),
                     ];
                     $createdDate = date('Y-m-d H:i:s', (int) $result['tstamp']);
@@ -307,6 +327,13 @@ class MigrateCommand extends Command
             $form       = json_decode($this->ioService->readFile(self::DUMP_FOLDER.'/'.$fileName.'.json'));
             $formEntity = new Form();
             $formEntity->setName($form->name);
+            $formEntity->setMaxSubmissions($form->maxSubmissions);
+            $dateStartSubmission = new \DateTime();
+            $dateStartSubmission->setTimestamp((int)$form->dateStartSubmission);
+            $formEntity->setDateStartSubmission($dateStartSubmission);
+            $dateEndSubmission = new \DateTime();
+            $dateEndSubmission->setTimestamp((int)$form->dateEndSubmission);
+            $formEntity->setDateEndSubmission($dateEndSubmission);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
             $formEntity->setSendData($form->sendData);
             if ($form->sendData) {
@@ -404,6 +431,12 @@ class MigrateCommand extends Command
             case 'Receiver':
                 $type = 'ChoiceReceiver';
                 break;
+            case 'Paragraph':
+                $type = 'Paragraph';
+                break;
+            case 'MailSubject':
+                $type = 'MailSubject';
+                break;
             default:
                 $type = $oldType;
         }
@@ -411,10 +444,14 @@ class MigrateCommand extends Command
         return $type;
     }
 
-    private function getNormalizeContentName(Content $content)
+    /**
+     * Function return a string normalized (ex: Pôle évenement : voœux 2019 ==> Pole evenement voeux 2019)
+     * @param string $string
+     * @return bool|false|string|string[]|null
+     */
+    private function getNormalizeString(string $text)
     {
-        $name = $content->getName();
-        $name = preg_replace("/æ/", "ae", $name);
+        $name = preg_replace("/æ/", "ae", $text);
         $name = preg_replace("/œ/", "oe", $name);
         $name = iconv("UTF-8", "ASCII//TRANSLIT", preg_replace('/[^\p{L}\-. 0-9]/u', '',  $name));
 

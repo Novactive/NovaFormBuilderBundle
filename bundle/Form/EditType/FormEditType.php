@@ -18,6 +18,7 @@ use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -65,6 +66,8 @@ class FormEditType extends AbstractType
                 'required' => false,
                 'attr' => ['placeholder' => Submitter::TITLE_EMAIL_TPL]
             ])
+            ->add('dateStartSubmission', DateTimeType::class, ['label' => 'form.date_start_submission', 'required' => false])
+            ->add('dateEndSubmission', DateTimeType::class, ['label' => 'form.date_end_submission', 'required' => false])
             ->add(
                 'sendData',
                 CheckboxType::class,

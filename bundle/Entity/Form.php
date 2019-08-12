@@ -110,6 +110,20 @@ class Form
     private $submissions;
 
     /**
+     * @ORM\Column(name="date_start_submission", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    private $dateStartSubmission;
+
+    /**
+     * @ORM\Column(name="date_end_submission", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    private $dateEndSubmission;
+
+    /**
      * Form constructor.
      */
     public function __construct()
@@ -291,6 +305,38 @@ class Form
     public function removeSubmission(FormSubmission $submission): self
     {
         $this->submissions->removeElement($submission);
+
+        return $this;
+    }
+
+    public function getDateStartSubmission()
+    {
+        if (null === $this->dateStartSubmission) {
+            return null;
+        }
+
+        return $this->dateStartSubmission;
+    }
+
+    public function setDateStartSubmission(\DateTime $dateStartSubmission)
+    {
+        $this->dateStartSubmission = $dateStartSubmission;
+
+        return $this;
+    }
+
+    public function getDateEndSubmission()
+    {
+        if (null === $this->dateEndSubmission) {
+            return null;
+        }
+
+        return $this->dateEndSubmission;
+    }
+
+    public function setDateEndSubmission(\DateTime $dateEndSubmission)
+    {
+        $this->dateEndSubmission = $dateEndSubmission;
 
         return $this;
     }
