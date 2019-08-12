@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\ChoiceReceiver;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\Email;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\MailSubject;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -193,7 +194,14 @@ class Form
 
     public function getSubjectEmail(): ?string
     {
-        return $this->subjectEmail;
+        $subject = '';
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof MailSubject && $field->getValue()) {
+                $subject = $field->getValue();
+            }
+        }
+
+        return $subject ? $subject : $this->subjectEmail;
     }
 
     public function setSubjectEmail(?string $subjectEmail): self
