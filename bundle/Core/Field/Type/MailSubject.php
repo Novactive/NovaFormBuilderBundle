@@ -75,7 +75,7 @@ class MailSubject extends FieldType
         $fieldForm
             ->add(
                 'value',
-                MailSubject::class,
+                TextType::class,
                 [
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),
