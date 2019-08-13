@@ -66,8 +66,32 @@ class FormEditType extends AbstractType
                 'required' => false,
                 'attr' => ['placeholder' => Submitter::TITLE_EMAIL_TPL]
             ])
-            ->add('dateStartSubmission', DateTimeType::class, ['label' => 'form.date_start_submission', 'required' => false])
-            ->add('dateEndSubmission', DateTimeType::class, ['label' => 'form.date_end_submission', 'required' => false])
+            ->add(
+                'dateStartSubmission',
+                DateTimeType::class,
+                [
+                    'label' => 'form.date_start_submission',
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'attr' => [
+                        'class' => 'datetimepicker',
+                        'data-provide' => 'datetimepicker','data-date-format' => 'dd-mm-yyyy hh:ii'
+                    ]
+                ]
+            )
+            ->add(
+                'dateEndSubmission',
+                DateTimeType::class,
+                [
+                    'label' => 'form.date_end_submission',
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'attr' => [
+                        'class' => 'datetimepicker',
+                        'data-provide' => 'datetimepicker','data-date-format' => 'dd-mm-yyyy hh:ii'
+                    ]
+                ]
+            )
             ->add(
                 'sendData',
                 CheckboxType::class,

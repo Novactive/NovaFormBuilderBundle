@@ -82,3 +82,9 @@
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
     {{- block('textarea_widget') -}}
 {%- endblock content_type_paragraph_widget %}
+
+{% block paragraph_label %}{% endblock %}
+{% block paragraph_widget %}
+    <p>{{ form.vars.data }}</p>
+{% endblock %}
+{% block paragraph_errors %}{% endblock %}

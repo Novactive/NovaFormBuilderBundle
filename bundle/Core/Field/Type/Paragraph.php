@@ -15,6 +15,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Novactive\Bundle\FormBuilderBundle\Form\Type\ParagraphType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 
@@ -52,11 +53,10 @@ class Paragraph extends FieldType
         $fieldForm
             ->add(
                 'value',
-                Field\Paragraph::class,
+                ParagraphType::class,
                 [
-                    'required'    => false,
                     'label'       => $field->getValue(),
-                    'options'      => ['value' => $field->getOption('data')]
+                    'data'      => $field->getOption('data')
                 ]
             );
     }

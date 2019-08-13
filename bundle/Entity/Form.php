@@ -113,14 +113,14 @@ class Form
     /**
      * @ORM\Column(name="date_start_submission", type="datetime", nullable=true)
      *
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $dateStartSubmission;
 
     /**
      * @ORM\Column(name="date_end_submission", type="datetime", nullable=true)
      *
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $dateEndSubmission;
 
@@ -326,7 +326,7 @@ class Form
         return $this->dateStartSubmission;
     }
 
-    public function setDateStartSubmission(\DateTime $dateStartSubmission)
+    public function setDateStartSubmission($dateStartSubmission)
     {
         $this->dateStartSubmission = $dateStartSubmission;
 
@@ -342,7 +342,7 @@ class Form
         return $this->dateEndSubmission;
     }
 
-    public function setDateEndSubmission(\DateTime $dateEndSubmission)
+    public function setDateEndSubmission($dateEndSubmission)
     {
         $this->dateEndSubmission = $dateEndSubmission;
 

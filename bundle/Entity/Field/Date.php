@@ -69,4 +69,13 @@ class Date extends Field
 
         return \DateTime::createFromFormat('Y-m-d', '0000-01-01');
     }
+
+    public function setValue($value): Field
+    {
+        if (null !== $value) {
+            $this->value = $value;
+        }
+
+        return $this;
+    }
 }
