@@ -20,4 +20,27 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class MailSubject extends Email
 {
+    public function getMinLength(): int
+    {
+        return (int) $this->getOption('minLength');
+    }
+
+    public function setMinLength(int $minLength): self
+    {
+        $this->setOption('minLength', $minLength);
+
+        return $this;
+    }
+
+    public function getMaxLength(): int
+    {
+        return (int) $this->getOption('maxLength');
+    }
+
+    public function setMaxLength(int $maxLength): self
+    {
+        $this->setOption('maxLength', $maxLength);
+
+        return $this;
+    }
 }
