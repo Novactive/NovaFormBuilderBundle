@@ -49,14 +49,12 @@ class Paragraph extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        var_dump($field);die();
-
         $fieldForm
             ->add(
                 'value',
                 Field\Paragraph::class,
                 [
-                    'required'    => $field->isRequired(),
+                    'required'    => false,
                     'label'       => $field->getValue(),
                     'options'      => ['value' => $field->getOption('data')]
                 ]
