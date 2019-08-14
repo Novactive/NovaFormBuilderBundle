@@ -1,8 +1,14 @@
 {% trans_default_domain "novaezformbuilder" %}
 {% extends '@EzPlatformAdminUi/form_fields.html.twig' %}
 
-{% block novaformbuilder_fields_collection_row %}
+{% form_theme novaezformbuilder _self %}
 
+{% block novaformbuilder_form_label -%}
+    {{ parent() }}
+    {% if required %}<strong class="required">* novaezformbuilder_label</strong>{% endif %}ici
+{%- endblock novaformbuilder_form_label %}
+
+{% block novaformbuilder_fields_collection_row %}
     <div class="js-form-fields-collection">
         <div id="form-fields-accordion">
             {{ form_row(form) }}
@@ -17,7 +23,6 @@
         </div>
     </div>
 {% endblock %}
-
 
 {% block novaformbuilder_fields_collection_widget %}
     {%- set attr = attr|merge({'class': 'js-form-fields-collection-entries' }) -%}
@@ -78,6 +83,20 @@
     {%- endfor -%}
 {%- endblock -%}
 
+{%- block content_type_choice_widget_expanded -%}
+    <div>
+        {%- set options = choices -%}
+        {{- block('content_type_choice_widget_options') -}}
+    </div>
+{%- endblock -%}
+
+{%- block content_type_choicereceiver_widget_expanded -%}
+    <div>
+        {%- set options = choices -%}
+        {{- block('content_type_choice_widget_options') -}}
+    </div>
+{%- endblock -%}
+
 {%- block content_type_paragraph_widget -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
     {{- block('textarea_widget') -}}
@@ -90,3 +109,16 @@
 {% endblock %}
 
 {% block paragraph_errors %}{% endblock %}
+
+{%- block content_type_section_header_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- block('text_widget') -}}
+{%- endblock content_type_section_header_widget %}
+
+{% block section_header_label %}{% endblock %}
+
+{% block section_header_widget %}
+    <h2>{{ form.vars.data }}</h2>
+{% endblock %}
+
+{% block section_header_errors %}{% endblock %}

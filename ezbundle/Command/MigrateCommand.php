@@ -65,7 +65,7 @@ class MigrateCommand extends Command
      */
     private $repository;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver', 'Paragraph', 'MailSubject'];
+    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver', 'Paragraph', 'MailSubject', 'SectionHeader'];
 
     public const DUMP_FOLDER = 'migrate';
 
@@ -158,6 +158,8 @@ class MigrateCommand extends Command
             foreach ($questions as $question) {
                 // Getting the Receiver email if checked
                 $options = [];
+                $name = $question['text'];
+
                 if ('Receiver' === $question['type']) {
                     $xml = simplexml_load_string($question['text2']);
                     $choices = [];
@@ -206,12 +208,13 @@ class MigrateCommand extends Command
                     $options = ['choice_type' => $choiceType, 'choices' => $choices];
                 }
 
-                if ('Paragraph' === $type) {
-                    $options = ['value' => $question['text']];
+                if ('Paragraph' === $type || 'SectionHeader' === $type) {
+                    $options = ['data' => $question['text']];
+                    $name = ('Paragraph' === $type) ? 'Paragraphe Libre' : 'En tête';
                 }
 
                 $fields[] = [
-                    'name'   => ('Paragraph' === $type) ? 'Paragraphe Libre' : $question['text'],
+                    'name'   => $name,
                     'required' => (bool) $question['mandatory'],
                     'weight' => (int) $question['tab_order'],
                     'options' => $options,
@@ -433,6 +436,9 @@ class MigrateCommand extends Command
                 break;
             case 'Paragraph':
                 $type = 'Paragraph';
+                break;
+            case 'SectionHeader':
+                $type = 'SectionHeader';
                 break;
             case 'MailSubject':
                 $type = 'MailSubject';
