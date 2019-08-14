@@ -169,7 +169,7 @@ class MigrateCommand extends Command
                         }
                         $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
-                    $options = ['choiceReceiver_type' => 'dropdown', 'choices' => $choices];
+                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
                 }
 
                 if (empty($question['text'])) {

@@ -44,3 +44,7 @@ fieldtype.text_area: Text Area
 fieldtype.text_line: Text Line
 form.submission.submitted_on: Form data submitted on
 form.send_data_to_user: Send data to user
+fieldtype.paragraph: "Paragraphe"
+fieldtype.mail_subject: "Mail Subject"
+fieldtype.choice_receiver: "Destinataire de l'enquête"
+form.required.head: "Fields followed by an asterisk * are required"

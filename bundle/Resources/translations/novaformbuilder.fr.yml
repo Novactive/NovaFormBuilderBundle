@@ -47,3 +47,7 @@ fieldtype.text_area: Zone de texte
 fieldtype.text_line: Ligne de texte
 form.submission.submitted_on: Données du formulaire transmises à
 form.send_data_to_user: Envoyer les données à l'utilisateur
+fieldtype.paragraph: Paragraphe libre
+fieldtype.mail_subject: Objet de l'email
+fieldtype.choice_receiver: Destinataire de l'enquête
+form.required.head: Les champs suivis d'un astérisque * sont obligatoires
