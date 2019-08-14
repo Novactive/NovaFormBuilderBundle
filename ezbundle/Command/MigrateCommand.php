@@ -337,12 +337,18 @@ class MigrateCommand extends Command
             $formEntity = new Form();
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
-            $dateStartSubmission = new \DateTime();
-            $dateStartSubmission->setTimestamp((int)$form->dateStartSubmission);
-            $formEntity->setDateStartSubmission($dateStartSubmission);
-            $dateEndSubmission = new \DateTime();
-            $dateEndSubmission->setTimestamp((int)$form->dateEndSubmission);
-            $formEntity->setDateEndSubmission($dateEndSubmission);
+
+            if((int)$form->dateStartSubmission > 0) {
+                $dateStartSubmission = new \DateTime();
+                $dateStartSubmission->setTimestamp((int)$form->dateStartSubmission);
+                $formEntity->setDateStartSubmission($dateStartSubmission);
+            }
+            if((int)$form->dateEndSubmission > 0) {
+                $dateEndSubmission = new \DateTime();
+                $dateEndSubmission->setTimestamp((int)$form->dateEndSubmission);
+                $formEntity->setDateEndSubmission($dateEndSubmission);
+            }
+
             $formEntity->setMaxSubmissions($form->maxSubmissions);
             $formEntity->setSendData($form->sendData);
             if ($form->sendData) {
