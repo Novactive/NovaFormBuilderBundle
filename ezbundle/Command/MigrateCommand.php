@@ -169,9 +169,15 @@ class MigrateCommand extends Command
                         if ('1' === (string) $option->checked) {
                             $receiverEmail = (string) $option->email;
                         }
+
+                        if(count($xml) == 1) {
+                            break;
+                        }
                         $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
-                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
+                    if(!count($choices)) {
+                        continue;
+                    }
                 }
 
                 if (empty($question['text'])) {
