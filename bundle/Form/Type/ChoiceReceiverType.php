@@ -21,11 +21,12 @@ class ChoiceReceiverType extends AbstractType
 {
     public function getBlockPrefix(): string
     {
-        return 'novaformbuilder_choicereceiver';
+        return 'novaformbuilder_choice';
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
+
     }
 
     public function getParent()

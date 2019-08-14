@@ -10,10 +10,10 @@
                 <h3>{{ "customform.show.thanks_for_submitting"|trans }}</h3>
                 <input type="button" value="Back" onClick='window.history.go(-{{ stepBack }})'>
             {% elseif
-                ((form.vars.value.dateStartSubmission.date is not defined or not(form.vars.value.dateStartSubmission.date)) and (form.vars.value.dateEndSubmission.date is not defined or not(form.vars.value.dateEndSubmission.date)))
-                or (form.vars.value.dateStartSubmission.date is defined and "now"|date('Y-m-d H:i') > form.vars.value.dateStartSubmission.date|date('Y-m-d H:i') and (form.vars.value.dateEndSubmission.date is not defined or not(form.vars.value.dateEndSubmission.date)))
+                ((form.vars.value.dateStartSubmission.date is not defined or not(form.vars.value.dateStartSubmission.date) or "01/01/1970"|date('Y-m-d') == form.vars.value.dateStartSubmission.date|date('Y-m-d')) and (form.vars.value.dateEndSubmission.date is not defined or not(form.vars.value.dateEndSubmission.date) or "01/01/1970"|date('Y-m-d') == form.vars.value.dateEndSubmission.date|date('Y-m-d')))
+                or (form.vars.value.dateStartSubmission.date is defined and "now"|date('Y-m-d H:i') > form.vars.value.dateStartSubmission.date|date('Y-m-d H:i') and (form.vars.value.dateEndSubmission.date is not defined or not(form.vars.value.dateEndSubmission.date) or "01/01/1970"|date('Y-m-d') == form.vars.value.dateEndSubmission.date|date('Y-m-d')))
                 or (form.vars.value.dateStartSubmission.date is defined and "now"|date('Y-m-d H:i') > form.vars.value.dateStartSubmission.date|date('Y-m-d H:i') and (form.vars.value.dateEndSubmission.date is defined and "now"|date('Y-m-d H:i') < form.vars.value.dateEndSubmission.date|date('Y-m-d H:i') ))
-                or ((form.vars.value.dateStartSubmission.date is not defined or not(form.vars.value.dateStartSubmission.date)) and (form.vars.value.dateEndSubmission.date is defined and "now"|date('Y-m-d H:i') < form.vars.value.dateEndSubmission.date|date('Y-m-d H:i')))
+                or ((form.vars.value.dateStartSubmission.date is not defined or not(form.vars.value.dateStartSubmission.date) or "01/01/1970"|date('Y-m-d') == form.vars.value.dateStartSubmission.date|date('Y-m-d')) and (form.vars.value.dateEndSubmission.date is defined and "now"|date('Y-m-d H:i') < form.vars.value.dateEndSubmission.date|date('Y-m-d H:i')))
             %}
                 {% for error in form.vars.errors %}
                     <p class="text-danger p-2">{{ error.message|trans }}</p>

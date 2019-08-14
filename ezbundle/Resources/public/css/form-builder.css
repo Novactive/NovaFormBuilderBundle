@@ -69,3 +69,7 @@ td.form-actions a {
 td.form-actions a:last-child {
     margin-right: 0;
 }
+.form-group label.ez-label.required:after {
+    content: ' *';
+    color: red;
+}
