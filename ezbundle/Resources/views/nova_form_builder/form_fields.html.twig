@@ -90,13 +90,6 @@
     </div>
 {%- endblock -%}
 
-{%- block content_type_choicereceiver_widget_expanded -%}
-    <div>
-        {%- set options = choices -%}
-        {{- block('content_type_choice_widget_options') -}}
-    </div>
-{%- endblock -%}
-
 {%- block content_type_paragraph_widget -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
     {{- block('textarea_widget') -}}
@@ -122,3 +115,19 @@
 {% endblock %}
 
 {% block section_header_errors %}{% endblock %}
+
+{% block section_header_row %}
+    <div class="js-form-fields-collection">
+        <div id="form-fields-accordion">
+            {{ form_row(form) }}
+        </div>
+        <div class="btn-group input-group">
+            <select class="form-control js-form-builder__select-field-type">
+                {% for field_types_identifier, field_type_prototype in field_types_prototype %}
+                    <option value="{{ field_types_identifier }}" data-entity-type="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-success add-new-field js-form-builder__add-new-field" type="button">{{ 'customform.fields.add_new_fields'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}

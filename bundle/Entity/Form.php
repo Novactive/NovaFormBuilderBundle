@@ -92,6 +92,12 @@ class Form
     private $sendData;
 
     /**
+     * Override sending data to user if done using another way
+     * @var bool
+     */
+    private $overrideUserSendData = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
      *                                                                                cascade={"persist", "remove"},
      *                                                                                  orphanRemoval=true)
@@ -235,11 +241,18 @@ class Form
         return $this;
     }
 
+    public function setOverrideUserSendData(bool $override): self
+    {
+        $this->overrideUserSendData = $override;
+
+        return $this;
+    }
+
     public function isUserSendData(): bool
     {
         foreach ($this->getFields() as $field) {
             if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
-                return true;
+                return (true && !$this->overrideUserSendData);
             }
         }
 
@@ -249,8 +262,9 @@ class Form
     public function getUserSendEmails(): array
     {
         $emails = [];
+
         foreach ($this->getFields() as $field) {
-            if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
+            if ($field instanceof Email && $this->isSendData() && $field->getValue()) {
                 $emails[] = $field->getValue();
             }
         }

@@ -99,10 +99,38 @@ class Mailer
         if ($formEntity->isUserSendData()) {
             $receivers = $formEntity->getUserSendEmails();
         }
+
         if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
             $receivers[] = $formEntity->getReceiverEmail();
         }
-        $message->setBcc($receivers);
+
+        if(count($receivers) > 1) {
+            $message->setBcc($receivers);
+        } else {
+            $message->setTo($receivers);
+        }
+
+        $message->setSubject($subject);
+        $message->setBody($body, 'text/html', 'utf8');
+
+        return $message;
+    }
+
+    public function buildUserEmail(Form $formEntity, string $subject, string $body): Swift_Mime_SimpleMessage
+    {
+        $message = $this->createMessage();
+        $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
+        $receivers = [];
+        if ($formEntity->isUserSendData()) {
+            $receivers = $formEntity->getUserSendEmails();
+        }
+
+        if(count($receivers) > 1) {
+            $message->setBcc($receivers);
+        } else {
+            $message->setTo($receivers);
+        }
+
         $message->setSubject($subject);
         $message->setBody($body, 'text/html', 'utf8');
 

@@ -18,7 +18,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 /**
  * @ORM\Entity
  */
-class MailSubject extends Email
+class MailSubject extends Field
 {
     public function getMinLength(): int
     {
