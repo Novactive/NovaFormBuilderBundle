@@ -178,6 +178,7 @@ class MigrateCommand extends Command
                     if(!count($choices)) {
                         continue;
                     }
+                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
                 }
 
                 if (empty($question['text'])) {
