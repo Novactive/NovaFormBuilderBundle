@@ -64,25 +64,6 @@
     </div>
 {% endblock %}
 
-{%- block content_type_choicereceiver_widget_options -%}
-    {%- for group_label, choice in options -%}
-        {%- if choice is iterable -%}
-            <div class="ez-instant-filter__group">
-                <div class="ez-instant-filter__group-name">{{ choice_translation_domain is same as(false) ? group_label : group_label|trans({}, choice_translation_domain) }}</div>
-                {%- set options = choice -%}
-                {{- block('content_type_choicereceiver_widget_options') -}}
-            </div>
-        {%- else -%}
-            <div class="ez-instant-filter__group-item">
-                {{ form_widget(form[choice.value]) }}
-                <svg class="ez-icon ez-icon--small">
-                    <use xlink:href="{{ ez_content_type_icon(choice.value) }}"></use>
-                </svg>
-            </div>
-        {%- endif -%}
-    {%- endfor -%}
-{%- endblock -%}
-
 {%- block content_type_choice_widget_expanded -%}
     <div>
         {%- set options = choices -%}
@@ -98,7 +79,7 @@
 {% block paragraph_label %}{% endblock %}
 
 {% block paragraph_widget %}
-    <p>{{ form.vars.data }}</p>
+    <div class="paragraph">{{ form.vars.data }}</div>
 {% endblock %}
 
 {% block paragraph_errors %}{% endblock %}
