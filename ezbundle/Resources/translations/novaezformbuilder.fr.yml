@@ -51,4 +51,5 @@ fieldtype.paragraph: "Paragraphe libre"
 fieldtype.mail_subject: "Objet de l'email"
 fieldtype.choice_receiver: "Destinataire de l'enquête"
 fieldtype.section_header: "En tête"
-form.required.head: "Les champs suivis d'un astérisque * sont obligatoires"
+form.required.head: 'Les champs suivis d''un astérisque <span style="color: red">*</span> sont obligatoires'
+field.section.data: "Texte à afficher"

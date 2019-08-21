@@ -10,6 +10,9 @@ form.receiver_email: Email address to receive the submission data
 form.subject_email: Subject of the Email with submission data
 form.title_email: Title in the Email
 form.send_data: Send submission data
+form.date_start_submission: Start date submission
+form.date_end_submission: End date submission
+field.paragraph.data: Texte affiché
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length
 field.textline.max_length: Maximum Length
@@ -32,6 +35,7 @@ field.file.max_file_size_mb: Maximum File Size in MB
 field.file.file_type: File Type
 file.file_type.image: Image
 file.file_type.file: File
+field.section.data: "Displayed text"
 file.file_type.application: Application
 fieldtype.file: File
 field.number.min: Minimun

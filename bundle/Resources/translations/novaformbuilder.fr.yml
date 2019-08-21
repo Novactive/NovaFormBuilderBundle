@@ -35,6 +35,7 @@ field.file.max_file_size_mb: Taille de fichier maximale en Mo
 field.file.file_type: Type de fichier
 file.file_type.image: Image
 file.file_type.file: Fichier
+field.section.data: "Texte à afficher"
 file.file_type.application: Application
 fieldtype.file: Fichier
 field.number.min: Minimum
