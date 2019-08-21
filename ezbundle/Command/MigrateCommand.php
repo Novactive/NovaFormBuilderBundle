@@ -216,7 +216,7 @@ class MigrateCommand extends Command
                 }
 
                 if ('Paragraph' === $type || 'SectionHeader' === $type) {
-                    $options = ['data' => $question['text']];
+                    $options = ['value' => $question['text']];
                     $name = ('Paragraph' === $type) ? 'Paragraphe Libre' : 'En tête';
                 }
 
