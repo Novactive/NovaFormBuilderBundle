@@ -5,7 +5,6 @@
 
 {% block novaformbuilder_form_label -%}
     {{ parent() }}
-    {% if required %}<strong class="required">*</strong>{% endif %}
 {%- endblock novaformbuilder_form_label %}
 
 {% block novaformbuilder_fields_collection_row %}
@@ -71,15 +70,14 @@
     </div>
 {%- endblock -%}
 
-{%- block content_type_paragraph_widget -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
-    {{- block('textarea_widget') -}}
-{%- endblock content_type_paragraph_widget %}
+{% block paragraph_label %}
+    <div class="paragraph">{{ label }}</div>
+{% endblock %}
 
-{% block paragraph_label %}{% endblock %}
-
-{% block paragraph_widget %}
-    <div class="paragraph">{{ form.vars.data }}</div>
+{% block paragraph_row %}
+    <div class="form-group">
+        {{ form_label(form) }}
+    </div>
 {% endblock %}
 
 {% block paragraph_errors %}{% endblock %}
@@ -89,26 +87,15 @@
     {{- block('text_widget') -}}
 {%- endblock content_type_section_header_widget %}
 
-{% block section_header_label %}{% endblock %}
-
-{% block section_header_widget %}
-    <h2>{{ form.vars.data }}</h2>
+{% block section_header_label %}
+    <div class="form-group">
+        <h2>{{ label }}</h2>
+    </div>
 {% endblock %}
 
 {% block section_header_errors %}{% endblock %}
 
 {% block section_header_row %}
-    <div class="js-form-fields-collection">
-        <div id="form-fields-accordion">
-            {{ form_row(form) }}
-        </div>
-        <div class="btn-group input-group">
-            <select class="form-control js-form-builder__select-field-type">
-                {% for field_types_identifier, field_type_prototype in field_types_prototype %}
-                    <option value="{{ field_types_identifier }}" data-entity-type="{{ field_types_identifier }}" data-prototype="{{ form_widget(field_type_prototype)|e('html_attr') }}">{{ ("fieldtype." ~ field_types_identifier)|trans([], 'novaformbuilder') }}</option>
-                {% endfor %}
-            </select>
-            <button class="btn btn-success add-new-field js-form-builder__add-new-field" type="button">{{ 'customform.fields.add_new_fields'|trans }}</button>
-        </div>
-    </div>
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ez-label')|trim}) -%}
+    {{ form_label(form) }}
 {% endblock %}
