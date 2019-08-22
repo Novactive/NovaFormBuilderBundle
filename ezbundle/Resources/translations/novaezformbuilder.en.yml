@@ -52,3 +52,4 @@ fieldtype.choice_receiver: "Destinataire de l'enquête"
 fieldtype.section_header: "Section Header"
 form.required.head: 'Fields followed by an asterisk <span style="color: red">*</span> are required'
 field.section.data: "Displayed text"
+field.choice.choices.label: "Label"
