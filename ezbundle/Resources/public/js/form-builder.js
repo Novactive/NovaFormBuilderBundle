@@ -26,14 +26,14 @@
 
                 e.preventDefault();
                 var prototype = choicesHolder
-                    .find('fieldset div')
+                    .find('> div:not(.choice-header)')
                     .data('prototype');
 
-                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount + 1);
+                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount);
                 $('.mb-3.card .js-form-field-row').find('.js-form-field-choices__delete-item');
-                choicesHolder.children('fieldset').children('div').append(fieldForm);
-                choicesHolder.find('.js-form-fields-choice-item input').filter("[name*='[weight]']").last().val(choicesCount + 1);
-                choicesHolder.data('items-count', choicesCount + 1);
+                choicesHolder.children('div:not(.choice-header)').append(fieldForm);
+                choicesHolder.find('.js-form-fields-choice-item input').filter("[name*='[weight]']").last().val(choicesCount);
+                choicesHolder.data('items-count', choicesCount);
             });
 
             $(document).on('click', '.js-form-field-choices__delete-item', function (e) {
