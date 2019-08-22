@@ -32,8 +32,8 @@
                 var fieldForm = prototype.replace(/__choice_name__/g, choicesCount);
                 $('.mb-3.card .js-form-field-row').find('.js-form-field-choices__delete-item');
                 choicesHolder.children('div:not(.choice-header)').append(fieldForm);
-                choicesHolder.find('.js-form-fields-choice-item input').filter("[name*='[weight]']").last().val(choicesCount);
-                choicesHolder.data('items-count', choicesCount);
+                choicesHolder.find('.js-form-fields-choice-item input').filter("[name*='[weight]']").last().val(choicesCount + 1);
+                choicesHolder.data('items-count', choicesCount + 1);
             });
 
             $(document).on('click', '.js-form-field-choices__delete-item', function (e) {
