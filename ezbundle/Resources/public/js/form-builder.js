@@ -26,12 +26,12 @@
 
                 e.preventDefault();
                 var prototype = choicesHolder
-                    .find('> div:not(.choice-header)')
+                    .find('> div:not(.js-form-fields-choice-header)')
                     .data('prototype');
 
-                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount);
+                var fieldForm = prototype.replace(/__choice_name__/g, choicesCount + 1);
                 $('.mb-3.card .js-form-field-row').find('.js-form-field-choices__delete-item');
-                choicesHolder.children('div:not(.choice-header)').append(fieldForm);
+                choicesHolder.children('div:not(.js-form-fields-choice-header)').append(fieldForm);
                 choicesHolder.find('.js-form-fields-choice-item input').filter("[name*='[weight]']").last().val(choicesCount + 1);
                 choicesHolder.data('items-count', choicesCount + 1);
             });
