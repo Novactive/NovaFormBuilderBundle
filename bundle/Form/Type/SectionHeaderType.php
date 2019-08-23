@@ -9,7 +9,7 @@ class SectionHeaderType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined([
+        $resolver->setDefaults([
             'disabled' => true,
             'required' => false,
             'mapped'   => false,
