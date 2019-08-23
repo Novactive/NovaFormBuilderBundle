@@ -104,7 +104,7 @@ class Mailer
             $receivers[] = $formEntity->getReceiverEmail();
         }
 
-        if(count($receivers) > 1) {
+        if (count($receivers) > 1) {
             $message->setBcc($receivers);
         } else {
             $message->setTo($receivers);
@@ -125,7 +125,7 @@ class Mailer
             $receivers = $formEntity->getUserSendEmails();
         }
 
-        if(count($receivers) > 1) {
+        if (count($receivers) > 1) {
             $message->setBcc($receivers);
         } else {
             $message->setTo($receivers);

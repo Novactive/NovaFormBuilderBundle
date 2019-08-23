@@ -24,11 +24,6 @@ class ChoiceReceiverType extends AbstractType
         return 'novaformbuilder_choice';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
-
-    }
-
     public function getParent()
     {
         return ChoiceType::class;

@@ -31,7 +31,7 @@ use Twig_Environment;
 class Submitter
 {
     const SUBMISSION_SUBJECT_TPL = 'NovaFormBuilder Submission Data from %FORM_NAME%';
-    const TITLE_EMAIL_TPL = 'Form data submitted on "%FORM_NAME%"';
+    const TITLE_EMAIL_TPL        = 'Form data submitted on "%FORM_NAME%"';
 
     /**
      * @var EntityManagerInterface
