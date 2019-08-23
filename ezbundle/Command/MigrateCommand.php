@@ -65,7 +65,16 @@ class MigrateCommand extends Command
      */
     private $repository;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver', 'Paragraph', 'MailSubject', 'SectionHeader'];
+    public const QUESTION_TYPES = [
+        'EmailEntry',
+        'TextEntry',
+        'NumberEntry',
+        'MultipleChoice',
+        'Receiver',
+        'Paragraph',
+        'MailSubject',
+        'SectionHeader'
+    ];
 
     public const DUMP_FOLDER = 'migrate';
 
@@ -76,7 +85,12 @@ class MigrateCommand extends Command
      * @param EntityManagerInterface $entityManager
      * @param Repository $repository
      */
-    public function __construct(IOService $ioService, FormService $formService, EntityManagerInterface $entityManager, Repository $repository)
+    public function __construct(
+        IOService $ioService,
+        FormService $formService,
+        EntityManagerInterface $entityManager,
+        Repository $repository
+    )
     {
         parent::__construct();
         $this->ioService     = $ioService;
@@ -122,10 +136,10 @@ class MigrateCommand extends Command
         $this->ioService->cleanDir(self::DUMP_FOLDER);
         $this->io->section('Cleaned the folder with json files.');
 
-        $timeStart = time();
-        $forms     = [];
+        $timeStart           = time();
+        $forms               = [];
         $dateStartSubmission = null;
-        $dateEndSubmission = null;
+        $dateEndSubmission   = null;
 
         $surveys = $this->runQuery(
             'SELECT max(id) as surveyId, contentobject_id FROM ezsurvey GROUP BY contentobject_id ORDER BY surveyId'
@@ -170,12 +184,12 @@ class MigrateCommand extends Command
                             $receiverEmail = (string) $option->email;
                         }
 
-                        if(count($xml) == 1) {
+                        if (count($xml) == 1) {
                             break;
                         }
                         $choices[$counter] = ['value' => (string) $option->email, 'label' => (string) $option->label, 'weight' => $counter];
                     }
-                    if(!count($choices)) {
+                    if (!count($choices)) {
                         continue;
                     }
                     $options = ['choice_type' => 'dropdown', 'choices' => $choices];
@@ -238,8 +252,8 @@ class MigrateCommand extends Command
                     'maxSubmissions' => null,
                     'fields'   => $fields,
                     'objectId' => $survey['contentobject_id'],
-                    'dateStartSubmission' => (int)$dateStartSubmission > 0 ? $dateStartSubmission : null,
-                    'dateEndSubmission' => (int)$dateEndSubmission > 0 ? $dateEndSubmission : null,
+                    'dateStartSubmission' => (int) $dateStartSubmission > 0 ? $dateStartSubmission : null,
+                    'dateEndSubmission' => (int) $dateEndSubmission > 0 ? $dateEndSubmission : null,
                 ];
                 $form['sendData'] = false;
                 if (null !== $receiverEmail) {
@@ -339,12 +353,12 @@ class MigrateCommand extends Command
             $formEntity->setName($form->name);
             $formEntity->setMaxSubmissions($form->maxSubmissions);
 
-            if((int)$form->dateStartSubmission > 0) {
+            if ((int) $form->dateStartSubmission > 0) {
                 $dateStartSubmission = new \DateTime();
                 $dateStartSubmission->setTimestamp((int)$form->dateStartSubmission);
                 $formEntity->setDateStartSubmission($dateStartSubmission);
             }
-            if((int)$form->dateEndSubmission > 0) {
+            if ((int) $form->dateEndSubmission > 0) {
                 $dateEndSubmission = new \DateTime();
                 $dateEndSubmission->setTimestamp((int)$form->dateEndSubmission);
                 $formEntity->setDateEndSubmission($dateEndSubmission);
