@@ -79,9 +79,9 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
 
         return (
             ($dateStartSubmissionIsNull && $dateEndSubmissionIsNull) // both are null
-            || (!$dateStartSubmissionIsNull && $dateStartSubmission > $now && $dateEndSubmissionIsNull) // dateStart is past and dateEnd is null
-            || ($dateStartSubmissionIsNull && !$dateEndSubmissionIsNull && $dateEndSubmission < $now) // dateStart is null and dateEnd is not past
-            || (!$dateStartSubmissionIsNull && $dateStartSubmission > $now && !$dateEndSubmissionIsNull && $dateEndSubmission < $now) // both are not null and now is between both dates
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now && $dateEndSubmissionIsNull) // dateStart is past and dateEnd is null
+            || ($dateStartSubmissionIsNull && !$dateEndSubmissionIsNull && $dateEndSubmission > $now) // dateStart is null and dateEnd is not past
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now && !$dateEndSubmissionIsNull && $dateEndSubmission > $now) // both are not null and now is between both dates
         );
     }
 }
