@@ -42,6 +42,7 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
     {
         return [
             new \Twig_Function('get_form', [$this, 'getForm']),
+            new \Twig_Function('is_form_available', [$this, 'isFormAvailable']),
         ];
     }
 
@@ -59,5 +60,28 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
         $form = $this->entityManager->getRepository(Form::class)->findOneBy(['id' => $formId]);
 
         return $form;
+    }
+
+    public function isFormAvailable(?int $formId): bool
+    {
+        /* @var Form $form */
+        $form = $this->entityManager->getRepository(Form::class)->findOneBy(['id' => $formId]);
+
+        /** @var \DateTime $dateStartSubmission */
+        $dateStartSubmission = $form->getDateStartSubmission();
+        $dateStartSubmissionIsNull = !$dateStartSubmission || $dateStartSubmission->getTimestamp() == null;
+        /** @var \DateTime $dateEndSubmission */
+        $dateEndSubmission = $form->getDateEndSubmission();
+        $dateEndSubmissionIsNull = !$dateEndSubmission || $dateEndSubmission->getTimestamp() == null;
+
+        /** @var \DateTime $now */
+        $now = new \DateTime();
+
+        return (
+            ($dateStartSubmissionIsNull && $dateEndSubmissionIsNull) // both are null
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission > $now && $dateEndSubmissionIsNull) // dateStart is past and dateEnd is null
+            || ($dateStartSubmissionIsNull && !$dateEndSubmissionIsNull && $dateEndSubmission < $now) // dateStart is null and dateEnd is not past
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission > $now && !$dateEndSubmissionIsNull && $dateEndSubmission < $now) // both are not null and now is between both dates
+        );
     }
 }

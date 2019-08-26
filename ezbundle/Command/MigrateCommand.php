@@ -16,8 +16,6 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Publish\API\Repository\ContentService;
-use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\Core\Repository\Repository;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
