@@ -2,13 +2,12 @@
 /**
  * NovaFormBuilder Bundle.
  *
- * @package   Novactive\Bundle\FormBuilderBundle
  *
  * @author    Maxim Strukov <m.strukov@novactive.com>
  * @copyright 2018 Novactive
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
@@ -48,8 +47,8 @@ class Mailer
         string $defaultSenderEmail
     ) {
         $this->defaultSenderEmail = $defaultSenderEmail;
-        $this->mailer             = $mailer;
-        $this->logger             = $logger;
+        $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     /**
@@ -91,14 +90,12 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build
-    (
+    public function build(
         Form $formEntity,
         string $subject,
         string $body,
         bool $onlyForUser = false
-    ): Swift_Mime_SimpleMessage
-    {
+    ): Swift_Mime_SimpleMessage {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
         $receivers = [];
