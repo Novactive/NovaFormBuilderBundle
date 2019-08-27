@@ -16,7 +16,9 @@ namespace Novactive\Bundle\FormBuilderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\ChoiceReceiver;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\Email;
+use Novactive\Bundle\FormBuilderBundle\Entity\Field\MailSubject;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -90,6 +92,13 @@ class Form
     private $sendData;
 
     /**
+     * Override sending data to user if done using another way.
+     *
+     * @var bool
+     */
+    private $overrideUserSendData = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
      *                                                                                cascade={"persist", "remove"},
      *                                                                                  orphanRemoval=true)
@@ -107,6 +116,20 @@ class Form
      * @var FormSubmission[]
      */
     private $submissions;
+
+    /**
+     * @ORM\Column(name="date_start_submission", type="datetime", nullable=true)
+     *
+     * @var \DateTime|null
+     */
+    private $dateStartSubmission;
+
+    /**
+     * @ORM\Column(name="date_end_submission", type="datetime", nullable=true)
+     *
+     * @var \DateTime|null
+     */
+    private $dateEndSubmission;
 
     /**
      * Form constructor.
@@ -159,7 +182,14 @@ class Form
 
     public function getReceiverEmail(): ?string
     {
-        return $this->receiverEmail;
+        $email = '';
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof ChoiceReceiver && $field->getValue()) {
+                $email = $field->getValue();
+            }
+        }
+
+        return '' !== $email ? $email : $this->receiverEmail;
     }
 
     public function setReceiverEmail(?string $receiverEmail): self
@@ -171,7 +201,14 @@ class Form
 
     public function getSubjectEmail(): ?string
     {
-        return $this->subjectEmail;
+        $subject = '';
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof MailSubject && $field->getValue()) {
+                $subject = $field->getValue();
+            }
+        }
+
+        return $subject ? $subject : $this->subjectEmail;
     }
 
     public function setSubjectEmail(?string $subjectEmail): self
@@ -205,11 +242,18 @@ class Form
         return $this;
     }
 
+    public function setOverrideUserSendData(bool $override): self
+    {
+        $this->overrideUserSendData = $override;
+
+        return $this;
+    }
+
     public function isUserSendData(): bool
     {
         foreach ($this->getFields() as $field) {
             if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
-                return true;
+                return true && !$this->overrideUserSendData;
             }
         }
 
@@ -219,8 +263,9 @@ class Form
     public function getUserSendEmails(): array
     {
         $emails = [];
+
         foreach ($this->getFields() as $field) {
-            if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
+            if ($field instanceof Email && $this->isSendData() && $field->getValue()) {
                 $emails[] = $field->getValue();
             }
         }
@@ -283,6 +328,38 @@ class Form
     public function removeSubmission(FormSubmission $submission): self
     {
         $this->submissions->removeElement($submission);
+
+        return $this;
+    }
+
+    public function getDateStartSubmission()
+    {
+        if (null === $this->dateStartSubmission) {
+            return null;
+        }
+
+        return $this->dateStartSubmission;
+    }
+
+    public function setDateStartSubmission($dateStartSubmission)
+    {
+        $this->dateStartSubmission = $dateStartSubmission;
+
+        return $this;
+    }
+
+    public function getDateEndSubmission()
+    {
+        if (null === $this->dateEndSubmission) {
+            return null;
+        }
+
+        return $this->dateEndSubmission;
+    }
+
+    public function setDateEndSubmission($dateEndSubmission)
+    {
+        $this->dateEndSubmission = $dateEndSubmission;
 
         return $this;
     }

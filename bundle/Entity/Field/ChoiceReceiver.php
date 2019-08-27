@@ -10,23 +10,15 @@
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
 
+declare(strict_types=1);
+
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 /**
  * @ORM\Entity
  */
-class Time extends Field
+class ChoiceReceiver extends Choice
 {
-    public function getValue()
-    {
-        if (null !== $this->value) {
-            return $this->value->format('H:i');
-        }
-
-        return new DateTime();
-    }
 }

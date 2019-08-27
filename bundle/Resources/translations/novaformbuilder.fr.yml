@@ -10,6 +10,9 @@ form.receiver_email: Adresse courriel qui recevra les données de formulaire
 form.subject_email: Objet de l'e-mail avec les données de soumission
 form.title_email: Titre dans l'email
 form.send_data: Envoyer les données du formulaire
+form.date_start_submission: Date de début de soumission
+form.date_end_submission: Date de fin de soumission
+field.paragraph.data: Texte affiché
 field.css_class: Classe CSS
 field.textline.min_length: Longueur Minimale
 field.textline.max_length: Longueur Maximale
@@ -19,6 +22,7 @@ field.choice.choice_type.checkboxes: Cases à cocher
 field.choice.choice_type.dropdown: Menu déroulant
 field.choice.choices: Choix
 field.choice.choices.value:	Valeur
+field.choice.choices.label: Libelle
 field.choice.choices.weight: Priorité
 fieldtype.choice: Choix
 field.date.default_value: Valeur par défaut
@@ -32,6 +36,7 @@ field.file.max_file_size_mb: Taille de fichier maximale en Mo
 field.file.file_type: Type de fichier
 file.file_type.image: Image
 file.file_type.file: Fichier
+field.section.data: "Texte à afficher"
 file.file_type.application: Application
 fieldtype.file: Fichier
 field.number.min: Minimum
@@ -44,3 +49,8 @@ fieldtype.text_area: Zone de texte
 fieldtype.text_line: Ligne de texte
 form.submission.submitted_on: Données du formulaire transmises à
 form.send_data_to_user: Envoyer les données à l'utilisateur
+fieldtype.paragraph: Paragraphe libre
+fieldtype.mail_subject: Objet de l'email
+fieldtype.choice_receiver: Destinataire de l'enquête
+fieldtype.section_header: "En tête"
+form.required.head: 'Les champs suivis d''un astérisque <span style="color: red">*</span> sont obligatoires'

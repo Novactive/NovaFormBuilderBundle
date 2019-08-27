@@ -13,29 +13,28 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
-use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceItemType;
+use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceReceiverType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\WeightedCollectionType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 
-class Choice extends FieldType
+class ChoiceReceiver extends Choice
 {
     public function getEntityClass(): string
     {
-        return Field\Choice::class;
+        return Field\ChoiceReceiver::class;
     }
 
     /**
-     * @param Field\Choice $field
+     * @param Field\ChoiceReceiver $field
      */
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
             ->add(
                 'choice_type',
-                ChoiceType::class,
+                ChoiceReceiverType::class,
                 [
                     'choices'      => [
                         'radio'      => 'radio',
@@ -68,47 +67,5 @@ class Choice extends FieldType
                     'prototype_name' => '__choice_name__',
                 ]
             );
-    }
-
-    /**
-     * @param Field\Choice $field
-     */
-    public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
-    {
-        $formattedChoices = [];
-        foreach ($field->getChoices() as $choice) {
-            $formattedChoices[$choice['label']] = $choice['value'];
-        }
-
-        switch ($field->getChoiceType()) {
-            case 'dropdown':
-                $expanded = false;
-                $multiple = false;
-                break;
-            case 'radio':
-                $expanded = true;
-                $multiple = false;
-                break;
-            case 'checkboxes':
-                $expanded = true;
-                $multiple = true;
-                break;
-            default:
-                $expanded = false;
-                $multiple = false;
-                break;
-        }
-
-        $fieldForm->add(
-            'value',
-            ChoiceType::class,
-            [
-                'required' => $field->isRequired(),
-                'label'    => $field->getName(),
-                'choices'  => $formattedChoices,
-                'expanded' => $expanded,
-                'multiple' => $multiple,
-            ]
-        );
     }
 }

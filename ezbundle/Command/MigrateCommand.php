@@ -3,19 +3,21 @@
 /**
  * NovaFormBuilder Bundle.
  *
- * @package   Novactive\Bundle\FormBuilderBundle
  *
  * @author    Maxim Strukov <m.strukov@novactive.com>
  * @copyright 2018 Novactive
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
-
 declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\API\Repository\ContentService;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\PermissionResolver;
+use eZ\Publish\API\Repository\UserService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
@@ -57,19 +59,55 @@ class MigrateCommand extends Command
      */
     private $entityManager;
 
-    public const QUESTION_TYPES = ['EmailEntry', 'TextEntry', 'NumberEntry', 'MultipleChoice', 'Receiver'];
+    /**
+     * @var ContentService
+     */
+    private $contentService;
+
+    /**
+     * @var PermissionResolver
+     */
+    private $permissionResolver;
+
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public const QUESTION_TYPES = [
+        'EmailEntry',
+        'TextEntry',
+        'NumberEntry',
+        'MultipleChoice',
+        'Receiver',
+        'Paragraph',
+        'MailSubject',
+        'SectionHeader',
+    ];
 
     public const DUMP_FOLDER = 'migrate';
 
     /**
      * MigrateCommand constructor.
+     *
+     *
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
-    public function __construct(IOService $ioService, FormService $formService, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        IOService $ioService,
+        FormService $formService,
+        EntityManagerInterface $entityManager,
+        ContentService $contentService,
+        UserService $userService,
+        PermissionResolver $permissionResolver
+    ) {
         parent::__construct();
-        $this->ioService     = $ioService;
-        $this->formService   = $formService;
-        $this->entityManager = $entityManager;
+        $this->ioService          = $ioService;
+        $this->formService        = $formService;
+        $this->entityManager      = $entityManager;
+        $this->contentService     = $contentService;
+        $this->userService        = $userService;
+        $this->permissionResolver = $permissionResolver;
     }
 
     protected function configure(): void
@@ -80,14 +118,27 @@ class MigrateCommand extends Command
             ->addOption('export', null, InputOption::VALUE_NONE, 'Export from old DB to json files')
             ->addOption('import', null, InputOption::VALUE_NONE, 'Import from json files to new DB')
             ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean the existing data')
+            ->addOption('user', null, InputOption::VALUE_OPTIONAL, 'User admin that execute this command', 'admin')
             ->setHelp('Run novaformbuilder:migrate export|import|clean');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('Update the Database with Custom Novactive Form Builder Tables');
 
+        $adminUser = $input->getOption('user');
+
+        try {
+            // set admin to repository
+            $user = $this->userService->loadUserByLogin($adminUser);
+            $this->permissionResolver->setCurrentUserReference($user);
+        } catch (NotFoundException $e) {
+            $this->io->error("user 'admin' does not exist, please set it using '--admin=#userLogin'");
+
+            return;
+        }
+
+        $this->io->title('Update the Database with Custom Novactive Form Builder Tables');
         if ($input->getOption('export')) {
             $this->export();
         } elseif ($input->getOption('import')) {
@@ -105,8 +156,10 @@ class MigrateCommand extends Command
         $this->ioService->cleanDir(self::DUMP_FOLDER);
         $this->io->section('Cleaned the folder with json files.');
 
-        $timeStart = time();
-        $forms     = [];
+        $timeStart           = time();
+        $forms               = [];
+        $dateStartSubmission = null;
+        $dateEndSubmission   = null;
 
         $surveys = $this->runQuery(
             'SELECT max(id) as surveyId, contentobject_id FROM ezsurvey GROUP BY contentobject_id ORDER BY surveyId'
@@ -117,6 +170,19 @@ class MigrateCommand extends Command
         $this->io->progressStart(count($surveys));
 
         foreach ($surveys as $survey) {
+            try {
+                $content = $this->contentService->loadContent($survey['contentobject_id']);
+            } catch (\Exception $e) {
+                $content = false;
+            }
+
+            $surveyInfo = $this->runQuery(
+                sprintf('SELECT valid_from, valid_to FROM ezsurvey WHERE id=%s', $survey['surveyId'])
+            );
+
+            $dateStartSubmission = $surveyInfo[0]['valid_from'];
+            $dateEndSubmission   = $surveyInfo[0]['valid_to'];
+
             $fields        = [];
             $receiverEmail = null;
             $sql           = "SELECT * FROM ezsurveyquestion WHERE survey_id = ? 
@@ -125,28 +191,49 @@ class MigrateCommand extends Command
             $questions = $this->runQuery($sql, [$survey['surveyId']]);
             foreach ($questions as $question) {
                 // Getting the Receiver email if checked
+                $options = [];
+                $name    = $question['text'];
+
                 if ('Receiver' === $question['type']) {
-                    $xml = simplexml_load_string($question['text2']);
+                    $xml     = simplexml_load_string($question['text2']);
+                    $choices = [];
+                    $counter = 0;
                     foreach ($xml as $option) {
+                        ++$counter;
                         if ('1' === (string) $option->checked) {
                             $receiverEmail = (string) $option->email;
                         }
+
+                        if (1 == count($xml)) {
+                            break;
+                        }
+                        $choices[$counter] = [
+                            'value'  => (string) $option->email,
+                            'label'  => (string) $option->label,
+                            'weight' => $counter,
+                        ];
                     }
-                    continue;
+                    if (!count($choices)) {
+                        continue;
+                    }
+                    $options = ['choice_type' => 'dropdown', 'choices' => $choices];
                 }
 
                 if (empty($question['text'])) {
                     continue;
                 }
-                $type    = $this->convertType($question['type']);
-                $options = [];
+                $type = $this->convertType($question['type']);
                 if ('Choice' === $type) {
                     $xml     = simplexml_load_string($question['text2']);
                     $choices = [];
                     $counter = 0;
                     foreach ($xml as $option) {
                         ++$counter;
-                        $choices[$counter] = ['value' => (string) $option->value, 'weight' => $counter];
+                        $choices[$counter] = [
+                            'value'  => (string) $option->value,
+                            'label'  => (string) $option->label,
+                            'weight' => $counter,
+                        ];
                     }
                     switch ($question['num']) {
                         case 1:
@@ -170,19 +257,33 @@ class MigrateCommand extends Command
                     $options = ['choice_type' => $choiceType, 'choices' => $choices];
                 }
 
+                if ('Paragraph' === $type || 'SectionHeader' === $type) {
+                    $options = ['value' => $question['text']];
+                    $name    = ('Paragraph' === $type) ? 'Paragraphe Libre' : 'En tête';
+                }
+
                 $fields[] = [
-                    'name'   => $question['text'], 'required' => (bool) $question['mandatory'],
-                    'weight' => (int) $question['tab_order'], 'options' => $options, 'type' => $type,
+                    'name'     => $name,
+                    'required' => (bool) $question['mandatory'],
+                    'weight'   => (int) $question['tab_order'],
+                    'options'  => $options,
+                    'type'     => $type,
                 ];
             }
 
             $fieldsCounter += count($fields);
 
             if (!empty($fields)) {
+                $formName         = ($content ?
+                    $this->getNormalizeString($content->getName())
+                    : 'Form_'.$survey['surveyId']);
                 $form             = [
-                    'name'     => 'Form_'.$survey['surveyId'], 'maxSubmissions' => null,
-                    'fields'   => $fields,
-                    'objectId' => $survey['contentobject_id']
+                    'name'                => $formName,
+                    'maxSubmissions'      => null,
+                    'fields'              => $fields,
+                    'objectId'            => $survey['contentobject_id'],
+                    'dateStartSubmission' => (int) $dateStartSubmission > 0 ? $dateStartSubmission : null,
+                    'dateEndSubmission'   => (int) $dateEndSubmission > 0 ? $dateEndSubmission : null,
                 ];
                 $form['sendData'] = false;
                 if (null !== $receiverEmail) {
@@ -227,8 +328,9 @@ class MigrateCommand extends Command
                         );
                     }
                     $data[]      = [
-                        'name' => $result['text'], 'value' => $answers,
-                        'type' => strtolower($this->convertType($result['type'])),
+                        'name'  => $result['text'],
+                        'value' => $answers,
+                        'type'  => strtolower($this->convertType($result['type'])),
                     ];
                     $createdDate = date('Y-m-d H:i:s', (int) $result['tstamp']);
                 }
@@ -279,6 +381,19 @@ class MigrateCommand extends Command
             $form       = json_decode($this->ioService->readFile(self::DUMP_FOLDER.'/'.$fileName.'.json'));
             $formEntity = new Form();
             $formEntity->setName($form->name);
+            $formEntity->setMaxSubmissions($form->maxSubmissions);
+
+            if ((int) $form->dateStartSubmission > 0) {
+                $dateStartSubmission = new \DateTime();
+                $dateStartSubmission->setTimestamp((int) $form->dateStartSubmission);
+                $formEntity->setDateStartSubmission($dateStartSubmission);
+            }
+            if ((int) $form->dateEndSubmission > 0) {
+                $dateEndSubmission = new \DateTime();
+                $dateEndSubmission->setTimestamp((int) $form->dateEndSubmission);
+                $formEntity->setDateEndSubmission($dateEndSubmission);
+            }
+
             $formEntity->setMaxSubmissions($form->maxSubmissions);
             $formEntity->setSendData($form->sendData);
             if ($form->sendData) {
@@ -373,10 +488,37 @@ class MigrateCommand extends Command
             case 'MultipleChoice':
                 $type = 'Choice';
                 break;
+            case 'Receiver':
+                $type = 'ChoiceReceiver';
+                break;
+            case 'Paragraph':
+                $type = 'Paragraph';
+                break;
+            case 'SectionHeader':
+                $type = 'SectionHeader';
+                break;
+            case 'MailSubject':
+                $type = 'MailSubject';
+                break;
             default:
                 $type = $oldType;
         }
 
         return $type;
+    }
+
+    /**
+     * Function return a string normalized (ex: Pôle évenement : voœux 2019 ==> Pole evenement voeux 2019).
+     *
+     *
+     * @return bool|false|string|string[]|null
+     */
+    private function getNormalizeString(string $text)
+    {
+        $name = preg_replace('/æ/', 'ae', $text);
+        $name = preg_replace('/œ/', 'oe', $name);
+        $name = iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[^\p{L}\-. 0-9]/u', '', $name));
+
+        return $name;
     }
 }

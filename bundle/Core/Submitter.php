@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\MVC\Symfony\Security\User as EzSecurityUser;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
@@ -31,7 +32,7 @@ use Twig_Environment;
 class Submitter
 {
     const SUBMISSION_SUBJECT_TPL = 'NovaFormBuilder Submission Data from %FORM_NAME%';
-    const TITLE_EMAIL_TPL = 'Form data submitted on "%FORM_NAME%"';
+    const TITLE_EMAIL_TPL        = 'Form data submitted on "%FORM_NAME%"';
 
     /**
      * @var EntityManagerInterface
@@ -104,7 +105,7 @@ class Submitter
             ];
         }
         $formSubmission = new FormSubmission();
-        $formSubmission->setCreatedAt(new \DateTime());
+        $formSubmission->setCreatedAt(new DateTime());
         $formSubmission->setForm($formEntity);
         $formSubmission->setData($data);
 
@@ -171,7 +172,7 @@ class Submitter
             '@FormBuilder/mails/submission_data.html.twig',
             [
                 'submission' => $formSubmission,
-                'title' => $this->createEmailTitle($formEntity),
+                'title'      => $this->createEmailTitle($formEntity),
             ]
         );
         $message = $this->mailer->build($formEntity, $this->createSubject($formEntity), $content);

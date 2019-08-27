@@ -27,6 +27,7 @@ class ChoiceItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('label', TextType::class, ['attr' => ['placeholder' => 'field.choice.choices.label']])
             ->add('value', TextType::class, ['attr' => ['placeholder' => 'field.choice.choices.value']])
             ->add('weight', TextType::class, ['attr' => ['placeholder' => 'field.choice.choices.weight']]);
     }

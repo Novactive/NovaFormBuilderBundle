@@ -10,6 +10,9 @@ form.receiver_email: Email address to receive the submission data
 form.subject_email: Subject of the Email with submission data
 form.title_email: Title in the Email
 form.send_data: Send submission data
+form.date_start_submission: Start date submission
+form.date_end_submission: End date submission
+field.paragraph.data: Texte affiché
 field.css_class: CSS Class
 field.textline.min_length: Minimun Length
 field.textline.max_length: Maximum Length
@@ -19,6 +22,7 @@ field.choice.choice_type.checkboxes: Checkboxes
 field.choice.choice_type.dropdown: Dropdown
 field.choice.choices: Choices
 field.choice.choices.value:	Value
+field.choice.choices.label: Label
 field.choice.choices.weight: Priority
 fieldtype.choice: Choice
 field.date.default_value: Default Value
@@ -32,6 +36,7 @@ field.file.max_file_size_mb: Maximum File Size in MB
 field.file.file_type: File Type
 file.file_type.image: Image
 file.file_type.file: File
+field.section.data: "Displayed text"
 file.file_type.application: Application
 fieldtype.file: File
 field.number.min: Minimun
@@ -44,3 +49,8 @@ fieldtype.text_area: Text Area
 fieldtype.text_line: Text Line
 form.submission.submitted_on: Form data submitted on
 form.send_data_to_user: Send data to user
+fieldtype.paragraph: "Paragraphe"
+fieldtype.mail_subject: "Mail Subject"
+fieldtype.choice_receiver: "Destinataire de l'enquête"
+fieldtype.section_header: "Section Header"
+form.required.head: 'Fields followed by an asterisk <span style="color: red">*</span> are required'
