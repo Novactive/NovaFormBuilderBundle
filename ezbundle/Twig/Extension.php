@@ -68,20 +68,25 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
         $form = $this->entityManager->getRepository(Form::class)->findOneBy(['id' => $formId]);
 
         /** @var \DateTime $dateStartSubmission */
-        $dateStartSubmission = $form->getDateStartSubmission();
-        $dateStartSubmissionIsNull = !$dateStartSubmission || $dateStartSubmission->getTimestamp() == null;
+        $dateStartSubmission       = $form->getDateStartSubmission();
+        $dateStartSubmissionIsNull = !$dateStartSubmission || null == $dateStartSubmission->getTimestamp();
         /** @var \DateTime $dateEndSubmission */
-        $dateEndSubmission = $form->getDateEndSubmission();
-        $dateEndSubmissionIsNull = !$dateEndSubmission || $dateEndSubmission->getTimestamp() == null;
+        $dateEndSubmission       = $form->getDateEndSubmission();
+        $dateEndSubmissionIsNull = !$dateEndSubmission || null == $dateEndSubmission->getTimestamp();
 
         /** @var \DateTime $now */
         $now = new \DateTime();
 
-        return (
-            ($dateStartSubmissionIsNull && $dateEndSubmissionIsNull) // both are null
-            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now && $dateEndSubmissionIsNull) // dateStart is past and dateEnd is null
-            || ($dateStartSubmissionIsNull && !$dateEndSubmissionIsNull && $dateEndSubmission > $now) // dateStart is null and dateEnd is not past
-            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now && !$dateEndSubmissionIsNull && $dateEndSubmission > $now) // both are not null and now is between both dates
-        );
+        return
+            // both are null
+            ($dateStartSubmissionIsNull && $dateEndSubmissionIsNull)
+            // dateStart is past and dateEnd is null
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now && $dateEndSubmissionIsNull)
+            // dateStart is null and dateEnd is not past
+            || ($dateStartSubmissionIsNull && !$dateEndSubmissionIsNull && $dateEndSubmission > $now)
+            // both are not null and now is between both dates
+            || (!$dateStartSubmissionIsNull && $dateStartSubmission < $now
+                && !$dateEndSubmissionIsNull && $dateEndSubmission > $now)
+        ;
     }
 }

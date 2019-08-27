@@ -7,7 +7,7 @@
  * @copyright 2018 Novactive
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
  */
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 

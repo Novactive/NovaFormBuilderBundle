@@ -171,7 +171,7 @@ class Submitter
             '@FormBuilder/mails/submission_data.html.twig',
             [
                 'submission' => $formSubmission,
-                'title' => $this->createEmailTitle($formEntity),
+                'title'      => $this->createEmailTitle($formEntity),
             ]
         );
         $message = $this->mailer->build($formEntity, $this->createSubject($formEntity), $content);

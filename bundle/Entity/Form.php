@@ -92,7 +92,8 @@ class Form
     private $sendData;
 
     /**
-     * Override sending data to user if done using another way
+     * Override sending data to user if done using another way.
+     *
      * @var bool
      */
     private $overrideUserSendData = false;
@@ -188,7 +189,7 @@ class Form
             }
         }
 
-        return $email !== '' ? $email : $this->receiverEmail;
+        return '' !== $email ? $email : $this->receiverEmail;
     }
 
     public function setReceiverEmail(?string $receiverEmail): self
@@ -252,7 +253,7 @@ class Form
     {
         foreach ($this->getFields() as $field) {
             if ($field instanceof Email && $field->isSendData() && $field->getValue()) {
-                return (true && !$this->overrideUserSendData);
+                return true && !$this->overrideUserSendData;
             }
         }
 

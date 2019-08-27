@@ -15,9 +15,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Novactive\Bundle\FormBuilderBundle\Form\Type\ParagraphType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\SectionHeaderType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
@@ -41,8 +39,7 @@ class SectionHeader extends FieldType
                     'required'   => false,
                     'label'      => 'field.section.data',
                     'attr'       => ['rows' => 10],
-                    'data'       => $field->getValue()
-
+                    'data'       => $field->getValue(),
                 ]
             );
     }
@@ -58,7 +55,7 @@ class SectionHeader extends FieldType
                 SectionHeaderType::class,
                 [
                     'label'       => $field->getValue(),
-                    'data'      => $field->getOption('data')
+                    'data'        => $field->getOption('data'),
                 ]
             );
     }

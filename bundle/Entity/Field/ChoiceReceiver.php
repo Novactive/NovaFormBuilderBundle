@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
-use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 /**
  * @ORM\Entity

@@ -39,8 +39,7 @@ class Paragraph extends FieldType
                     'required'   => false,
                     'label'      => 'field.paragraph.data',
                     'attr'       => ['rows' => 10],
-                    'data'       => $field->getOption('value')
-
+                    'data'       => $field->getOption('value'),
                 ]
             );
     }
@@ -56,7 +55,7 @@ class Paragraph extends FieldType
                 ParagraphType::class,
                 [
                     'label'       => $field->getValue(),
-                    'data'      => $field->getOption('value')
+                    'data'        => $field->getOption('value'),
                 ]
             );
     }
