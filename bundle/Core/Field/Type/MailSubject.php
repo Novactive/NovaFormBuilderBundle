@@ -20,67 +20,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Length;
 
-class MailSubject extends FieldType
+class MailSubject extends TextLine
 {
     public function getEntityClass(): string
     {
         return Field\MailSubject::class;
-    }
-
-    /**
-     * @param Field\MailSubject $field
-     */
-    public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
-    {
-        $fieldForm
-            ->add(
-                'minLength',
-                IntegerType::class,
-                [
-                    'required'   => false,
-                    'label'      => 'field.textline.min_length',
-                    'attr'       => ['min' => 0],
-                    'empty_data' => 0,
-                ]
-            )
-            ->add(
-                'maxLength',
-                IntegerType::class,
-                [
-                    'required'   => false,
-                    'label'      => 'field.textline.max_length',
-                    'attr'       => ['min' => 0],
-                    'empty_data' => 0,
-                ]
-            );
-    }
-
-    /**
-     * @param Field\MailSubject $field
-     */
-    public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
-    {
-        $minLength   = $field->getMinLength() ?: null;
-        $maxLength   = $field->getMaxLength() ?: null;
-        $constraints = [];
-        if (null !== $minLength || null !== $maxLength) {
-            $constraints[] = new Length(
-                [
-                    'min' => $minLength,
-                    'max' => $maxLength,
-                ]
-            );
-        }
-
-        $fieldForm
-            ->add(
-                'value',
-                TextType::class,
-                [
-                    'required'    => $field->isRequired(),
-                    'label'       => $field->getName(),
-                    'constraints' => $constraints,
-                ]
-            );
     }
 }
