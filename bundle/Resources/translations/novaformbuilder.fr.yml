@@ -22,7 +22,7 @@ field.choice.choice_type.checkboxes: Cases à cocher
 field.choice.choice_type.dropdown: Menu déroulant
 field.choice.choices: Choix
 field.choice.choices.value:	Valeur
-field.choice.choices.label: Label
+field.choice.choices.label: Libelle
 field.choice.choices.weight: Priorité
 fieldtype.choice: Choix
 field.date.default_value: Valeur par défaut

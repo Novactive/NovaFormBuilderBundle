@@ -91,7 +91,7 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build(Form $formEntity, string $subject, string $body): Swift_Mime_SimpleMessage
+    public function build(Form $formEntity, string $subject, string $body, bool $onlyForUser = false): Swift_Mime_SimpleMessage
     {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
@@ -100,7 +100,7 @@ class Mailer
             $receivers = $formEntity->getUserSendEmails();
         }
 
-        if (null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
+        if (!$onlyForUser && null !== $formEntity->getReceiverEmail() && $formEntity->isSendData()) {
             $receivers[] = $formEntity->getReceiverEmail();
         }
 
@@ -118,22 +118,6 @@ class Mailer
 
     public function buildUserEmail(Form $formEntity, string $subject, string $body): Swift_Mime_SimpleMessage
     {
-        $message = $this->createMessage();
-        $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
-        $receivers = [];
-        if ($formEntity->isUserSendData()) {
-            $receivers = $formEntity->getUserSendEmails();
-        }
-
-        if (count($receivers) > 1) {
-            $message->setBcc($receivers);
-        } else {
-            $message->setTo($receivers);
-        }
-
-        $message->setSubject($subject);
-        $message->setBody($body, 'text/html', 'utf8');
-
-        return $message;
+        return $this->build($formEntity, $subject, $body, true);
     }
 }

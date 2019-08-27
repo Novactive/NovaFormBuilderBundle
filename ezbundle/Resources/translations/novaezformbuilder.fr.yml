@@ -53,4 +53,4 @@ fieldtype.choice_receiver: "Destinataire de l'enquête"
 fieldtype.section_header: "En tête"
 form.required.head: 'Les champs suivis d''un astérisque <span style="color: red">*</span> sont obligatoires'
 field.section.data: "Texte à afficher"
-field.choice.choices.label: "Label de l'option"
+field.choice.choices.label: "Libelle de l'option"
