@@ -47,8 +47,8 @@ class Mailer
         string $defaultSenderEmail
     ) {
         $this->defaultSenderEmail = $defaultSenderEmail;
-        $this->mailer = $mailer;
-        $this->logger = $logger;
+        $this->mailer             = $mailer;
+        $this->logger             = $logger;
     }
 
     /**
