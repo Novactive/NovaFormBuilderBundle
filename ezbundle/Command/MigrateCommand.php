@@ -16,7 +16,10 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Command;
 
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Publish\Core\Repository\Repository;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\PermissionResolver;
+use eZ\Publish\API\Repository\UserService;
+use eZ\Publish\API\Repository\ContentService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\IOService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
@@ -59,9 +62,19 @@ class MigrateCommand extends Command
     private $entityManager;
 
     /**
-     * @var Repository
+     * @var ContentService
      */
-    private $repository;
+    private $contentService;
+
+    /**
+     * @var PermissionResolver
+     */
+    private $permissionResolver;
+
+    /**
+     * @var UserService
+     */
+    private $userService;
 
     public const QUESTION_TYPES = [
         'EmailEntry',
@@ -81,25 +94,29 @@ class MigrateCommand extends Command
      * @param IOService $ioService
      * @param FormService $formService
      * @param EntityManagerInterface $entityManager
-     * @param Repository $repository
+     * @param ContentService $contentService
+     * @param UserService $userService
+     * @param PermissionResolver $permissionResolver
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
     public function __construct(
         IOService $ioService,
         FormService $formService,
         EntityManagerInterface $entityManager,
-        Repository $repository
+        ContentService $contentService,
+        UserService $userService,
+        PermissionResolver $permissionResolver
     )
     {
         parent::__construct();
-        $this->ioService     = $ioService;
-        $this->formService   = $formService;
-        $this->entityManager = $entityManager;
-        $this->repository = $repository;
-
-        // set admin to repository
-        $user = $repository->getUserService()->loadUserByLogin('admin');
-        $repository->getPermissionResolver()->setCurrentUserReference($user);
+        $this->ioService          = $ioService;
+        $this->formService        = $formService;
+        $this->entityManager      = $entityManager;
+        $this->contentService     = $contentService;
+        $this->userService        = $userService;
+        $this->permissionResolver = $permissionResolver;
     }
+
 
     protected function configure(): void
     {
@@ -109,14 +126,26 @@ class MigrateCommand extends Command
             ->addOption('export', null, InputOption::VALUE_NONE, 'Export from old DB to json files')
             ->addOption('import', null, InputOption::VALUE_NONE, 'Import from json files to new DB')
             ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean the existing data')
+            ->addOption('admin', null, InputOption::VALUE_NONE, 'User admin that execute this command', 'admin')
             ->setHelp('Run novaformbuilder:migrate export|import|clean');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('Update the Database with Custom Novactive Form Builder Tables');
 
+        $adminUser = $input->getOption('admin');
+
+        try{
+            // set admin to repository
+            $user = $this->userService->loadUserByLogin($adminUser);
+            $this->permissionResolver->setCurrentUserReference($user);
+        } catch(NotFoundException $e) {
+            $this->io->error("user 'admin' does not exist, please set it using '--admin=#userLogin'");
+            throw $e;
+        }
+
+        $this->io->title('Update the Database with Custom Novactive Form Builder Tables');
         if ($input->getOption('export')) {
             $this->export();
         } elseif ($input->getOption('import')) {
@@ -149,7 +178,7 @@ class MigrateCommand extends Command
 
         foreach ($surveys as $survey) {
             try {
-                $content = $this->repository->getContentService()->loadContent($survey['contentobject_id']);
+                $content = $this->contentService->loadContent($survey['contentobject_id']);
             } catch(\Exception $e) {
                 $content = false;
             }
