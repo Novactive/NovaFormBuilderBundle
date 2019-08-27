@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
@@ -26,6 +27,6 @@ class Time extends Field
             return $this->value->format('H:i');
         }
 
-        return new \DateTime();
+        return new DateTime();
     }
 }

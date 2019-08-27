@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\MVC\Symfony\Security\User as EzSecurityUser;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field\File;
@@ -104,7 +105,7 @@ class Submitter
             ];
         }
         $formSubmission = new FormSubmission();
-        $formSubmission->setCreatedAt(new \DateTime());
+        $formSubmission->setCreatedAt(new DateTime());
         $formSubmission->setForm($formEntity);
         $formSubmission->setData($data);
 
