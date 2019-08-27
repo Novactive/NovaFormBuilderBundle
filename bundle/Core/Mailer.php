@@ -91,7 +91,11 @@ class Mailer
         return $successfulRecipientsNumber;
     }
 
-    public function build(Form $formEntity, string $subject, string $body, bool $onlyForUser = false): Swift_Mime_SimpleMessage
+    public function build(
+        Form $formEntity,
+        string $subject,
+        string $body,
+        bool $onlyForUser = false): Swift_Mime_SimpleMessage
     {
         $message = $this->createMessage();
         $message->setFrom($formEntity->getSenderEmail() ?? $this->defaultSenderEmail);
