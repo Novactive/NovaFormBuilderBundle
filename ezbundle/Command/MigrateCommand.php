@@ -290,8 +290,13 @@ class MigrateCommand extends Command
                     $form['receiverEmail'] = $receiverEmail;
                     $form['sendData']      = true;
                 }
-                $this->ioService->saveFile(self::DUMP_FOLDER.'/'.$form['name'].'.json', json_encode($form));
-                $forms[] = $form['name'];
+                if (169131 == $survey['contentobject_id']) {
+                    var_dump($form['name']);
+                }
+
+                $formExportFileName = $form['name'].'-'.$form['objectId'];
+                $this->ioService->saveFile(self::DUMP_FOLDER.'/'.$formExportFileName.'.json', json_encode($form));
+                $forms[] = $formExportFileName;
 
                 // Get the Survey Results
                 $sql = 'SELECT sqr.result_id,sqr.question_id,sq.type,sq.text,sqr.text answer, ';
@@ -339,7 +344,7 @@ class MigrateCommand extends Command
                 }
                 if (!empty($submissions)) {
                     $this->ioService->saveFile(
-                        self::DUMP_FOLDER.'/'.$form['name'].'_submissions.json',
+                        self::DUMP_FOLDER.'/'.$formExportFileName.'_submissions.json',
                         json_encode($submissions)
                     );
                 }
