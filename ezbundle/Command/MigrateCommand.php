@@ -290,9 +290,6 @@ class MigrateCommand extends Command
                     $form['receiverEmail'] = $receiverEmail;
                     $form['sendData']      = true;
                 }
-                if (169131 == $survey['contentobject_id']) {
-                    var_dump($form['name']);
-                }
 
                 $formExportFileName = $form['name'].'-'.$form['objectId'];
                 $this->ioService->saveFile(self::DUMP_FOLDER.'/'.$formExportFileName.'.json', json_encode($form));
