@@ -198,13 +198,15 @@ class MigrateCommand extends Command
                     $xml     = simplexml_load_string($question['text2']);
                     $choices = [];
                     $counter = 0;
+                    $hasOneReceiver = 1 == count($xml);
                     foreach ($xml as $option) {
                         ++$counter;
-                        if ('1' === (string) $option->checked) {
+
+                        if ('1' === (string) $option->checked || $hasOneReceiver) {
                             $receiverEmail = (string) $option->email;
                         }
 
-                        if (1 == count($xml)) {
+                        if ($hasOneReceiver) {
                             break;
                         }
                         $choices[$counter] = [
