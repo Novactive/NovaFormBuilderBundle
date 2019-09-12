@@ -170,7 +170,7 @@ class Form
 
     public function getSenderEmail(): ?string
     {
-        return trim($this->senderEmail) !== "" ? trim($this->senderEmail) : null;
+        return $this->senderEmail !== "" ? $this->senderEmail : null;
     }
 
     public function setSenderEmail(?string $senderEmail): self
