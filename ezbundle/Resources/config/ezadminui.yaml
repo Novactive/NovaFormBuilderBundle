@@ -1,5 +1,4 @@
 services:
-
     nova_ezformbuilder.ezadminui.component.stylesheets:
          parent: EzSystems\EzPlatformAdminUi\Component\TwigComponent
          public: false
@@ -18,6 +17,7 @@ services:
 
     Novactive\Bundle\eZFormBuilderBundle\Listener\TopMenu:
         arguments:
-            ["@translator"]
+            - "@translator"
+            - '@EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory'
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure" }
