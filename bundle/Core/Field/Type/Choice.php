@@ -28,6 +28,11 @@ class Choice extends FieldType
         return Field\Choice::class;
     }
 
+    protected function getChoiceTypeFormType(): string
+    {
+        return ChoiceType::class;
+    }
+
     /**
      * @param Field\Choice $field
      */
@@ -36,7 +41,7 @@ class Choice extends FieldType
         $fieldForm
             ->add(
                 'choice_type',
-                ChoiceType::class,
+                $this->getChoiceTypeFormType(),
                 [
                     'choices'      => [
                         'radio'      => 'radio',
