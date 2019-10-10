@@ -195,9 +195,9 @@ class MigrateCommand extends Command
                 $name    = $question['text'];
 
                 if ('Receiver' === $question['type']) {
-                    $xml     = simplexml_load_string($question['text2']);
-                    $choices = [];
-                    $counter = 0;
+                    $xml            = simplexml_load_string($question['text2']);
+                    $choices        = [];
+                    $counter        = 0;
                     $hasOneReceiver = 1 == count($xml);
                     foreach ($xml as $option) {
                         ++$counter;
