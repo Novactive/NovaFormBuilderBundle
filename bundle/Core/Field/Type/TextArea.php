@@ -34,6 +34,14 @@ class TextArea extends FieldType
     {
         $fieldForm
             ->add(
+                'defaultValue',
+                TextareaType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'field.textarea.default_value',
+                ]
+            )
+            ->add(
                 'minLength',
                 IntegerType::class,
                 [

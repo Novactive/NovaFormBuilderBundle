@@ -18,6 +18,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceItemType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\WeightedCollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
 class Choice extends FieldType
@@ -66,6 +67,14 @@ class Choice extends FieldType
                     'required'       => true,
                     'label'          => 'field.choice.choices',
                     'prototype_name' => '__choice_name__',
+                ]
+            )
+            ->add(
+                'defaultValue',
+                TextType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'field.choice.default_value',
                 ]
             );
     }

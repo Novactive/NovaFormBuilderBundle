@@ -20,27 +20,22 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class MailSubject extends Field
 {
-    public function getMinLength(): int
+    use Field\Compose\MinMaxLength;
+
+    public function getDefaultValue(): string
     {
-        return (int) $this->getOption('minLength');
+        return $this->getOption('defaultValue', '');
     }
 
-    public function setMinLength(int $minLength): self
+    public function setDefaultValue(string $defaultValue): self
     {
-        $this->setOption('minLength', $minLength);
+        $this->setOption('defaultValue', $defaultValue);
 
         return $this;
     }
 
-    public function getMaxLength(): int
+    public function getValue()
     {
-        return (int) $this->getOption('maxLength');
-    }
-
-    public function setMaxLength(int $maxLength): self
-    {
-        $this->setOption('maxLength', $maxLength);
-
-        return $this;
+        return $this->value ?? $this->getDefaultValue();
     }
 }

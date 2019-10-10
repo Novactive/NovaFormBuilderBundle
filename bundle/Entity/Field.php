@@ -195,9 +195,9 @@ abstract class Field
         return $this;
     }
 
-    public function getOption(string $name)
+    public function getOption(string $name, $default = null)
     {
-        return $this->options[$name] ?? null;
+        return $this->options[$name] ?? $default;
     }
 
     public function setOption(string $name, $value): self
