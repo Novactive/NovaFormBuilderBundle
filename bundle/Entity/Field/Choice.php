@@ -46,8 +46,20 @@ class Choice extends Field
         return $this;
     }
 
+    public function getDefaultValue(): ?string
+    {
+        return $this->getOption('defaultValue', null);
+    }
+
+    public function setDefaultValue(string $defaultValue): self
+    {
+        $this->setOption('defaultValue', $defaultValue);
+
+        return $this;
+    }
+
     public function getValue()
     {
-        return $this->value ?? null;
+        return $this->value ?? $this->getDefaultValue();
     }
 }

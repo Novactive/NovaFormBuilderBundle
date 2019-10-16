@@ -34,6 +34,14 @@ class TextLine extends FieldType
     {
         $fieldForm
             ->add(
+                'defaultValue',
+                TextType::class,
+                [
+                    'required'   => false,
+                    'label'      => 'field.textline.default_value',
+                ]
+            )
+            ->add(
                 'minLength',
                 IntegerType::class,
                 [

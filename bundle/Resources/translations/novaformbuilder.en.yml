@@ -54,3 +54,6 @@ fieldtype.mail_subject: "Mail Subject"
 fieldtype.choice_receiver: "Destinataire de l'enquête"
 fieldtype.section_header: "Section Header"
 form.required.head: 'Fields followed by an asterisk <span style="color: red">*</span> are required'
+field.choice.default_value: Default Value
+field.textline.default_value: Default Value
+field.textarea.default_value: Default Value

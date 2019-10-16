@@ -13,12 +13,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
-use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\Length;
 
 class MailSubject extends TextLine
 {

@@ -48,6 +48,7 @@
                     {% else %}
                         {{ form.vars.data.name }}
                     {% endif %}
+                    ({{ ("fieldtype." ~ form.vars.data.type)|trans([], 'novaformbuilder') }})
                 </button>
             </h5>
         </div>
