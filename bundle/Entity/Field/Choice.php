@@ -51,7 +51,7 @@ class Choice extends Field
         return $this->getOption('defaultValue', null);
     }
 
-    public function setDefaultValue(string $defaultValue): self
+    public function setDefaultValue($defaultValue): self
     {
         $this->setOption('defaultValue', $defaultValue);
 

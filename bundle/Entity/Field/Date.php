@@ -23,12 +23,12 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Date extends Field
 {
-    public function getDefaultValue(): string
+    public function getDefaultValue(): ?string
     {
         return (string) $this->getOption('defaultValue');
     }
 
-    public function setDefaultValue(string $defaultValue): self
+    public function setDefaultValue($defaultValue): self
     {
         $this->setOption('defaultValue', $defaultValue);
 

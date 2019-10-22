@@ -22,12 +22,12 @@ class TextLine extends Field
 {
     use Field\Compose\MinMaxLength;
 
-    public function getDefaultValue(): string
+    public function getDefaultValue(): ?string
     {
         return $this->getOption('defaultValue', '');
     }
 
-    public function setDefaultValue(string $defaultValue): self
+    public function setDefaultValue($defaultValue): self
     {
         $this->setOption('defaultValue', $defaultValue);
 
