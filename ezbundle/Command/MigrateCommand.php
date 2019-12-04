@@ -224,7 +224,7 @@ class MigrateCommand extends Command
                 if (empty($question['text'])) {
                     continue;
                 }
-                $type = $this->convertType($question['type']);
+                $type = $this->convertType($question['type'], $question);
                 if ('Choice' === $type) {
                     $xml     = simplexml_load_string($question['text2']);
                     $choices = [];
@@ -298,7 +298,7 @@ class MigrateCommand extends Command
                 $forms[] = $formExportFileName;
 
                 // Get the Survey Results
-                $sql = 'SELECT sqr.result_id,sqr.question_id,sq.type,sq.text,sqr.text answer, ';
+                $sql = 'SELECT sqr.result_id,sqr.question_id,sq.type,sq.num2,sq.text,sqr.text answer, ';
 
                 $sql .= "CONCAT(sqr.result_id,'-',sqr.question_id) ids, ";
                 $sql .= 'COUNT(CONCAT(sqr.result_id,sqr.question_id)) answersCount, sr.tstamp ';
@@ -334,7 +334,7 @@ class MigrateCommand extends Command
                     $data[]      = [
                         'name'  => $result['text'],
                         'value' => $answers,
-                        'type'  => strtolower($this->convertType($result['type'])),
+                        'type'  => strtolower($this->convertType($result['type'], $result)),
                     ];
                     $createdDate = date('Y-m-d H:i:s', (int) $result['tstamp']);
                 }
@@ -477,14 +477,18 @@ class MigrateCommand extends Command
         return $stmt->fetchAll($fetchMode);
     }
 
-    private function convertType(string $oldType): string
+    private function convertType(string $oldType, array $parameters = []): string
     {
         switch ($oldType) {
             case 'EmailEntry':
                 $type = 'Email';
                 break;
             case 'TextEntry':
-                $type = 'TextArea';
+                if(isset($parameters['num2']) && (int) $parameters['num2'] === 1){
+                    $type = 'TextLine';
+                }else{
+                    $type = 'TextArea';
+                }
                 break;
             case 'NumberEntry':
                 $type = 'Number';
