@@ -70,6 +70,13 @@ class TextArea extends FieldType
     {
         $minLength   = $field->getMinLength() ?: null;
         $maxLength   = $field->getMaxLength() ?: null;
+        $attributes  = [];
+        if (null !== $minLength) {
+            $attributes['minlength'] = $minLength;
+        }
+        if (null !== $maxLength) {
+            $attributes['maxlength'] = $maxLength;
+        }
         $constraints = [];
         if (null !== $minLength || null !== $maxLength) {
             $constraints[] = new Length(
@@ -88,6 +95,7 @@ class TextArea extends FieldType
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),
                     'constraints' => $constraints,
+                    'attr' => $attributes
                 ]
             );
     }
