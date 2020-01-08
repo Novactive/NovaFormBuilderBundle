@@ -12,7 +12,7 @@ This bundle aims to provide a _lib_ to help generating dynamic form in a symfony
 It provides 2 bundles:
 
 - `bundle` the symfony bundle
-- `ezbundle` the bridge to use bundle in eZ Platforn
+- `ezbundle` the bridge to use bundle in eZ Platform
 
 > Note that eZ Platform is a pure symfony app then the bridge is just about wiring the IHM
 
@@ -110,7 +110,7 @@ tables in the database:
 After running the Migrate scripts you might need to clear the **Redis Cache** 
 if it's used on the project to apply the changes that have been made to the database.
 
-The migration doen't support the cases if there are more than one **ezsurvey** fields
+The migration doesn't support the cases if there are more than one **ezsurvey** fields
  in any particular Content Type.
  
 To apply the custom Form design on the Front End the bundle template 
