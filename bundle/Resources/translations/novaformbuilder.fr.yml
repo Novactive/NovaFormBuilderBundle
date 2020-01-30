@@ -1,7 +1,6 @@
 form.name: Nom
-form.max_submissions: Transmissions max.
+form.max_submissions: Nombre maximum de soumissions
 form.submissions_unlimited: Illimitées
-form.fields: Champs
 field.name: Nom
 field.required:	Requis
 field.weight: Priorité
@@ -57,3 +56,7 @@ form.required.head: 'Les champs suivis d''un astérisque <span style="color: red
 field.choice.default_value: Valeur par défaut
 field.textline.default_value: Valeur par défaut
 field.textarea.default_value: Valeur par défaut
+form:
+    notifications:
+        default_email_subject: Soumission du formulaire %FORM_NAME%
+        default_email_title: Données soumises sur le formulaire "%FORM_NAME%"

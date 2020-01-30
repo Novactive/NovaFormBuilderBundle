@@ -57,3 +57,7 @@ form.required.head: 'Fields followed by an asterisk <span style="color: red">*</
 field.choice.default_value: Default Value
 field.textline.default_value: Default Value
 field.textarea.default_value: Default Value
+form:
+    notifications:
+        default_email_subject: Form submission Data from %FORM_NAME%
+        default_email_title: Form data submitted on "%FORM_NAME%"

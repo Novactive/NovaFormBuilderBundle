@@ -53,3 +53,14 @@ fieldtype.section_header: "Section Header"
 form.required.head: 'Fields followed by an asterisk <span style="color: red">*</span> are required'
 field.section.data: "Displayed text"
 field.choice.choices.label: "Label"
+form:
+    fieldset:
+        limitations:
+            title: Limitations
+            description: Limits form submissions
+        notifications:
+            title: Notifications
+            description:
+                Activate this functionality in order to transmit the data  in the form to the address given below.
+                <br>
+                The data will also be sent to the addresses entered in the "Email" fields with the "Send data to user" checkbox checked.
