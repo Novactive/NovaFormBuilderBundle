@@ -68,9 +68,10 @@ class TextArea extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        $minLength   = $field->getMinLength() ?: null;
-        $maxLength   = $field->getMaxLength() ?: null;
-        $attributes  = [];
+        $minLength = $field->getMinLength() ?: null;
+        $maxLength = $field->getMaxLength() ?: null;
+
+        $attributes = [];
         if (null !== $minLength) {
             $attributes['minlength'] = $minLength;
         }
@@ -95,7 +96,7 @@ class TextArea extends FieldType
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),
                     'constraints' => $constraints,
-                    'attr' => $attributes
+                    'attr'        => $attributes,
                 ]
             );
     }

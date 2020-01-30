@@ -30,12 +30,12 @@ class NovaeZFormBuilderBundle extends Bundle
             $extension = $this->createContainerExtension();
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    throw new \LogicException(
-                        sprintf(
-                            'Extension %s must implement '.ExtensionInterface::class.'.',
-                            \get_class($extension)
-                        )
+                    $exceptionMsg = sprintf(
+                        'Extension %s must implement %s.',
+                        \get_class($extension),
+                        ExtensionInterface::class
                     );
+                    throw new \LogicException($exceptionMsg);
                 }
                 $this->extension = $extension;
             } else {

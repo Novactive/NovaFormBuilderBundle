@@ -3,7 +3,6 @@
 /**
  * NovaFormBuilder Bundle.
  *
- *
  * @author    Maxim Strukov <m.strukov@novactive.com>
  * @copyright 2018 Novactive
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
@@ -89,7 +88,6 @@ class MigrateCommand extends Command
 
     /**
      * MigrateCommand constructor.
-     *
      *
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
@@ -484,9 +482,9 @@ class MigrateCommand extends Command
                 $type = 'Email';
                 break;
             case 'TextEntry':
-                if(isset($parameters['num2']) && (int) $parameters['num2'] === 1){
+                if (isset($parameters['num2']) && 1 === (int) $parameters['num2']) {
                     $type = 'TextLine';
-                }else{
+                } else {
                     $type = 'TextArea';
                 }
                 break;
@@ -517,7 +515,6 @@ class MigrateCommand extends Command
 
     /**
      * Function return a string normalized (ex: Pôle évenement : voœux 2019 ==> Pole evenement voeux 2019).
-     *
      *
      * @return bool|false|string|string[]|null
      */
