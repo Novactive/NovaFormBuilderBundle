@@ -8,7 +8,7 @@ form.sender_email: Adresse courriel qui transmettra les données de formulaire
 form.receiver_email: Adresse courriel qui recevra les données de formulaire
 form.subject_email: Objet de l'e-mail avec les données de soumission
 form.title_email: Titre dans l'email
-form.send_data: Envoyer les données du formulaire
+form.send_data: Recevoir les données du formulaire
 form.date_start_submission: Date de début de soumission
 form.date_end_submission: Date de fin de soumission
 field.paragraph.data: Texte affiché
