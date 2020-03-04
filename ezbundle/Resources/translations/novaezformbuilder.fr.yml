@@ -55,3 +55,14 @@ form.required.head: 'Les champs suivis d''un astérisque <span style="color: red
 field.section.data: "Texte à afficher"
 field.choice.choices.label: "Libelle de l'option"
 send: "envoyer"
+form:
+    fieldset:
+        limitations:
+            title: Limitations
+            description: Permet de limiter les soumissions du formulaire
+        notifications:
+            title: Notifications
+            description:
+                Activer cette fonctionnalité afin de transmettre à l'adresse renseignée ci-dessous, les données saisies dans le formulaire.
+                <br>
+                Les données seront aussi envoyées aux adresses saisies dans les champs "Courriel" ayant la case "Envoyer les données à l'utilisateur" cochée.

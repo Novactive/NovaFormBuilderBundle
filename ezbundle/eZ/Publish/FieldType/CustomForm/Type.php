@@ -32,9 +32,8 @@ class Type extends FieldType implements Nameable
      */
     public function getName(SPIValue $value)
     {
-        throw new \RuntimeException(
-            'Name generation provided via NameableField set via "ezpublish.fieldType.nameable" service tag'
-        );
+        $execptionMsg = 'Name generation provided via NameableField set via "ezpublish.fieldType.nameable" service tag';
+        throw new \RuntimeException($execptionMsg);
     }
 
     protected function getSortInfo(CoreValue $value)
@@ -53,11 +52,7 @@ class Type extends FieldType implements Nameable
     protected function checkValueStructure(CoreValue $value)
     {
         if (!\is_int($value->formId)) {
-            throw new InvalidArgumentType(
-                '$value->formId',
-                'int',
-                $value->formId
-            );
+            throw new InvalidArgumentType('$value->formId', 'int', $value->formId);
         }
     }
 

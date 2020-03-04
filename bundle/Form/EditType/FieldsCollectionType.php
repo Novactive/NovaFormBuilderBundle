@@ -77,10 +77,11 @@ class FieldsCollectionType extends AbstractType
                     }
                     $fieldType = $fieldTypes[$value['type']] ?? null;
                     if (!$fieldType instanceof FieldTypeInterface) {
-                        throw new InvalidArgumentException(
-                            'A FieldType not implementing FieldTypeInterface has been passed: '.
+                        $exceptionMsg = sprintf(
+                            'A FieldType not implementing FieldTypeInterface has been passed: %s',
                             \get_class($fieldType)
                         );
+                        throw new InvalidArgumentException($exceptionMsg);
                     }
 
                     // Set options for new rows

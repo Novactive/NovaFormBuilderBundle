@@ -2,7 +2,6 @@
 /**
  * NovaFormBuilder Bundle.
  *
- *
  * @author    Maxim Strukov <m.strukov@novactive.com>
  * @copyright 2018 Novactive
  * @license   https://github.com/Novactive/NovaFormBuilderBundle/blob/master/LICENSE MIT Licence
