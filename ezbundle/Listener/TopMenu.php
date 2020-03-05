@@ -67,21 +67,5 @@ class TopMenu
                 ]
             )
         );
-
-        $item->addChild(
-            $this->factory->createItem(
-                'novaezformbuilder_forms_submissions',
-                [
-                    'label'  => $this->translator->trans('topmenu.tab.submissions', [], 'novaezformbuilder'),
-                    'route'  => 'novaezformbuilder_dashboard_submissions',
-                    'extras' => [
-                        'routes' => [
-                            'submissions' => 'novaezformbuilder_dashboard_submissions',
-                            'submission'  => 'novaezformbuilder_dashboard_submission',
-                        ],
-                    ],
-                ]
-            )
-        );
     }
 }

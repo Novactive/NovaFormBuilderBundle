@@ -5,14 +5,14 @@
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'Forms List'|trans }
+        { value: 'generic.forms_list'|trans }
     ]} %}
 {%- endblock -%}
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
         title: 'generic.forms_list'|trans,
-        iconName: 'article'
+        iconName: 'form'
     } %}
 {%- endblock -%}
 
@@ -46,7 +46,7 @@
                     <td>{{ formItem.name }}</td>
                     <td>
                         {{ formItem.submissions|length }}
-                        {% if formItem.submissions|length > 0 %}
+                        {% if formItem.submissions|length > 0 and can_read_form_submissions(formItem) %}
                             <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'theme.index.view'|trans }}</a>
                         {% endif %}
                     </td>

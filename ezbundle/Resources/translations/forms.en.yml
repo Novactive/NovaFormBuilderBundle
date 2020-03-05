@@ -1,0 +1,7 @@
+role.policy.form: Form
+role:
+    policy:
+        form:
+            read_submissions: Form / Read submissions
+            read: Form / Read
+            all_functions: Form / All functions

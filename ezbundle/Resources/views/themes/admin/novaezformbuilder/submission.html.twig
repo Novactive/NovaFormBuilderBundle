@@ -1,18 +1,20 @@
 {% trans_default_domain 'novaezformbuilder' %}
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 
-{% block title %}{{ 'generic.forms_list'|trans }}{% endblock %}
+{% block title %}{{ 'theme.submissions.view_submission'|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
     {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
-        { value: 'generic.forms_submissions_list'|trans, url: path('novaezformbuilder_dashboard_submissions') },
-        { value: 'generic.forms_list'|trans }
+        { value: 'generic.forms_list'|trans, url: path('novaezformbuilder_dashboard_index') },
+        { value: form.name },
+        { value: 'generic.forms_submissions_list'|trans, url: path('novaezformbuilder_dashboard_submissions', {id: form.id}) },
+        { value: submission.id }
     ]} %}
 {%- endblock -%}
 
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
-        title: submission.form.name,
+        title: form.name,
         iconName: 'article'
     } %}
 {%- endblock -%}
@@ -46,8 +48,7 @@
             </div>
             <div class="submission-back-links">
                 <span class="btn">{{ 'theme.submission.back_to_list'|trans }}:</span>
-                <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions') }}">{{ 'theme.submission.back_to_list.all'|trans }}</a>
-                <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: submission.form.id}) }}">{{ submission.form.name }} {{ 'theme.submission.back_to_list.form'|trans }}</a>
+                <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: form.id}) }}">{{ form.name }} {{ 'theme.submission.back_to_list.form'|trans }}</a>
             </div>
         </section>
     </div>

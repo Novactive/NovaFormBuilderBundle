@@ -1,0 +1,7 @@
+role.policy.form: Formlaire
+role:
+    policy:
+        form:
+            read_submissions: Formlaire / Voir les transmissions
+            read: Formlaire / Voir
+            all_functions: Formlaire / Toutes les fonctions

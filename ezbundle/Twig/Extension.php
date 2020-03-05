@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Novactive\Bundle\eZFormBuilderBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\Core\Repository\Permission\PermissionResolver;
+use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 
 /**
@@ -27,12 +29,23 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
      */
     private $entityManager;
 
+    /** @var FormService */
+    private $formService;
+
+    /** @var PermissionResolver */
+    private $permissionResolver;
+
     /**
      * Extension constructor.
      */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        FormService $formService,
+        PermissionResolver $permissionResolver
+    ) {
+        $this->entityManager      = $entityManager;
+        $this->formService        = $formService;
+        $this->permissionResolver = $permissionResolver;
     }
 
     /**
@@ -42,6 +55,7 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
     {
         return [
             new \Twig_Function('get_form', [$this, 'getForm']),
+            new \Twig_Function('can_read_form_submissions', [$this, 'canReadFormSubmissions']),
             new \Twig_Function('is_form_available', [$this, 'isFormAvailable']),
         ];
     }
@@ -60,6 +74,18 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
         $form = $this->entityManager->getRepository(Form::class)->findOneBy(['id' => $formId]);
 
         return $form;
+    }
+
+    public function canReadFormSubmissions(Form $form)
+    {
+        $associatedContents = $this->formService->associatedContents($form);
+        foreach ($associatedContents as $associatedContent) {
+            if (!$this->permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function isFormAvailable(?int $formId): bool

@@ -15,7 +15,11 @@ declare(strict_types=1);
 namespace Novactive\Bundle\eZFormBuilderBundle\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\API\Repository\ContentService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -24,14 +28,30 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class FormService
 {
+    /** @var Connection */
+    private $connection;
+
     /**
      * @var EntityManagerInterface
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
+    /**
+     * @var ContentService
+     */
+    private $contentService;
+
+    /**
+     * FormService constructor.
+     */
+    public function __construct(
+        Connection $connection,
+        EntityManagerInterface $entityManager,
+        ContentService $contentService
+    ) {
+        $this->connection     = $connection;
+        $this->entityManager  = $entityManager;
+        $this->contentService = $contentService;
     }
 
     public function save(Form $formEntity): int
@@ -98,5 +118,37 @@ class FormService
         $writer->save($dest);
 
         return new File($dest);
+    }
+
+    public function associatedContents(Form $form)
+    {
+        $query = $this->connection->createQueryBuilder();
+        $query->select('o.id')
+            ->from('ezcontentobject', 'o')
+            ->innerJoin(
+                'o',
+                'ezcontentobject_attribute',
+                'oa',
+                $query->expr()->andX(
+                    $query->expr()->eq('o.id', 'oa.contentobject_id'),
+                    $query->expr()->eq('o.current_version', 'oa.version')
+                )
+            )
+            ->where(
+                $query->expr()->andX(
+                    $query->expr()->eq('oa.data_type_string', ':data_type_string'),
+                    $query->expr()->eq('oa.data_int', ':form_id')
+                )
+            )
+            ->setParameter(':data_type_string', 'ezcustomform', Type::STRING)
+            ->setParameter(':form_id', $form->getId(), Type::INTEGER);
+
+        $contentsId = $query->execute()->fetchAll(FetchMode::COLUMN);
+        $contents   = [];
+        foreach ($contentsId as $contentId) {
+            $contents[] = $this->contentService->loadContent($contentId);
+        }
+
+        return $contents;
     }
 }
