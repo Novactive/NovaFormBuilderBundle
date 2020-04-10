@@ -31,6 +31,7 @@ field.date.min: Valeur minimale
 field.date.max: Valeur maximale
 fieldtype.date: Date
 fieldtype.email: Courriel
+fieldtype.url: URL
 field.file.max_file_size_mb: Taille de fichier maximale en Mo
 field.file.file_type: Type de fichier
 file.file_type.image: Image
