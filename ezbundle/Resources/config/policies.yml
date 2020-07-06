@@ -1,0 +1,15 @@
+form:
+    read:
+        - Section
+        - Owner
+        - Group
+        - Node
+        - Subtree
+        - State
+    read_submissions:
+        - Section
+        - Owner
+        - Group
+        - Node
+        - Subtree
+        - State

@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
+use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
@@ -169,15 +171,27 @@ class DashboardController
     }
 
     /**
-     * @Route("/submissions/{id}", name="novaezformbuilder_dashboard_submissions", defaults={"id" = null})
+     * @Route("/submissions/{id}", name="novaezformbuilder_dashboard_submissions")
      * @Template("@ezdesign/novaezformbuilder/submissions.html.twig")
      */
-    public function submissions(EntityManagerInterface $entityManager, ?Form $form, Request $request): array
-    {
+    public function submissions(
+        EntityManagerInterface $entityManager,
+        Form $form,
+        Request $request,
+        FormService $formService,
+        PermissionResolver $permissionResolver
+    ): array {
         $page = $request->query->get('page') ?? 1;
 
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
         if (null !== $form) {
+            $associatedContents = $formService->associatedContents($form);
+            foreach ($associatedContents as $associatedContent) {
+                if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
+                    throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
+                }
+            }
+
             $queryBuilder->andWhere($queryBuilder->expr()->eq('s.form', ':value'))->setParameter(
                 'value',
                 $form
@@ -200,9 +214,21 @@ class DashboardController
      * @Route("/submission/{id}", name="novaezformbuilder_dashboard_submission")
      * @Template("@ezdesign/novaezformbuilder/submission.html.twig")
      */
-    public function submission(FormSubmission $formSubmission): array
-    {
+    public function submission(
+        FormSubmission $formSubmission,
+        FormService $formService,
+        PermissionResolver $permissionResolver
+    ): array {
+        $form               = $formSubmission->getForm();
+        $associatedContents = $formService->associatedContents($form);
+        foreach ($associatedContents as $associatedContent) {
+            if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
+                throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
+            }
+        }
+
         return [
+            'form'       => $form,
             'submission' => $formSubmission,
         ];
     }

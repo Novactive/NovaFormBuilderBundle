@@ -13,15 +13,25 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle;
 
+use Novactive\Bundle\eZFormBuilderBundle\DependencyInjection\Security\Provider\PolicyProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class NovaeZFormBuilderBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): void
+    /**
+     * Builds the bundle.
+     *
+     * It is only ever called once when the cache is empty.
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container A ContainerBuilder instance
+     */
+    public function build(ContainerBuilder $container)
     {
         parent::build($container);
+        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension->addPolicyProvider(new PolicyProvider());
     }
 
     public function getContainerExtension()

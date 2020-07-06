@@ -11,7 +11,8 @@
                 <p>
                     <a href="{{ path('novaezformbuilder_dashboard_view', {id: field.value.formId}) }}" target="_blank">{{ "fields.admin.test_form"|trans }}</a>
                 </p>
-                {% if form.submissions|length > 0 %}
+
+                {% if form.submissions|length > 0 and can_read_form_submissions(form) %}
                     <p>
                         <a href="{{ path('novaezformbuilder_dashboard_submissions', {id: field.value.formId}) }}" target="_blank">{{ "fields.admin.list_of_submissions"|trans }}</a>
                     </p>

@@ -13,7 +13,7 @@
 {%- block page_title -%}
     {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
         title: form.vars.value.name,
-        iconName: 'article'
+        iconName: 'form'
     } %}
 {%- endblock -%}
 
@@ -21,7 +21,6 @@
 
 {% block content %}
     <div class="container">
-        <h2>{{ form.vars.value.name }}</h2>
         {% for error in form.vars.errors %}
             <p class="text-danger p-2">{{ error.message|trans({}, 'novaezformbuilder') }}</p>
         {% endfor %}
