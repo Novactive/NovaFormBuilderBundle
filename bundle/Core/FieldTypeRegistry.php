@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\FormBuilderBundle\Core;
 
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldTypeInterface;
 
 class FieldTypeRegistry
@@ -48,8 +49,16 @@ class FieldTypeRegistry
         return $this->fieldTypes;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function getFieldTypeByIdentifier(string $identifier): FieldTypeInterface
     {
+        if (!isset($this->fieldTypes[$identifier])) {
+            $msg = sprintf('Form field type with identifier "%s" doesn\'t exist', $identifier);
+            throw new InvalidArgumentException('identifier', $msg);
+        }
+
         return $this->fieldTypes[$identifier];
     }
 }

@@ -17,8 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
+use Novactive\Bundle\eZFormBuilderBundle\Core\FormSubmissionService;
 use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
+use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
@@ -176,10 +178,11 @@ class DashboardController
      */
     public function submissions(
         EntityManagerInterface $entityManager,
-        Form $form,
+        ?Form $form,
         Request $request,
         FormService $formService,
-        PermissionResolver $permissionResolver
+        PermissionResolver $permissionResolver,
+        ExporterRegistry $exporterRegistry
     ): array {
         $page = $request->query->get('page') ?? 1;
 
@@ -204,9 +207,10 @@ class DashboardController
         $paginator->setCurrentPage($page);
 
         return [
-            'totalCount'  => $paginator->getNbResults(),
-            'submissions' => $paginator,
-            'form'        => $form,
+            'totalCount'   => $paginator->getNbResults(),
+            'submissions'  => $paginator,
+            'export_types' => $exporterRegistry->getExporterTypes(),
+            'form'         => $form,
         ];
     }
 
@@ -217,7 +221,8 @@ class DashboardController
     public function submission(
         FormSubmission $formSubmission,
         FormService $formService,
-        PermissionResolver $permissionResolver
+        PermissionResolver $permissionResolver,
+        FormSubmissionService $formSubmissionService
     ): array {
         $form               = $formSubmission->getForm();
         $associatedContents = $formService->associatedContents($form);
@@ -228,22 +233,31 @@ class DashboardController
         }
 
         return [
-            'form'       => $form,
-            'submission' => $formSubmission,
+            'form'             => $form,
+            'submission'       => $formSubmission,
+            'exportable_datas' => $formSubmissionService->getExportableDatas($formSubmission),
         ];
     }
 
     /**
-     * @Route("/submissions/download/{id}", name="novaezformbuilder_dashboard_submissions_download")
+     * @Route("/submissions/download/{id}/{type}", name="novaezformbuilder_dashboard_submissions_download")
      */
-    public function downloadSubmissions(Form $form, FormService $formService): Response
+    public function downloadSubmissions(Form $form, string $type, FormService $formService): Response
     {
-        $file = $formService->generateSubmissionsXls($form);
+        $file = $formService->generateSubmissions($form, $type);
 
-        return (new BinaryFileResponse($file))->deleteFileAfterSend(true)->setContentDisposition(
+        $response = new BinaryFileResponse($file);
+        $response->deleteFileAfterSend(true);
+        $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'form-'.$form->getId().'-submissions.xlsx'
+            sprintf(
+                'form-%s-submissions.%s',
+                $form->getId(),
+                $file->getExtension()
+            )
         );
+
+        return $response;
     }
 
     /**

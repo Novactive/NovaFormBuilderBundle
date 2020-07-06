@@ -62,3 +62,5 @@ form:
     notifications:
         default_email_subject: Form submission Data from %FORM_NAME%
         default_email_title: Form data submitted on "%FORM_NAME%"
+    submission:
+        date: Submission date

@@ -24,7 +24,7 @@
         <section class="user-form col-md-6 col-md-offset-3">
             <div class="card mt-3 p-3">
                 <table class="table table-bordered">
-                    {% for item in submission.data %}
+                    {% for item in exportable_datas %}
                         <tr>
                             <td><strong>{{ item.name }}</strong></td>
                             <td>

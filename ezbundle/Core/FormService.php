@@ -20,11 +20,12 @@ use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\API\Repository\ContentService;
+use Novactive\Bundle\FormBuilderBundle\Core\FieldTypeRegistry;
+use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Translation\Translator;
 
 class FormService
 {
@@ -42,16 +43,37 @@ class FormService
     private $contentService;
 
     /**
+     * @var FieldTypeRegistry
+     */
+    private $fieldTypeRegistry;
+
+    /**
+     * @var ExporterRegistry
+     */
+    private $exporterRegistry;
+
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
      * FormService constructor.
      */
     public function __construct(
         Connection $connection,
         EntityManagerInterface $entityManager,
-        ContentService $contentService
+        ContentService $contentService,
+        FieldTypeRegistry $fieldTypeRegistry,
+        ExporterRegistry $exporterRegistry,
+        Translator $translator
     ) {
-        $this->connection     = $connection;
-        $this->entityManager  = $entityManager;
-        $this->contentService = $contentService;
+        $this->connection        = $connection;
+        $this->entityManager     = $entityManager;
+        $this->contentService    = $contentService;
+        $this->fieldTypeRegistry = $fieldTypeRegistry;
+        $this->exporterRegistry  = $exporterRegistry;
+        $this->translator        = $translator;
     }
 
     public function save(Form $formEntity): int
@@ -86,38 +108,21 @@ class FormService
         $this->entityManager->flush();
     }
 
-    public function generateSubmissionsXls(Form $form): File
+    public function generateSubmissions(Form $form, string $type): File
     {
-        $spreadsheet = new Spreadsheet();
-        $worksheet   = $spreadsheet->getSheet(0);
-        $headerIndex = 'A';
+        $headers = [
+            $this->translator->trans('form.submission.date', [], 'novaformbuilder'),
+        ];
         foreach ($form->getFields() as $field) {
-            $worksheet->setCellValue("{$headerIndex}1", $field->getName());
-            ++$headerIndex;
-        }
-
-        $rowIndex = 1;
-        foreach ($form->getSubmissions() as $submission) {
-            ++$rowIndex;
-            $columnIndex = 'A';
-            foreach ($submission->getData() as $item) {
-                $value = $item['value'];
-
-                if (\is_array($value)) {
-                    $value = isset($value['date']) ? date('F d, Y', strtotime($value['date'])) : implode(', ', $value);
-                }
-                $worksheet->setCellValue("$columnIndex{$rowIndex}", $value);
-                ++$columnIndex;
+            $fieldType = $this->fieldTypeRegistry->getFieldTypeByIdentifier($field->getType());
+            if (true === $fieldType->canExport()) {
+                $headers[] = $field->getName();
             }
         }
 
-        $spreadsheet->getActiveSheet()->getStyle("A1:{$headerIndex}1")->getFont()->setBold(true);
+        $exporter = $this->exporterRegistry->getExporterByType($type);
 
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $dest   = tempnam(sys_get_temp_dir(), uniqid('submissions', true)).'.xlsx';
-        $writer->save($dest);
-
-        return new File($dest);
+        return $exporter->generateFile($headers, $form->getSubmissions()->getValues());
     }
 
     public function associatedContents(Form $form)

@@ -59,4 +59,9 @@ class Paragraph extends FieldType
                 ]
             );
     }
+
+    public function canExport(): bool
+    {
+        return false;
+    }
 }

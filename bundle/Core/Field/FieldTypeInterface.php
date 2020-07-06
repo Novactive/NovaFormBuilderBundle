@@ -24,4 +24,6 @@ interface FieldTypeInterface
     public function supportsEntity(Field $field): bool;
 
     public function newEntity(array $properties = []): Field;
+
+    public function canExport(): bool;
 }

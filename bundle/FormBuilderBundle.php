@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
+use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -26,6 +27,11 @@ class FormBuilderBundle extends Bundle
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-        $container->registerForAutoconfiguration(FieldType::class)->addTag('novaformbuilder.fieldtype');
+
+        $container->registerForAutoconfiguration(FieldType::class)
+            ->addTag('novaformbuilder.fieldtype');
+
+        $container->registerForAutoconfiguration(ExporterInterface::class)
+            ->addTag('novaformbuilder.submissions.exporter');
     }
 }
