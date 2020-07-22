@@ -36,4 +36,9 @@ abstract class FieldType implements FieldTypeInterface, FieldTypeMapperInterface
 
         return new $class($properties);
     }
+
+    public function canExport(): bool
+    {
+        return true;
+    }
 }

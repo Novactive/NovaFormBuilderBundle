@@ -61,3 +61,5 @@ form:
     notifications:
         default_email_subject: Soumission du formulaire %FORM_NAME%
         default_email_title: Données soumises sur le formulaire "%FORM_NAME%"
+    submission:
+        date: Date de saisie

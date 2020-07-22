@@ -59,4 +59,9 @@ class SectionHeader extends FieldType
                 ]
             );
     }
+
+    public function canExport(): bool
+    {
+        return false;
+    }
 }
