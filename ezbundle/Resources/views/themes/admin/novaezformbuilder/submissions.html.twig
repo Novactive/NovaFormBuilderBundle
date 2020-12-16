@@ -25,21 +25,19 @@
                 <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_edit', {id: form.id}) }}">{{ 'theme.submissions.edit_form'|trans }}</a>
                 <a class="btn btn-light" href="{{ path('novaezformbuilder_dashboard_view', {id: form.id}) }}">{{ 'theme.submissions.preview_form'|trans }}</a>
             </div>
-            <div class="ez-table-header__headline">
-                <div class="dropdown">
-                    <button class="btn btn-primary btn-success dropdown-toggle"
-                            type="button" id="downloadMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                        {{ 'theme.submissions.download_submissions'|trans }}
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="downloadMenuButton">
-                        {% for export_type in export_types %}
-                            <a class="dropdown-item" href="{{ path('novaezformbuilder_dashboard_submissions_download', {id: form.id, type: export_type}) }}" target="_blank">
-                                {{ ('theme.submissions.download_submissions.' ~ export_type)|trans }}
-                            </a>
-                        {% endfor %}
-                    </div>
+            <div class="dropdown">
+                <button class="btn btn-primary btn-success dropdown-toggle"
+                        type="button" id="downloadMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    {{ 'theme.submissions.download_submissions'|trans }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="downloadMenuButton">
+                    {% for export_type in export_types %}
+                        <a class="dropdown-item" href="{{ path('novaezformbuilder_dashboard_submissions_download', {id: form.id, type: export_type}) }}" target="_blank">
+                            {{ ('theme.submissions.download_submissions.' ~ export_type)|trans }}
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
