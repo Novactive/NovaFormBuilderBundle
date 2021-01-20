@@ -9,9 +9,19 @@
             <div class="mt-3 row align-items-center">
                 <div class="col-4 input-group-sm">
                     {{ 'formbuilder.form_fields_children.value'|trans }}
+                    <span class="js-choice-item-ordering btn btn-sm" data-field="value">
+                        <svg class="ez-icon ez-icon--medium" aria-hidden="true">
+                            <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#circle-caret-down"></use>
+                        </svg>
+                    </span>
                 </div>
                 <div class="col-4 input-group-sm">
                     {{ 'formbuilder.form_fields_children.label'|trans }}
+                    <span class="js-choice-item-ordering btn btn-sm" data-field="label">
+                        <svg class="ez-icon ez-icon--medium" aria-hidden="true">
+                            <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#circle-caret-down"></use>
+                        </svg>
+                    </span>
                 </div>
                 <div class="col-1 input-group-sm pl-0">
                     {{ 'formbuilder.form_fields_children.weight'|trans }}
