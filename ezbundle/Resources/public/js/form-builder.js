@@ -60,7 +60,8 @@
                 })
                 itemsObj.sort( compare );
                 choicesHolder.find('.js-form-fields-choice-item').remove()
-                itemsObj.forEach(function (item) {
+                itemsObj.forEach(function (item, index) {
+                    $(item.element).find('[name$="weight]"]').val(index+1)
                     choicesHolder.append(item.element)
                 })
             });
