@@ -39,13 +39,7 @@
             });
 
             function compare( a, b ) {
-                if ( a.sorting_field < b.sorting_field ){
-                    return -1;
-                }
-                if ( a.sorting_field > b.sorting_field ){
-                    return 1;
-                }
-                return 0;
+                return a.sorting_field.localeCompare(b.sorting_field);
             }
 
             $(document).on('click', '.js-choice-item-ordering', function (e) {
