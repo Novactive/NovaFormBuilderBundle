@@ -18,12 +18,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\API\Repository\ContentService;
 use Novactive\Bundle\FormBuilderBundle\Core\FieldTypeRegistry;
 use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
+use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Translation\Translator;
 
@@ -155,5 +157,41 @@ class FormService
         }
 
         return $contents;
+    }
+
+    public function generateSubmissionsByFilter(array $filter)
+    {
+        /** @var EntityManager $em */
+        $em   = $this->entityManager;
+        $form = $em->find(Form::class, $filter['form']);
+
+        $submissions = $em
+            ->getRepository(FormSubmission::class)
+            ->createQueryBuilder('fs')
+            ->where('fs.form = :form')
+            ->andWhere('fs.createdAt BETWEEN :start_date AND :end_date')
+            ->setParameters(
+                [
+                    'form'       => $filter['form'],
+                    'start_date' => $filter['start_date'],
+                    'end_date'   => $filter['end_date'],
+                ]
+            )
+            ->getQuery()
+            ->getResult();
+
+        $headers = [
+            $this->translator->trans('form.submission.date', [], 'novaformbuilder'),
+        ];
+        foreach ($form->getFields() as $field) {
+            $fieldType = $this->fieldTypeRegistry->getFieldTypeByIdentifier($field->getType());
+            if (true === $fieldType->canExport()) {
+                $headers[] = $field->getName();
+            }
+        }
+
+        $exporter = $this->exporterRegistry->getExporterByType($filter['export_type']);
+
+        return $exporter->generateFile($headers, $submissions);
     }
 }

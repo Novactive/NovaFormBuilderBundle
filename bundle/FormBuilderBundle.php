@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class FormBuilderBundle extends Bundle
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function build(ContainerBuilder $container): void
     {

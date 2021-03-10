@@ -18,9 +18,9 @@ use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormSubmissionService;
+use Novactive\Bundle\eZFormBuilderBundle\Form\Type\SubmissionsFilterType;
 use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
-use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
@@ -28,6 +28,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormFactory as SymfonyFormFactory;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -93,8 +94,8 @@ class DashboardController
                 $formEntity->setMaxSubmissions(null);
             }
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
-            $formEntity->setSendData((bool) $sendData);
 
+            $formEntity->setSendData((bool) $sendData);
             $formService->save($formEntity);
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
@@ -130,8 +131,8 @@ class DashboardController
                 $formEntity->setMaxSubmissions(null);
             }
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
-            $formEntity->setSendData((bool) $sendData);
 
+            $formEntity->setSendData((bool) $sendData);
             $formId = $formService->save($formEntity);
 
             return (new JsonResponse())->setContent(
@@ -182,7 +183,7 @@ class DashboardController
         Request $request,
         FormService $formService,
         PermissionResolver $permissionResolver,
-        ExporterRegistry $exporterRegistry
+        SymfonyFormFactory $formFactory
     ): array {
         $page = $request->query->get('page') ?? 1;
 
@@ -206,11 +207,14 @@ class DashboardController
         $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
         $paginator->setCurrentPage($page);
 
+        $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
+        $submissionsFilterForm->setData(['form' => $form->getId()]);
+
         return [
-            'totalCount'   => $paginator->getNbResults(),
-            'submissions'  => $paginator,
-            'export_types' => $exporterRegistry->getExporterTypes(),
-            'form'         => $form,
+            'totalCount'            => $paginator->getNbResults(),
+            'submissions'           => $paginator,
+            'form'                  => $form,
+            'submissionsFilterType' => $submissionsFilterForm->createView(),
         ];
     }
 
@@ -253,6 +257,33 @@ class DashboardController
             sprintf(
                 'form-%s-submissions.%s',
                 $form->getId(),
+                $file->getExtension()
+            )
+        );
+
+        return $response;
+    }
+
+    /**
+     * @Route("/submissions/download/filtered", name="novaezformbuilder_dashboard_submissions_filter_download")
+     */
+    public function downloadFilteredSubmissions(
+        Request $request,
+        FormService $formService,
+        SymfonyFormFactory $formFactory
+    ): Response {
+        $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
+        $submissionsFilterForm->handleRequest($request);
+        $filter = $submissionsFilterForm->getData();
+        $file   = $formService->generateSubmissionsByFilter($filter);
+
+        $response = new BinaryFileResponse($file);
+        $response->deleteFileAfterSend(true);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            sprintf(
+                'form-%s-submissions.%s',
+                $filter['form'],
                 $file->getExtension()
             )
         );
