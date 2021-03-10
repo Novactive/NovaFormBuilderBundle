@@ -20,11 +20,11 @@ use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormSubmissionService;
 use Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface;
 use Novactive\Bundle\FormBuilderBundle\Core\FormFactory;
-use Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry;
 use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
+use Novactive\Bundle\eZFormBuilderBundle\Form\Type\SubmissionsFilterType;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -36,6 +36,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Form\FormFactory as SymfonyFormFactory;
 
 class DashboardController
 {
@@ -182,7 +183,7 @@ class DashboardController
         Request $request,
         FormService $formService,
         PermissionResolver $permissionResolver,
-        ExporterRegistry $exporterRegistry
+        SymfonyFormFactory $formFactory
     ): array {
         $page = $request->query->get('page') ?? 1;
 
@@ -206,11 +207,13 @@ class DashboardController
         $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
         $paginator->setCurrentPage($page);
 
+        $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
+        $submissionsFilterForm->setData(['form'=>$form->getId()]);
         return [
             'totalCount'   => $paginator->getNbResults(),
             'submissions'  => $paginator,
-            'export_types' => $exporterRegistry->getExporterTypes(),
             'form'         => $form,
+            'submissionsFilterType' => $submissionsFilterForm->createView()
         ];
     }
 
@@ -259,6 +262,31 @@ class DashboardController
 
         return $response;
     }
+
+    /**
+     * @Route("/submissions/download/filtered", name="novaezformbuilder_dashboard_submissions_filter_download")
+     */
+    public function downloadFilteredSubmissions(Request $request, FormService $formService, SymfonyFormFactory $formFactory): Response
+    {
+        $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
+        $submissionsFilterForm->handleRequest($request);
+        $filter = $submissionsFilterForm->getData();
+        $file = $formService->generateSubmissionsByFilter($filter);
+
+        $response = new BinaryFileResponse($file);
+        $response->deleteFileAfterSend(true);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            sprintf(
+                'form-%s-submissions.%s',
+                $filter['form'],
+                $file->getExtension()
+            )
+        );
+
+        return $response;
+    }
+
 
     /**
      * @Route("/submission/file/download/{id}", name="novaezformbuilder_dashboard_submission_file_download")

@@ -169,4 +169,15 @@
         }
 
     });
+
+    var $modal  = $('#submissions_download_form');
+    var $download_form = $modal.find('form')
+    $download_form.on('submit', function (e) {
+        $modal.modal('hide');
+    })
+
+    $modal.on('hidden.bs.modal', function (e) {
+        $('body').removeClass('ez-prevent-click')
+    })
+
 })(jQuery);

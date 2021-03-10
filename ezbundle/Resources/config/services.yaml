@@ -32,3 +32,8 @@ services:
         arguments: ['@form_builder.io_service']
 
     Novactive\Bundle\FormBuilderBundle\Core\FileUploaderInterface: '@Novactive\Bundle\eZFormBuilderBundle\Core\FileUploader'
+
+    Novactive\Bundle\eZFormBuilderBundle\Form\Type\SubmissionsFilterType:
+        arguments: ['@Novactive\Bundle\FormBuilderBundle\Core\Submission\Exporter\ExporterRegistry']
+        tags:
+            - { name: form.type }
