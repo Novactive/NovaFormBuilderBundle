@@ -79,9 +79,6 @@ abstract class Field
      */
     private $options = [];
 
-    /**
-     * @var mixed
-     */
     protected $value;
 
     /**

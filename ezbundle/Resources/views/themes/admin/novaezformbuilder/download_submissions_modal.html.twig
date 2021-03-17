@@ -1,0 +1,16 @@
+{% trans_default_domain "novaezformbuilder" %}
+
+<div class="modal fade" id="submissions_download_form" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'theme.submissions.download_submissions'|trans }}</h5>
+            </div>
+            <div class="modal-body">
+                {{ form_start(submissionsFilterType, {'action': path('novaezformbuilder_dashboard_submissions_filter_download')}) }}
+                {{ form_rest(submissionsFilterType) }}
+            </div>
+        </div>
+    </div>
+</div>
+
