@@ -38,6 +38,28 @@
                 $(this).closest('.js-form-fields-choice-item').remove();
             });
 
+            function compare( a, b ) {
+                return a.sorting_field.localeCompare(b.sorting_field);
+            }
+
+            $(document).on('click', '.js-choice-item-ordering', function (e) {
+                var field = $(this).data('field')
+                var choicesHolder = $(this).closest('.js-form-fields-choices-collection').find('.js-form-fields-choice-item').first().parent();
+                var itemsObj = [];
+                choicesHolder.find('.js-form-fields-choice-item').each(function (index) {
+                    var element = $(this);
+                    element.data("key", index);
+                    var sortingField = $(this).find(`[name*='[${field}]']`).val();
+                    itemsObj.push({key:index, sorting_field: sortingField.toLowerCase(), element: element})
+                })
+                itemsObj.sort( compare );
+                choicesHolder.find('.js-form-fields-choice-item').remove()
+                itemsObj.forEach(function (item, index) {
+                    $(item.element).find('[name$="weight]"]').val(index+1)
+                    choicesHolder.append(item.element)
+                })
+            });
+
             $addButton.click(function (e) {
                 e.preventDefault();
                 var prototype = $(':selected', $selectFieldType).data('prototype');
