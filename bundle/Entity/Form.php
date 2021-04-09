@@ -109,9 +109,11 @@ class Form
     private $fields = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission", mappedBy="form",
-     *                                                                                         cascade={"persist",
-     *                                                                            "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission",
+     *     mappedBy="form",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
+     *     fetch="EXTRA_LAZY")
      *
      * @var FormSubmission[]
      */
