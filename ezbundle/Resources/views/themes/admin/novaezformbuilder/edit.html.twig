@@ -2,6 +2,11 @@
 {% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
 {% form_theme form '@NovaeZFormBuilder/nova_form_builder/form_fields.html.twig' %}
 
+{% block meta %}
+    {{ parent() }}
+    <meta name="LanguageCode" content="{{ language_code }}" />
+{% endblock %}
+
 {% block title %}{{ title|trans }}{% endblock %}
 
 {%- block breadcrumbs -%}
@@ -69,3 +74,15 @@
     </div>
     {% include '@ezdesign/novaezformbuilder/footer.html.twig' %}
 {%- endblock -%}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('ezplatform-admin-ui-alloyeditor-js', null, 'ezplatform') }}
+    {{ encore_entry_script_tags('ezplatform-page-builder-block-config-js', null, 'ezplatform') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('ezplatform-admin-ui-alloyeditor-css', null, 'ezplatform') }}
+    {{ encore_entry_link_tags('ezplatform-page-builder-config-css', null, 'ezplatform') }}
+{% endblock %}

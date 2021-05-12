@@ -15,6 +15,7 @@ namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormSubmissionService;
@@ -41,6 +42,19 @@ use Symfony\Component\Routing\RouterInterface;
 class DashboardController
 {
     public const RESULTS_PER_PAGE = 10;
+
+    /** @var ConfigResolverInterface */
+    protected $configResolver;
+
+    /**
+     * DashboardController constructor.
+     *
+     * @param ConfigResolverInterface $configResolver
+     */
+    public function __construct(ConfigResolverInterface $configResolver)
+    {
+        $this->configResolver = $configResolver;
+    }
 
     /**
      * Test action to render & handle clientside form.
@@ -105,9 +119,12 @@ class DashboardController
             $form->get('submissionsUnlimited')->setData(true);
         }
 
+        $languages = $this->configResolver->getParameter('languages');
+
         return [
             'title' => 'novaezformbuilder.title.edit_form',
             'form'  => $form->createView(),
+            'language_code' => array_shift($languages)
         ];
     }
 
