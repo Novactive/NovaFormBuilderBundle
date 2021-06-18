@@ -37,8 +37,16 @@ class TextLine extends FieldType
                 'defaultValue',
                 TextType::class,
                 [
-                    'required'   => false,
-                    'label'      => 'field.textline.default_value',
+                    'required' => false,
+                    'label'    => 'field.textline.default_value',
+                ]
+            )
+            ->add(
+                'placeholder',
+                TextType::class,
+                [
+                    'label'    => 'field.placeholder',
+                    'required' => false,
                 ]
             )
             ->add(
@@ -70,7 +78,10 @@ class TextLine extends FieldType
     {
         $minLength   = $field->getMinLength() ?: null;
         $maxLength   = $field->getMaxLength() ?: null;
+        $placeholder = $field->getPlaceholder() ?: null;
+        $attributes  = [];
         $constraints = [];
+
         if (null !== $minLength || null !== $maxLength) {
             $constraints[] = new Length(
                 [
@@ -78,6 +89,9 @@ class TextLine extends FieldType
                     'max' => $maxLength,
                 ]
             );
+        }
+        if (null !== $placeholder) {
+            $attributes['placeholder'] = $placeholder;
         }
 
         $fieldForm
@@ -88,6 +102,7 @@ class TextLine extends FieldType
                     'required'    => $field->isRequired(),
                     'label'       => $field->getName(),
                     'constraints' => $constraints,
+                    'attr'        => $attributes,
                 ]
             );
     }
