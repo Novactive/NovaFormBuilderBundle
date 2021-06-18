@@ -64,3 +64,5 @@ form:
         default_email_title: Form data submitted on "%FORM_NAME%"
     submission:
         date: Submission date
+field:
+    placeholder: Placeholder

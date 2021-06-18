@@ -16,6 +16,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Range;
 
@@ -32,6 +33,14 @@ class Number extends FieldType
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
+            ->add(
+                'placeholder',
+                TextType::class,
+                [
+                    'label'    => 'field.placeholder',
+                    'required' => false,
+                ]
+            )
             ->add(
                 'min',
                 IntegerType::class,
@@ -59,8 +68,10 @@ class Number extends FieldType
     {
         $min         = $field->getMin() ?: null;
         $max         = $field->getMax() ?: null;
+        $placeholder = $field->getPlaceholder() ?: null;
         $attributes  = [];
         $constraints = [];
+
         if (null !== $min) {
             $attributes['min'] = $min;
         }
@@ -74,6 +85,9 @@ class Number extends FieldType
                     'max' => $max,
                 ]
             );
+        }
+        if (null !== $placeholder) {
+            $attributes['placeholder'] = $placeholder;
         }
 
         $fieldForm

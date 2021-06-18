@@ -13,29 +13,10 @@
 namespace Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 use Doctrine\ORM\Mapping as ORM;
-use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 
 /**
  * @ORM\Entity
  */
-class MailSubject extends Field
+class MailSubject extends TextLine
 {
-    use Field\Compose\MinMaxLength;
-
-    public function getDefaultValue(): ?string
-    {
-        return $this->getOption('defaultValue', '');
-    }
-
-    public function setDefaultValue($defaultValue): self
-    {
-        $this->setOption('defaultValue', $defaultValue);
-
-        return $this;
-    }
-
-    public function getValue()
-    {
-        return $this->value ?? $this->getDefaultValue();
-    }
 }

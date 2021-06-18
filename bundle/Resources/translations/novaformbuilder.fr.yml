@@ -63,3 +63,5 @@ form:
         default_email_title: Données soumises sur le formulaire "%FORM_NAME%"
     submission:
         date: Date de saisie
+field:
+    placeholder: Exemple

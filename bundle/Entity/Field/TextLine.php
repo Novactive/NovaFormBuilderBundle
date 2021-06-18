@@ -21,6 +21,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 class TextLine extends Field
 {
     use Field\Compose\MinMaxLength;
+    use Field\Compose\Placeholder;
 
     public function getDefaultValue(): ?string
     {
