@@ -21,4 +21,6 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Url extends Field
 {
+    use Field\Compose\Placeholder;
+    use Field\Compose\AutoComplete;
 }

@@ -22,6 +22,9 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Email extends Field
 {
+    use Field\Compose\Placeholder;
+    use Field\Compose\AutoComplete;
+
     public function isSendData(): bool
     {
         return (bool) ($this->getOption('send_data') ?? false);

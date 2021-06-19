@@ -64,3 +64,32 @@ form:
         default_email_title: Form data submitted on "%FORM_NAME%"
     submission:
         date: Submission date
+field:
+    placeholder: Placeholder
+    autoComplete: Auto complete
+autocomplete:
+    off: The browser is not permitted to automatically enter or select a value for this field
+    on: The browser is allowed to automatically complete the input
+    name: The full name
+    honorific-prefix: The prefix or title, such as "Mrs.", "Mr.", "Miss", "Ms.", "Dr.", or "Mlle."
+    given-name: The given (or "first") name
+    additional-name: The middle name
+    family-name: The family (or "last") name
+    honorific-suffix: The suffix, such as "Jr.", "B.Sc.", "PhD.", "MBASW", or "IV"
+    nickname: A nickname or handle
+    email: An email address
+    username: A username or account name
+    organization-title: A job title, or the title a person has within an organization, such as "Senior Technical Writer", "President", or "Assistant Troop Leader"
+    organization: A company or organization name
+    street-address: A street address
+    country: A country or territory code
+    country-name: A country or territory name
+    postal-code: A postal code
+    language: A preferred language
+    bday: A birth date, as a full date
+    bday-day: The day of the month of a birth date
+    bday-month: The month of the year of a birth date
+    bday-year: The year of a birth date
+    sex: A gender identity
+    tel: A telephone number
+    url: A URL

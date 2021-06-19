@@ -16,7 +16,9 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
 class Email extends FieldType
@@ -32,11 +34,56 @@ class Email extends FieldType
     public function mapFieldEditForm(FormInterface $fieldForm, Field $field): void
     {
         $fieldForm
-            ->add('sendData', CheckboxType::class, ['label' => 'form.send_data_to_user', 'required' => false]);
+            ->add(
+                'placeholder',
+                TextType::class,
+                [
+                    'label'    => 'field.placeholder',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'sendData',
+                CheckboxType::class,
+                [
+                    'label'    => 'form.send_data_to_user',
+                    'required' => false,
+                ]
+            );
+        $choices = [
+            'off'                                         => 'autocomplete.off',
+            'on'                                          => 'autocomplete.on',
+            'email'                                       => 'autocomplete.email',
+        ];
+
+        $fieldForm->add(
+            'autoComplete',
+            ChoiceType::class,
+            [
+                'label'    => 'field.autoComplete',
+                'choices'  => array_flip($choices),
+                'required' => false,
+            ]
+        );
     }
 
+    /**
+     * @param Field\Email $field
+     */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $placeholder  = $field->getPlaceholder() ?: null;
+        $autoComplete = $field->getAutoComplete() ?: null;
+        $attributes   = [];
+
+        if (null !== $placeholder) {
+            $attributes['placeholder'] = $placeholder;
+        }
+
+        if (null !== $autoComplete) {
+            $attributes['autocomplete'] = $autoComplete;
+        }
+
         $fieldForm
             ->add(
                 'value',
@@ -44,6 +91,7 @@ class Email extends FieldType
                 [
                     'required' => $field->isRequired(),
                     'label'    => $field->getName(),
+                    'attr'     => $attributes,
                 ]
             );
     }
