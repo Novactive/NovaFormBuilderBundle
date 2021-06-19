@@ -65,3 +65,30 @@ form:
         date: Date de saisie
 field:
     placeholder: Exemple
+    autoComplete: Auto complétion
+autocomplete:
+    off: Le navigateur n'est pas autorisé à saisir automatiquement des valeurs pour ce champ
+    on: Le navigateur est autorisé à compléter automatiquement le champ
+    name: Le nom complet
+    honorific-prefix: Le préfixe ou le titre, par exemple « M. », « Mme. », « Me. » , etc
+    given-name: Le prénom
+    additional-name: Le deuxième prénom
+    family-name: Le nom de famille
+    honorific-suffix: Un suffixe (par exemple "Jr.")
+    nickname: Un surnom
+    email: Une adresse électronique
+    username: Un nom de compte ou un nom d'utilisateur
+    organization-title: Un titre de poste tel que « Directeur général », « Assistant technique » ou « Ingénieur »
+    organization: Le nom d'une entreprise ou d'une organisation
+    street-address: Une adresse postale
+    country: Un code de pays
+    country-name: Un nom de pays
+    postal-code: Un code postal
+    language: La langue préférée
+    bday: Une date de naissance complète
+    bday-day: Le jour du mois de la date de naissance
+    bday-month: Le mois de l'année de la date de naissance
+    bday-year: L'année de la date de naissance
+    sex: Un genre (tel que « femme », « homme », etc.)
+    tel: Un numéro de téléphone
+    url: Une URL

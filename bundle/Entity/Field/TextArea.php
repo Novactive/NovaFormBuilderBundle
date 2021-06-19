@@ -23,6 +23,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 class TextArea extends Field
 {
     use Field\Compose\MinMaxLength;
+    use Field\Compose\AutoComplete;
 
     public function getDefaultValue(): ?string
     {

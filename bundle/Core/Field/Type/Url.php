@@ -15,6 +15,7 @@ namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormInterface;
@@ -40,6 +41,21 @@ class Url extends FieldType
                     'required' => false,
                 ]
             );
+        $choices = [
+            'off'                                         => 'autocomplete.off',
+            'on'                                          => 'autocomplete.on',
+            'url'                                         => 'autocomplete.url',
+        ];
+
+        $fieldForm->add(
+            'autoComplete',
+            ChoiceType::class,
+            [
+                'label'    => 'field.autoComplete',
+                'choices'  => array_flip($choices),
+                'required' => false,
+            ]
+        );
     }
 
     /**
@@ -47,11 +63,15 @@ class Url extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        $placeholder = $field->getPlaceholder() ?: null;
-        $attributes  = [];
+        $placeholder  = $field->getPlaceholder() ?: null;
+        $autoComplete = $field->getAutoComplete() ?: null;
+        $attributes   = [];
 
         if (null !== $placeholder) {
             $attributes['placeholder'] = $placeholder;
+        }
+        if (null !== $autoComplete) {
+            $attributes['autocomplete'] = $autoComplete;
         }
 
         $fieldForm

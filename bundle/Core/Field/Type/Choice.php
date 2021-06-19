@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\FormBuilderBundle\Core\Field\Type;
 
 use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
+use Novactive\Bundle\FormBuilderBundle\Core\Field\Type\Compose\AutoComplete;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\ChoiceItemType;
 use Novactive\Bundle\FormBuilderBundle\Form\Type\WeightedCollectionType;
@@ -23,6 +24,8 @@ use Symfony\Component\Form\FormInterface;
 
 class Choice extends FieldType
 {
+    use AutoComplete;
+
     public function getEntityClass(): string
     {
         return Field\Choice::class;
@@ -82,6 +85,7 @@ class Choice extends FieldType
                     'label'      => 'field.choice.default_value',
                 ]
             );
+        $this->addAutoCompleteField($fieldForm);
     }
 
     /**
@@ -89,6 +93,12 @@ class Choice extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $autoComplete = $field->getAutoComplete() ?: null;
+        $attributes   = [];
+        if (null !== $autoComplete) {
+            $attributes['autocomplete'] = $autoComplete;
+        }
+
         $formattedChoices = [];
         foreach ($field->getChoices() as $choice) {
             $formattedChoices[$choice['label']] = $choice['value'];
@@ -122,6 +132,7 @@ class Choice extends FieldType
                 'choices'  => $formattedChoices,
                 'expanded' => $expanded,
                 'multiple' => $multiple,
+                'attr'     => $attributes,
             ]
         );
     }

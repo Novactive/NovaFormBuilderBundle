@@ -22,6 +22,8 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Choice extends Field
 {
+    use Field\Compose\AutoComplete;
+
     public function getChoiceType(): string
     {
         return (string) $this->getOption('choice_type');
