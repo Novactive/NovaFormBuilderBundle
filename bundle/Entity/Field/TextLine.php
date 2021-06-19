@@ -22,6 +22,7 @@ class TextLine extends Field
 {
     use Field\Compose\MinMaxLength;
     use Field\Compose\Placeholder;
+    use Field\Compose\AutoComplete;
 
     public function getDefaultValue(): ?string
     {
