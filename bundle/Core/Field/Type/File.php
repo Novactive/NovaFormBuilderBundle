@@ -80,30 +80,33 @@ class File extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        $constraintClass = Constraints\File::class;
-        $mimeTypes       = self::APPLICATION_MIME_TYPES;
+        $constraints = [];
+
         if (self::TYPE_IMAGE === $field->getFileType()) {
-            $constraintClass = Constraints\Image::class;
-            $mimeTypes       = 'image/*';
+            $constraints[] = new Constraints\Image([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+                'mimeTypes' => 'image/*',
+            ]);
+        }
+        if (self::TYPE_APPLICATION === $field->getFileType()) {
+            $constraints[] = new Constraints\File([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+                'mimeTypes' => self::APPLICATION_MIME_TYPES,
+            ]);
         }
         if (self::TYPE_ALL === $field->getFileType()) {
-            $constraintClass = Constraints\File::class;
-            $mimeTypes       = '*';
+            $constraints[] = new Constraints\File([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+            ]);
         }
+
         $fieldForm->add(
             'value',
             FileType::class,
             [
                 'required'    => $field->isRequired(),
                 'label'       => $field->getName(),
-                'constraints' => [
-                    new $constraintClass(
-                        [
-                            'maxSize'   => $field->getMaxFileSizeMb().'M',
-                            'mimeTypes' => $mimeTypes,
-                        ]
-                    ),
-                ],
+                'constraints' => $constraints,
             ]
         );
     }
