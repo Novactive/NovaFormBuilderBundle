@@ -39,6 +39,7 @@ file.file_type.image: Image
 file.file_type.file: File
 field.section.data: "Displayed text"
 file.file_type.application: Application
+file.file_type.application: All
 fieldtype.file: File
 field.number.min: Minimun
 field.number.max: Maximum

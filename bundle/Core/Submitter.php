@@ -95,7 +95,7 @@ class Submitter
         $data = [];
         foreach ($formEntity->getFields() as $field) {
             $value = $field->getValue();
-            if ($field instanceof File && $field->getValue()) {
+            if ($field instanceof File && $value) {
                 $value = $this->fileUploader->upload($field->getValue());
             }
             $data[] = [

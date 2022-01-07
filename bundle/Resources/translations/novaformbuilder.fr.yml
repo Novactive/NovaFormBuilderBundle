@@ -38,6 +38,7 @@ file.file_type.image: Image
 file.file_type.file: Fichier
 field.section.data: "Texte à afficher"
 file.file_type.application: Application
+file.file_type.application: Tout
 fieldtype.file: Fichier
 field.number.min: Minimum
 field.number.max: Maximum

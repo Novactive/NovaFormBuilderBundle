@@ -27,6 +27,8 @@ class File extends FieldType
 
     public const TYPE_APPLICATION = 'file';
 
+    public const TYPE_ALL = 'all';
+
     public const APPLICATION_MIME_TYPES = [
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -67,6 +69,7 @@ class File extends FieldType
                     'choices'  => [
                         'file.file_type.image'       => self::TYPE_IMAGE,
                         'file.file_type.application' => self::TYPE_APPLICATION,
+                        'file.file_type.all'         => self::TYPE_ALL,
                     ],
                 ]
             );
@@ -82,6 +85,10 @@ class File extends FieldType
         if (self::TYPE_IMAGE === $field->getFileType()) {
             $constraintClass = Constraints\Image::class;
             $mimeTypes       = 'image/*';
+        }
+        if (self::TYPE_ALL === $field->getFileType()) {
+            $constraintClass = Constraints\File::class;
+            $mimeTypes       = '*';
         }
         $fieldForm->add(
             'value',
