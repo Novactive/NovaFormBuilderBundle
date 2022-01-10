@@ -36,7 +36,9 @@
                                     {% endif %}
                                 {% else %}
                                     {% if item.type == 'file' %}
-                                        <a class="btn btn-info" href="{{ path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id}) }}" target="_blank">{{ 'theme.submission.download'|trans }}</a>
+                                        <a class="btn btn-info" href="{{ path('novaezformbuilder_dashboard_submission_file_download', {id: submission.id}) }}" target="_blank">
+                                            {{ 'theme.submission.download'|trans }}
+                                        </a>
                                     {% else %}
                                         {{ item.value|nl2br }}
                                     {% endif %}

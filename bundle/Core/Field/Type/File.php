@@ -27,6 +27,8 @@ class File extends FieldType
 
     public const TYPE_APPLICATION = 'file';
 
+    public const TYPE_ALL = 'all';
+
     public const APPLICATION_MIME_TYPES = [
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -67,6 +69,7 @@ class File extends FieldType
                     'choices'  => [
                         'file.file_type.image'       => self::TYPE_IMAGE,
                         'file.file_type.application' => self::TYPE_APPLICATION,
+                        'file.file_type.all'         => self::TYPE_ALL,
                     ],
                 ]
             );
@@ -77,26 +80,33 @@ class File extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
-        $constraintClass = Constraints\File::class;
-        $mimeTypes       = self::APPLICATION_MIME_TYPES;
+        $constraints = [];
+
         if (self::TYPE_IMAGE === $field->getFileType()) {
-            $constraintClass = Constraints\Image::class;
-            $mimeTypes       = 'image/*';
+            $constraints[] = new Constraints\Image([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+                'mimeTypes' => 'image/*',
+            ]);
         }
+        if (self::TYPE_APPLICATION === $field->getFileType()) {
+            $constraints[] = new Constraints\File([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+                'mimeTypes' => self::APPLICATION_MIME_TYPES,
+            ]);
+        }
+        if (self::TYPE_ALL === $field->getFileType()) {
+            $constraints[] = new Constraints\File([
+                'maxSize'   => $field->getMaxFileSizeMb().'M',
+            ]);
+        }
+
         $fieldForm->add(
             'value',
             FileType::class,
             [
                 'required'    => $field->isRequired(),
                 'label'       => $field->getName(),
-                'constraints' => [
-                    new $constraintClass(
-                        [
-                            'maxSize'   => $field->getMaxFileSizeMb().'M',
-                            'mimeTypes' => $mimeTypes,
-                        ]
-                    ),
-                ],
+                'constraints' => $constraints,
             ]
         );
     }
