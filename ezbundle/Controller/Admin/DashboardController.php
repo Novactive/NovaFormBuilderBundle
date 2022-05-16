@@ -192,7 +192,7 @@ class DashboardController
 
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
         if (null !== $form) {
-            $associatedContents = $formService->associatedContents($form->id);
+            $associatedContents = $formService->associatedContents($form->getId());
             foreach ($associatedContents as $associatedContent) {
                 if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
                     throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
@@ -232,7 +232,7 @@ class DashboardController
         FormSubmissionService $formSubmissionService
     ): array {
         $form               = $formSubmission->getForm();
-        $associatedContents = $formService->associatedContents($form->id);
+        $associatedContents = $formService->associatedContents($form->getId());
         foreach ($associatedContents as $associatedContent) {
             if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
                 throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
