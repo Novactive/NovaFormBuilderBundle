@@ -99,9 +99,11 @@ class Form
     private $overrideUserSendData = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field", mappedBy="form",
-     *                                                                                cascade={"persist", "remove"},
-     *                                                                                  orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Novactive\Bundle\FormBuilderBundle\Entity\Field",
+     *     mappedBy="form",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
+     *     fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"weight" = "ASC"})
      *
      * @var Field[]

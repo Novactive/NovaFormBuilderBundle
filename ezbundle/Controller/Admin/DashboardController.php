@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZFormBuilderBundle\Controller\Admin;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
@@ -25,6 +27,7 @@ use Novactive\Bundle\FormBuilderBundle\Core\Submitter;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
+use Pagerfanta\Adapter\DoctrineDbalAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -189,7 +192,7 @@ class DashboardController
 
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
         if (null !== $form) {
-            $associatedContents = $formService->associatedContents($form);
+            $associatedContents = $formService->associatedContents($form->id);
             foreach ($associatedContents as $associatedContent) {
                 if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
                     throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
@@ -229,7 +232,7 @@ class DashboardController
         FormSubmissionService $formSubmissionService
     ): array {
         $form               = $formSubmission->getForm();
-        $associatedContents = $formService->associatedContents($form);
+        $associatedContents = $formService->associatedContents($form->id);
         foreach ($associatedContents as $associatedContent) {
             if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
                 throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
@@ -312,11 +315,21 @@ class DashboardController
      * @Route("/{page}", name="novaezformbuilder_dashboard_index", requirements={"page" = "\d+"})
      * @Template("@ezdesign/novaezformbuilder/index.html.twig")
      */
-    public function index(EntityManagerInterface $entityManager, int $page = 1): array
+    public function index(Connection $connection, int $page = 1): array
     {
-        $queryBuilder = $entityManager->createQueryBuilder()->select('f')->from(Form::class, 'f');
+        $queryBuilder = $connection->createQueryBuilder();
+        $queryBuilder->select('f.id, f.name, count(fs.id) submissions_count')
+            ->from('novaformbuilder_form', 'f')
+            ->leftJoin('f', 'novaformbuilder_form_submission', 'fs', $queryBuilder->expr()->eq('f.id', 'fs.form_id'))
+            ->groupBy('f.id');
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder));
+        $countQueryBuilderModifier = static function (QueryBuilder $queryBuilder) {
+            $queryBuilder->select('COUNT(DISTINCT f.id) AS total_results');
+            $queryBuilder->resetQueryParts(['join', 'groupBy'])
+                ->setMaxResults(1);
+        };
+
+        $paginator = new Pagerfanta(new DoctrineDbalAdapter($queryBuilder, $countQueryBuilderModifier));
         $paginator->setMaxPerPage(self::RESULTS_PER_PAGE);
         $paginator->setCurrentPage($page);
 

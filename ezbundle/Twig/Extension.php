@@ -76,9 +76,9 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
         return $form;
     }
 
-    public function canReadFormSubmissions(Form $form)
+    public function canReadFormSubmissions(int $formId)
     {
-        $associatedContents = $this->formService->associatedContents($form);
+        $associatedContents = $this->formService->associatedContents($formId);
         foreach ($associatedContents as $associatedContent) {
             if (!$this->permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
                 return false;
