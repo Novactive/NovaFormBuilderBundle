@@ -45,8 +45,8 @@
                 <tr>
                     <td>{{ formItem.name }}</td>
                     <td>
-                        {{ formItem.submissions|length }}
-                        {% if formItem.submissions|length > 0 and can_read_form_submissions(formItem) %}
+                        {{ formItem.submissions_count }}
+                        {% if formItem.submissions_count > 0 and can_read_form_submissions(formItem.id) %}
                             <a class="btn btn-link" href="{{ path('novaezformbuilder_dashboard_submissions', {id: formItem.id}) }}">{{ 'theme.index.view'|trans }}</a>
                         {% endif %}
                     </td>

@@ -127,7 +127,7 @@ class FormService
         return $exporter->generateFile($headers, $form->getSubmissions()->getValues());
     }
 
-    public function associatedContents(Form $form)
+    public function associatedContents(int $formId)
     {
         $query = $this->connection->createQueryBuilder();
         $query->select('o.id')
@@ -148,7 +148,7 @@ class FormService
                 )
             )
             ->setParameter(':data_type_string', 'ezcustomform', Type::STRING)
-            ->setParameter(':form_id', $form->getId(), Type::INTEGER);
+            ->setParameter(':form_id', $formId, Type::INTEGER);
 
         $contentsId = $query->execute()->fetchAll(FetchMode::COLUMN);
         $contents   = [];
