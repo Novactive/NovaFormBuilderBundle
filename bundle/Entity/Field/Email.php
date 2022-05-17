@@ -24,6 +24,7 @@ class Email extends Field
 {
     use Field\Compose\Placeholder;
     use Field\Compose\AutoComplete;
+    use Field\Compose\Identifier;
 
     public function isSendData(): bool
     {

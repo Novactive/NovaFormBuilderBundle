@@ -18,6 +18,7 @@ use Novactive\Bundle\FormBuilderBundle\Core\Field\Type\Compose\AutoComplete;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Length;
 
@@ -63,6 +64,14 @@ class TextArea extends FieldType
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
         $this->addAutoCompleteField($fieldForm);
     }
@@ -72,6 +81,7 @@ class TextArea extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier   = $field->getIdentifier() ?: null;
         $minLength    = $field->getMinLength() ?: null;
         $maxLength    = $field->getMaxLength() ?: null;
         $autoComplete = $field->getAutoComplete() ?: null;
@@ -85,6 +95,9 @@ class TextArea extends FieldType
         }
         if (null !== $autoComplete) {
             $attributes['autocomplete'] = $autoComplete;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $constraints = [];

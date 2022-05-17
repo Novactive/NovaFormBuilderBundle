@@ -23,6 +23,8 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
  */
 class Date extends Field
 {
+    use Field\Compose\Identifier;
+
     public function getDefaultValue(): ?string
     {
         return (string) $this->getOption('defaultValue');

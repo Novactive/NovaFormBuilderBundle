@@ -40,6 +40,14 @@ class Url extends FieldType
                     'label'    => 'field.placeholder',
                     'required' => false,
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
         $choices = [
             'off'                                         => 'autocomplete.off',
@@ -63,6 +71,7 @@ class Url extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier   = $field->getIdentifier() ?: null;
         $placeholder  = $field->getPlaceholder() ?: null;
         $autoComplete = $field->getAutoComplete() ?: null;
         $attributes   = [];
@@ -72,6 +81,9 @@ class Url extends FieldType
         }
         if (null !== $autoComplete) {
             $attributes['autocomplete'] = $autoComplete;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $fieldForm

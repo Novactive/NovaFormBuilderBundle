@@ -23,4 +23,5 @@ class Url extends Field
 {
     use Field\Compose\Placeholder;
     use Field\Compose\AutoComplete;
+    use Field\Compose\Identifier;
 }

@@ -24,6 +24,7 @@ class Number extends Field
 {
     use Field\Compose\MinMax;
     use Field\Compose\Placeholder;
+    use Field\Compose\Identifier;
 
     public function getValue()
     {

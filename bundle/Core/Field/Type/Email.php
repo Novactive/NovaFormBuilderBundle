@@ -64,6 +64,14 @@ class Email extends FieldType
                 'choices'  => array_flip($choices),
                 'required' => false,
             ]
+        )
+        ->add(
+            'identifier',
+            TextType::class,
+            [
+                'required' => false,
+                'label'    => 'field.identifier',
+            ]
         );
     }
 
@@ -72,6 +80,7 @@ class Email extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier   = $field->getIdentifier() ?: null;
         $placeholder  = $field->getPlaceholder() ?: null;
         $autoComplete = $field->getAutoComplete() ?: null;
         $attributes   = [];
@@ -79,9 +88,11 @@ class Email extends FieldType
         if (null !== $placeholder) {
             $attributes['placeholder'] = $placeholder;
         }
-
         if (null !== $autoComplete) {
             $attributes['autocomplete'] = $autoComplete;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $fieldForm

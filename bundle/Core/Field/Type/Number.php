@@ -58,6 +58,14 @@ class Number extends FieldType
                     'label'      => 'field.number.max',
                     'empty_data' => 100,
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
     }
 
@@ -66,6 +74,7 @@ class Number extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier  = $field->getIdentifier() ?: null;
         $min         = $field->getMin() ?: null;
         $max         = $field->getMax() ?: null;
         $placeholder = $field->getPlaceholder() ?: null;
@@ -88,6 +97,9 @@ class Number extends FieldType
         }
         if (null !== $placeholder) {
             $attributes['placeholder'] = $placeholder;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $fieldForm
