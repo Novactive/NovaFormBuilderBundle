@@ -27,7 +27,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class FormService
 {
@@ -55,7 +55,7 @@ class FormService
     private $exporterRegistry;
 
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     private $translator;
 
@@ -68,7 +68,7 @@ class FormService
         ContentService $contentService,
         FieldTypeRegistry $fieldTypeRegistry,
         ExporterRegistry $exporterRegistry,
-        Translator $translator
+        TranslatorInterface $translator
     ) {
         $this->connection        = $connection;
         $this->entityManager     = $entityManager;
