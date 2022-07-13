@@ -17,20 +17,20 @@ use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use IntlDateFormatter;
 use Novactive\Bundle\FormBuilderBundle\Core\FieldTypeRegistry;
 use Novactive\Bundle\FormBuilderBundle\Entity\FormSubmission;
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class FormSubmissionService
 {
     /** @var FieldTypeRegistry */
     private $fieldTypeRegistry;
 
-    /** @var Translator */
+    /** @var TranslatorInterface */
     private $translator;
 
     /**
      * FormSubmissionService constructor.
      */
-    public function __construct(FieldTypeRegistry $fieldTypeRegistry, Translator $translator)
+    public function __construct(FieldTypeRegistry $fieldTypeRegistry, TranslatorInterface $translator)
     {
         $this->fieldTypeRegistry = $fieldTypeRegistry;
         $this->translator        = $translator;
