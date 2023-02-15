@@ -3,6 +3,8 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+        bind:
+            $connection: '@ezpublish.persistence.connection'
 
     Novactive\Bundle\eZFormBuilderBundle\Controller\:
         resource: '../../Controller'
