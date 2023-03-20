@@ -45,6 +45,18 @@ class DashboardController
 {
     public const RESULTS_PER_PAGE = 10;
 
+    /** @var FormService */
+    protected $formService;
+
+    /** @var PermissionResolver */
+    protected $permissionResolver;
+
+    public function __construct(FormService $formService, PermissionResolver $permissionResolver)
+    {
+        $this->formService        = $formService;
+        $this->permissionResolver = $permissionResolver;
+    }
+
     /**
      * Test action to render & handle clientside form.
      *
@@ -84,8 +96,7 @@ class DashboardController
         ?Form $formEntity,
         RouterInterface $router,
         Request $request,
-        FormFactory $factory,
-        FormService $formService
+        FormFactory $factory
     ) {
         if (null === $formEntity) {
             $formEntity = new Form();
@@ -99,7 +110,7 @@ class DashboardController
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
 
             $formEntity->setSendData((bool) $sendData);
-            $formService->save($formEntity);
+            $this->formService->save($formEntity);
 
             return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
         }
@@ -121,8 +132,7 @@ class DashboardController
     public function editModal(
         ?Form $formEntity,
         Request $request,
-        FormFactory $factory,
-        FormService $formService
+        FormFactory $factory
     ) {
         if (null === $formEntity) {
             $formEntity = new Form();
@@ -136,7 +146,7 @@ class DashboardController
             $sendData = $request->request->get('novaformbuilder_form_edit')['sendData'] ?? false;
 
             $formEntity->setSendData((bool) $sendData);
-            $formId = $formService->save($formEntity);
+            $formId = $this->formService->save($formEntity);
 
             return (new JsonResponse())->setContent(
                 json_encode(['success' => true, 'id' => $formId, 'name' => $formEntity->getName()])
@@ -159,9 +169,9 @@ class DashboardController
     /**
      * @Route("/delete/{id}", name="novaezformbuilder_dashboard_delete")
      */
-    public function delete(Form $formEntity, FormService $formService, RouterInterface $router): RedirectResponse
+    public function delete(Form $formEntity, RouterInterface $router): RedirectResponse
     {
-        $formService->removeForm($formEntity);
+        $this->formService->removeForm($formEntity);
 
         return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
     }
@@ -169,9 +179,9 @@ class DashboardController
     /**
      * @Route("/remove/modal/{id}", name="novaezformbuilder_dashboard_remove_modal")
      */
-    public function removeModal(Form $formEntity, FormService $formService): JsonResponse
+    public function removeModal(Form $formEntity): JsonResponse
     {
-        $formService->removeForm($formEntity);
+        $this->formService->removeForm($formEntity);
 
         return (new JsonResponse())->setContent(json_encode(['success' => true]));
     }
@@ -184,20 +194,13 @@ class DashboardController
         EntityManagerInterface $entityManager,
         ?Form $form,
         Request $request,
-        FormService $formService,
-        PermissionResolver $permissionResolver,
         SymfonyFormFactory $formFactory
     ): array {
         $page = $request->query->get('page') ?? 1;
 
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
         if (null !== $form) {
-            $associatedContents = $formService->associatedContents($form->getId());
-            foreach ($associatedContents as $associatedContent) {
-                if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
-                    throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
-                }
-            }
+            $this->checkReadSubmissions($form);
 
             $queryBuilder->andWhere($queryBuilder->expr()->eq('s.form', ':value'))->setParameter(
                 'value',
@@ -227,17 +230,10 @@ class DashboardController
      */
     public function submission(
         FormSubmission $formSubmission,
-        FormService $formService,
-        PermissionResolver $permissionResolver,
         FormSubmissionService $formSubmissionService
     ): array {
-        $form               = $formSubmission->getForm();
-        $associatedContents = $formService->associatedContents($form->getId());
-        foreach ($associatedContents as $associatedContent) {
-            if (!$permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
-                throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
-            }
-        }
+        $form = $formSubmission->getForm();
+        $this->checkReadSubmissions($form);
 
         return [
             'form'             => $form,
@@ -246,12 +242,29 @@ class DashboardController
         ];
     }
 
+    protected function checkReadSubmissions(Form $form): void
+    {
+        $associatedContents = $this->formService->associatedContents($form->getId());
+        if (empty($associatedContents)) {
+            if (!$this->permissionResolver->hasAccess('form', 'read_submissions')) {
+                throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
+            }
+        }
+        foreach ($associatedContents as $associatedContent) {
+            if (!$this->permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
+                throw new UnauthorizedException('form', 'read_submissions', ['formId' => $form->getId()]);
+            }
+        }
+    }
+
     /**
      * @Route("/submissions/download/{id}/{type}", name="novaezformbuilder_dashboard_submissions_download")
      */
-    public function downloadSubmissions(Form $form, string $type, FormService $formService): Response
+    public function downloadSubmissions(Form $form, string $type): Response
     {
-        $file = $formService->generateSubmissions($form, $type);
+        $this->checkReadSubmissions($form);
+
+        $file = $this->formService->generateSubmissions($form, $type);
 
         $response = new BinaryFileResponse($file);
         $response->deleteFileAfterSend(true);
@@ -272,13 +285,12 @@ class DashboardController
      */
     public function downloadFilteredSubmissions(
         Request $request,
-        FormService $formService,
         SymfonyFormFactory $formFactory
     ): Response {
         $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
         $submissionsFilterForm->handleRequest($request);
         $filter = $submissionsFilterForm->getData();
-        $file   = $formService->generateSubmissionsByFilter($filter);
+        $file   = $this->formService->generateSubmissionsByFilter($filter);
 
         $response = new BinaryFileResponse($file);
         $response->deleteFileAfterSend(true);
@@ -301,6 +313,9 @@ class DashboardController
         FormSubmission $formSubmission,
         FileUploaderInterface $fileUploader
     ): Response {
+        $form = $formSubmission->getForm();
+        $this->checkReadSubmissions($form);
+
         /* @var Field $field */
         foreach ($formSubmission->getData() as $field) {
             if ('file' === $field['type']) {
