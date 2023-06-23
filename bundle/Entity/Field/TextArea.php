@@ -24,6 +24,7 @@ class TextArea extends Field
 {
     use Field\Compose\MinMaxLength;
     use Field\Compose\AutoComplete;
+    use Field\Compose\Identifier;
 
     public function getDefaultValue(): ?string
     {

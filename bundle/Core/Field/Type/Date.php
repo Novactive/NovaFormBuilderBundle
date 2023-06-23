@@ -17,6 +17,7 @@ use Novactive\Bundle\FormBuilderBundle\Core\Field\FieldType;
 use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 
 class Date extends FieldType
@@ -58,6 +59,14 @@ class Date extends FieldType
                     'label'    => 'field.date.max',
                     'years'    => range(1900, (int) date('Y', strtotime('+ 100 years'))),
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
     }
 
@@ -66,6 +75,11 @@ class Date extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier = $field->getIdentifier() ?: null;
+        $attributes = [];
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
+        }
         $fieldForm
             ->add(
                 'value',
@@ -74,6 +88,7 @@ class Date extends FieldType
                     'required' => $field->isRequired(),
                     'label'    => $field->getName(),
                     'years'    => range($field->getMinValue()->format('Y'), $field->getMaxValue()->format('Y')),
+                    'attr'     => $attributes,
                 ]
             );
     }

@@ -58,6 +58,7 @@ form.required.head: 'Les champs suivis d''un astérisque <span style="color: red
 field.choice.default_value: Valeur par défaut
 field.textline.default_value: Valeur par défaut
 field.textarea.default_value: Valeur par défaut
+field.identifier: Identifiant
 form:
     notifications:
         default_email_subject: Soumission du formulaire %FORM_NAME%

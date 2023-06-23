@@ -71,6 +71,14 @@ class TextLine extends FieldType
                     'attr'       => ['min' => 0],
                     'empty_data' => 0,
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
         $this->addAutoCompleteField($fieldForm);
     }
@@ -80,6 +88,7 @@ class TextLine extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier   = $field->getIdentifier() ?: null;
         $minLength    = $field->getMinLength() ?: null;
         $maxLength    = $field->getMaxLength() ?: null;
         $placeholder  = $field->getPlaceholder() ?: null;
@@ -100,6 +109,9 @@ class TextLine extends FieldType
         }
         if (null !== $autoComplete) {
             $attributes['autocomplete'] = $autoComplete;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $fieldForm

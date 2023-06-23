@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Novactive\Bundle\eZFormBuilderBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\FormBuilderBundle\Entity\Form;
@@ -76,13 +77,18 @@ class Extension extends \Twig_Extension implements \Twig_Extension_GlobalsInterf
         return $form;
     }
 
-    public function canReadFormSubmissions(int $formId)
+    public function canReadFormSubmissions(int $formId): bool
     {
-        $associatedContents = $this->formService->associatedContents($formId);
-        foreach ($associatedContents as $associatedContent) {
-            if (!$this->permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
-                return false;
+        try {
+            $associatedContents = $this->formService->associatedContents($formId);
+            foreach ($associatedContents as $associatedContent) {
+                if (!$this->permissionResolver->canUser('form', 'read_submissions', $associatedContent)) {
+                    return false;
+                }
             }
+        } catch (Exception $exception) {
+            // TODO $this->logger->warn()
+            return false;
         }
 
         return true;

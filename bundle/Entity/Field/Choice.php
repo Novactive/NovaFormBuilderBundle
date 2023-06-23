@@ -23,6 +23,7 @@ use Novactive\Bundle\FormBuilderBundle\Entity\Field;
 class Choice extends Field
 {
     use Field\Compose\AutoComplete;
+    use Field\Compose\Identifier;
 
     public function getChoiceType(): string
     {

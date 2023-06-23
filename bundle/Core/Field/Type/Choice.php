@@ -84,6 +84,14 @@ class Choice extends FieldType
                     'required'   => false,
                     'label'      => 'field.choice.default_value',
                 ]
+            )
+            ->add(
+                'identifier',
+                TextType::class,
+                [
+                    'required' => false,
+                    'label'    => 'field.identifier',
+                ]
             );
         $this->addAutoCompleteField($fieldForm);
     }
@@ -93,10 +101,14 @@ class Choice extends FieldType
      */
     public function mapFieldCollectForm(FormInterface $fieldForm, Field $field): void
     {
+        $identifier   = $field->getIdentifier() ?: null;
         $autoComplete = $field->getAutoComplete() ?: null;
         $attributes   = [];
         if (null !== $autoComplete) {
             $attributes['autocomplete'] = $autoComplete;
+        }
+        if (null !== $identifier) {
+            $attributes['data-identifier'] = $identifier;
         }
 
         $formattedChoices = [];
