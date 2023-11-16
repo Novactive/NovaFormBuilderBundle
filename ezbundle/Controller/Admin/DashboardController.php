@@ -61,7 +61,6 @@ class DashboardController extends Controller
 
     public function performAccessCheck()
     {
-        dump(__METHOD__);
         parent::performAccessCheck();
         $this->denyAccessUnlessGranted(new Attribute('form', 'read'));
     }
@@ -257,7 +256,6 @@ class DashboardController extends Controller
             'exportable_datas' => $formSubmissionService->getExportableDatas($formSubmission),
         ];
     }
-
 
     protected function checkReadSubmissions(Form $form): void
     {
