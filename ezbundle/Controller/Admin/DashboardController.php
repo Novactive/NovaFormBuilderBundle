@@ -17,7 +17,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
+use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
+use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormService;
 use Novactive\Bundle\eZFormBuilderBundle\Core\FormSubmissionService;
 use Novactive\Bundle\eZFormBuilderBundle\Form\Type\SubmissionsFilterType;
@@ -41,7 +43,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-class DashboardController
+class DashboardController extends Controller
 {
     public const RESULTS_PER_PAGE = 10;
 
@@ -57,6 +59,12 @@ class DashboardController
         $this->permissionResolver = $permissionResolver;
     }
 
+    public function performAccessCheck()
+    {
+        parent::performAccessCheck();
+        $this->denyAccessUnlessGranted(new Attribute('form', 'read'));
+    }
+
     /**
      * Test action to render & handle clientside form.
      *
@@ -70,6 +78,7 @@ class DashboardController
         FormFactory $factory,
         Submitter $submitter
     ) {
+        $this->performAccessCheck();
         $form = $factory->createCollectForm($formEntity);
 
         $form->handleRequest($request);
@@ -98,6 +107,7 @@ class DashboardController
         Request $request,
         FormFactory $factory
     ) {
+        $this->performAccessCheck();
         if (null === $formEntity) {
             $formEntity = new Form();
         }
@@ -134,6 +144,7 @@ class DashboardController
         Request $request,
         FormFactory $factory
     ) {
+        $this->performAccessCheck();
         if (null === $formEntity) {
             $formEntity = new Form();
         }
@@ -171,6 +182,7 @@ class DashboardController
      */
     public function delete(Form $formEntity, RouterInterface $router): RedirectResponse
     {
+        $this->performAccessCheck();
         $this->formService->removeForm($formEntity);
 
         return new RedirectResponse($router->generate('novaezformbuilder_dashboard_index'));
@@ -181,6 +193,7 @@ class DashboardController
      */
     public function removeModal(Form $formEntity): JsonResponse
     {
+        $this->performAccessCheck();
         $this->formService->removeForm($formEntity);
 
         return (new JsonResponse())->setContent(json_encode(['success' => true]));
@@ -196,6 +209,7 @@ class DashboardController
         Request $request,
         SymfonyFormFactory $formFactory
     ): array {
+        $this->performAccessCheck();
         $page = $request->query->get('page') ?? 1;
 
         $queryBuilder = $entityManager->createQueryBuilder()->select('s')->from(FormSubmission::class, 's');
@@ -232,6 +246,7 @@ class DashboardController
         FormSubmission $formSubmission,
         FormSubmissionService $formSubmissionService
     ): array {
+        $this->performAccessCheck();
         $form = $formSubmission->getForm();
         $this->checkReadSubmissions($form);
 
@@ -262,6 +277,7 @@ class DashboardController
      */
     public function downloadSubmissions(Form $form, string $type): Response
     {
+        $this->performAccessCheck();
         $this->checkReadSubmissions($form);
 
         $file = $this->formService->generateSubmissions($form, $type);
@@ -287,6 +303,7 @@ class DashboardController
         Request $request,
         SymfonyFormFactory $formFactory
     ): Response {
+        $this->performAccessCheck();
         $submissionsFilterForm = $formFactory->create(SubmissionsFilterType::class);
         $submissionsFilterForm->handleRequest($request);
         $filter = $submissionsFilterForm->getData();
@@ -313,6 +330,7 @@ class DashboardController
         FormSubmission $formSubmission,
         FileUploaderInterface $fileUploader
     ): Response {
+        $this->performAccessCheck();
         $form = $formSubmission->getForm();
         $this->checkReadSubmissions($form);
 
@@ -332,6 +350,7 @@ class DashboardController
      */
     public function index(Connection $connection, int $page = 1): array
     {
+        $this->performAccessCheck();
         $queryBuilder = $connection->createQueryBuilder();
         $queryBuilder->select('f.id, f.name, count(fs.id) submissions_count')
             ->from('novaformbuilder_form', 'f')
